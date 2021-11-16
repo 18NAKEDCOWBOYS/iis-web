@@ -14,7 +14,7 @@ import Styles from './../css/LoginPage.module.css'
 export default function LoginPage(props) {
   return (
     <>
-    <NavigationBar page="Home"/>
+    <NavigationBar page="Login"/>
     <Container style={{height:"100%"}}>
       <Row style={{height:"100%"}}>
         <Col className="example-square shadow-lg" className={Styles.centerContent}>

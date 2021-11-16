@@ -19,6 +19,9 @@ export default function NavigationBar(props) {
             <Nav.Link as={Link} to="/" style={(props.page === "Home") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
           </Nav.Item>
           <Nav.Item>
+            <Nav.Link as={Link} to="/usr-man" style={(props.page === "usr-man") ? { color: 'white' } : {}}> Správa uživatelů</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
             <Nav.Link as={Link} to="/Login" style={(props.page === "Login") ? { color: 'white' } : {}}> Přihlásit se</Nav.Link>
           </Nav.Item>
         </Nav>
