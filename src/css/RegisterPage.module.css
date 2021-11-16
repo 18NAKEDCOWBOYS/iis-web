@@ -1,0 +1,19 @@
+.centerContent{
+    display:flex;
+    align-items: center;
+    flex-direction:column;
+    justify-content:center; 
+
+}
+
+.registerForm{
+    width: 100%;
+    max-width: 650px;
+    padding: 40px 20px;
+    border-radius: 10px; 
+    border-width:2px;
+    background-color: #a7a7a721;
+    border-color: #8a8a8a;
+    border-style:solid 
+}
+
