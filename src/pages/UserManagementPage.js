@@ -14,20 +14,6 @@ import UserDetail from '../components/UserDetail';
 
 import Styles from './../css/UserManagementPage.module.css'
 
-function mapNumToRole(props){
-  var role;
-  if(props===1){
-    role = "Neregistrovaný";
-  }else if(props===2){
-    role = "Registrovaný";
-  }else if(props===3){
-    role = "Licitátor";
-  }else if(props===4){
-    role = "Administrátor";
-  }
-  return role;
-}
-
 function NewModal(props) {
   return (
     <Modal
@@ -99,7 +85,7 @@ export default function UserManagementPage(props) {
     const [newModalShow, setNewModalShow] = React.useState(false);
     const [editModalShow, setEditModalShow] = React.useState(false);
     const [deleteModalShow, setDeleteModalShow] = React.useState(false);
-
+    const str_role=["Neregistrovaný", "Registrovaný", "Licitátor", "Administrátor"]
     const users= [
    {
     "id":1,
@@ -124,7 +110,7 @@ export default function UserManagementPage(props) {
     "name":"Jana",
     "surname":"Ivanečková",
     "password":"TonamoTaTEnT",
-    "role_id":4
+    "role_id":0
    },{
     "id":4,
     "login":"kittenbee",
@@ -148,7 +134,7 @@ export default function UserManagementPage(props) {
     <NavigationBar page="usr-man"/>
     <Container style={{paddingTop:70}}>
       <Row >
-        <Col className="example-square shadow-lg" className={Styles.centerContent}>
+        <Col className={Styles.centerContent}>
           <label style={{width:"100%",textAlign:'left' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Seznam uživatelů</label>
           <Table hover striped style={{textAlign:'center'}}>
             <thead>
@@ -157,7 +143,6 @@ export default function UserManagementPage(props) {
                 <th>Uživatelké jméno</th>
                 <th>Jméno</th>
                 <th>Příjmení</th>
-                <th>E-mail</th>
                 <th>Heslo</th>
                 <th>Role</th>
                 <th>Smazat</th>
@@ -172,9 +157,8 @@ export default function UserManagementPage(props) {
                     <td>{ item.login}</td>
                     <td>{ item.name}</td>
                     <td>{ item.surname}</td>
-                    <td>{ item.email }</td>
                     <td>{ item.password}</td>
-                    <td>{mapNumToRole(item.role_id)}</td>
+                    <td>{ str_role[item.role_id]}</td>
                     <td><Button onClick={() => setDeleteModalShow(true)} style={{border:0, backgroundColor:"#ffffff00"}}><FaTrashAlt color="#0d6efd" size="20"/></Button></td>
                     <td><Button onClick={() => setEditModalShow(true)} style={{border:0, backgroundColor:"#ffffff00"}}><FaUserEdit color="#0d6efd" size="24"/></Button></td>
                   </tr>
@@ -197,6 +181,7 @@ export default function UserManagementPage(props) {
     <EditModal
       show={editModalShow}
       onHide={() => setEditModalShow(false)}
+
     />
 
     <DeleteModal

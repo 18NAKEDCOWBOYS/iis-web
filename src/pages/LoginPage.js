@@ -17,17 +17,17 @@ export default function LoginPage(props) {
     <NavigationBar page="Login"/>
     <Container style={{height:"100%"}}>
       <Row style={{height:"100%"}}>
-        <Col className="example-square shadow-lg" className={Styles.centerContent}>
+        <Col className={Styles.centerContent}>
           <div className={Styles.loginForm}>
             <Form>
               <label style={{width:"100%",textAlign:'center' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Zadejte přihlašovací údaje</label>
 
-              <FloatingLabel controlId="floatingInput" label="Emailová adresa" className="mb-3">
-                <Form.Control type="email" placeholder="name@example.com" />
+              <FloatingLabel controlId="floatingInput" label="Uživatelské jméno" className="mb-3">
+                <Form.Control type="text" placeholder="Jmeno" />
               </FloatingLabel>
 
               <FloatingLabel controlId="floatingPassword" label="Heslo">
-                <Form.Control type="password" placeholder="Password" />
+                <Form.Control type="password" placeholder="Heslo" />
               </FloatingLabel>
 
               <div style={{ paddingTop: 30 }} className="d-grid align-items-center">

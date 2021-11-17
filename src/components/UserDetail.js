@@ -7,11 +7,6 @@ export default function UserDetail(props) {
   return (
     <Form>
       <Row className="mb-3">
-        <Form.Group style={{minWidth:200}} as={Col} controlId="formGridEmail">
-          <Form.Label>Emailová adresa</Form.Label>
-          <Form.Control type="email" placeholder="Zadejte email" />
-        </Form.Group>
-
         <Form.Group style={{minWidth:200}} as={Col} controlId="formGridUsername">
           <Form.Label>Uživatelké jméno</Form.Label>
           <Form.Control type="text" placeholder="Zadejte uživatelké jméno" />

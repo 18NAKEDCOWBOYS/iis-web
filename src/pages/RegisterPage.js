@@ -15,7 +15,7 @@ export default function RegisterPage(props) {
     <NavigationBar page="Home"/>
     <Container style={{height:"100%"}}>
       <Row style={{height:"100%"}}>
-        <Col className="example-square shadow-lg" className={Styles.centerContent}>
+        <Col className={Styles.centerContent}>
           <div className={Styles.registerForm}>
             <RegForm/>
           </div>
