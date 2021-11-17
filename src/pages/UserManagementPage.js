@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {Formik} from 'formik';
 
 import { FaTrashAlt, FaUserEdit } from "react-icons/fa";
 
@@ -28,7 +29,51 @@ function NewModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <UserDetail/>
+        <Formik
+              initialValues={{ email: '', password: '', name:'', surname:'', role:null}}
+              validate={values => {
+                const errors = {};
+                if(!values.email){
+                  errors.email = 'Nezadali jste e-mailovou adresu';
+                }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                  errors.email = 'Nesprávný formát e-mailové adresy';
+                }
+                
+                if(!values.password){
+                  errors.password = 'Nezadali jste heslo';
+                }else if (values.password.length < 8){
+                  errors.password = 'Heslo je příliš krátké';
+                }
+
+                if(!values.name){
+                  errors.name='Nezadali jste jméno'
+                }
+                
+                if(!values.surname){
+                  errors.surname='Nezadali jste příjmení'
+                }
+                if(!values.role){
+                  errors.role = 'Vyberte prosím roli uživatele'
+                }
+                return errors;
+              }}
+              onSubmit={(values, bag) => {
+                setTimeout(() => {
+                  console.log('This will run after 2 second!');
+                  bag.setSubmitting(false);
+                }, 2000);
+              }}
+            >
+              {({
+               values,
+               errors,
+               status,
+               touched,
+               handleChange,
+               handleSubmit,
+               isSubmitting,
+              }) => <UserDetail values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
+            </Formik>
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={props.onHide}>Zrušit</Button>
@@ -52,7 +97,52 @@ function EditModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <UserDetail/>
+        <Formik
+              initialValues={{ email: '', password: '', name:'', surname:'', role:null}}
+              validate={values => {
+                const errors = {};
+                if(!values.email){
+                  errors.email = 'Nezadali jste e-mailovou adresu';
+                }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                  errors.email = 'Nesprávný formát e-mailové adresy';
+                }
+                
+                if(!values.password){
+                  errors.password = 'Nezadali jste heslo';
+                }else if (values.password.length < 8){
+                  errors.password = 'Heslo je příliš krátké';
+                }
+
+                if(!values.name){
+                  errors.name='Nezadali jste jméno'
+                }
+                
+                if(!values.surname){
+                  errors.surname='Nezadali jste příjmení'
+                }
+                if(!values.role){
+                  errors.role = 'Vyberte prosím roli uživatele'
+                }
+                return errors;
+              }}
+              onSubmit={(values, bag) => {
+                setTimeout(() => {
+                  console.log('This will run after 2 second!');
+                  bag.setSubmitting(false);
+                }, 2000);
+              }}
+            >
+              {({
+               values,
+               errors,
+               status,
+               touched,
+               handleChange,
+               handleSubmit,
+               isSubmitting,
+              }) => <UserDetail values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
+            </Formik>        
+
       </Modal.Body>
       <Modal.Footer>
         <Button variant='secondary' onClick={props.onHide}>Zrušit</Button>
