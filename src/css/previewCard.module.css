@@ -1,3 +1,32 @@
 .cardItem{
     padding:3px 0;
 }
+.buttonApprove{
+    width:47%;
+}
+.buttonReject{
+    width:47%;
+    margin-left:6%;
+}
+
+.buttonsContainer{
+    display:flex;
+    width:100%;
+}
+.rejectedText{
+    color:#bb2d3b;
+    font-size:20px;
+    font-weight: bold;
+    padding:12px 0
+}
+
+.approvedText{
+    color:#198754;
+    font-size:20px;
+    font-weight: bold;
+    padding:12px 0
+}
+
+.cardTitle{
+    font-weight: bold;
+}
