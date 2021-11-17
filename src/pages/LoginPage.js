@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-
+import { Link } from 'react-router-dom';
 import NavigationBar from './../components/NavigationBar';
 
 import Styles from './../css/LoginPage.module.css'
@@ -35,7 +35,7 @@ export default function LoginPage(props) {
               </div>
 
               <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
-                <label style={{marginRight:5}}>Ještě nemáte účet?</label><a href="/register">Zaregistrujte se!</a>
+                <label style={{marginRight:5}}>Ještě nemáte účet?</label><Link to="/register">Zaregistrujte se!</Link>
               </div>
             </Form>
           </div>
