@@ -13,10 +13,9 @@ export default function Router(props)
         <BrowserRouter>
               <Routes>
                 <Route path="/login" element={<Loginpage/>}/>
-                <Route path="/auctions" element={<AuctionsPage/>}/>
                 <Route path="/register" element={<Registerpage/>}/>
                 <Route path="/usr-man" element={<UserManagementpage/>}/>
-                <Route path="/" element={<Home/>}/>
+                <Route path="/" element={<AuctionsPage/>}/>
                 <Route path='*' element={<NotFound/>} />               
             </Routes>
         </BrowserRouter>

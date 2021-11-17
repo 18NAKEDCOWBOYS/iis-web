@@ -16,7 +16,7 @@ export default function NavigationBar(props) {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ms-auto">
           <Nav.Item>
-            <Nav.Link as={Link} to="/auctions" style={(props.page === "auctions") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
+            <Nav.Link as={Link} to="/" style={(props.page === "auctions") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link as={Link} to="/usr-man" style={(props.page === "usr-man") ? { color: 'white' } : {}}> Správa uživatelů</Nav.Link>

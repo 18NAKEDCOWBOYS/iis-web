@@ -15,3 +15,12 @@ code {
 html, body, #root {
   height:100%;
 }
+
+h1{
+  color: rgb(13, 110, 253);
+  padding:20px 0;
+}
+
+.mainContainer{
+  padding-top:70px
+}
