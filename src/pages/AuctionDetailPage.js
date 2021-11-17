@@ -19,21 +19,27 @@ function submitForm(type, auction, newPrice) {
 
     }
 }
-function addBidForm(auction) {
-    <Form style={{ paddingTop: 25 }}>
-        <InputGroup className="mb-3">
-            <FormControl style={{ maxWidth: 250 }}
-                placeholder={auction.rules == "Otevřená" ? "Výše příhozu" : "Výše nabídky"}
-                aria-label={auction.rules == "Otevřená" ? "Výše příhozu" : "Výše nabídky"}
-                aria-describedby="basic-addon1"
-                type="number"
-            />
-            <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
-        </InputGroup>
-        <div>
-            <Button variant="primary" type="submit">{auction.rules == "Otevřená" ? "Přihodit" : "Nabídnout"}</Button>
-        </div>
-    </Form>
+function AddBidForm(auction) {
+    return (
+        <>
+
+            <Form style={{ paddingTop: 25 }}>
+                <InputGroup className="mb-3">
+                    <FormControl style={{ maxWidth: 250 }}
+                        placeholder={auction.rules == "Otevřená" ? "Výše příhozu" : "Výše nabídky"}
+                        aria-label={auction.rules == "Otevřená" ? "Výše příhozu" : "Výše nabídky"}
+                        aria-describedby="basic-addon1"
+                        type="number"
+                    />
+                    <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
+                </InputGroup>
+                <div>
+                    <Button variant="primary" type="submit">{auction.rules == "Otevřená" ? "Přihodit" : "Nabídnout"}</Button>
+                </div>
+            </Form>
+        </>
+    )
+
 }
 
 export default function AuctionDetailPage(props) {
@@ -141,47 +147,47 @@ export default function AuctionDetailPage(props) {
                         {auction.type == "Nabídka" ?
                             //form prihozeni nabidka
                             <>
-                                <addBidForm auction={auction} />
+                                <AddBidForm auction={auction} />
                             </>
                             :
                             //user = author => price edit form
                             <>
-                            
-                                {loggedUser.userId == auction.author_id ? 
-                                <>
-                                    <Form style={{ paddingTop: 25 }}>
-                                        <InputGroup className="mb-3">
-                                            <FormControl style={{ maxWidth: 250 }}
-                                                placeholder="Nová cena"
-                                                aria-label="Nová cena"
-                                                aria-describedby="basic-addon1"
-                                                value={DemandPrice}
-                                                onChange={(e) => { setDemandPrice(e.target.value) }}
-                                                type="number"
-                                                disabled={!DemandPriceEditing}
-                                            />
-                                            <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
-                                        </InputGroup>
-                                        <div>
-                                            {DemandPriceEditing ?
-                                                <>
-                                                    <Button variant="primary" onClick={() => { setDemandPriceEditing(false); setcurrentPrice(DemandPrice) }}>Potvrdit novou cenu</Button>{' '}
-                                                    <Button variant="secondary" onClick={() => { setDemandPriceEditing(false); setDemandPrice(currentPrice) }}>Zrušit</Button>
-                                                </>
-                                                :
-                                                <>
-                                                    <Button variant="primary" onClick={() => setDemandPriceEditing(true)}>Upravit cenu</Button>
-                                                </>
 
-                                            }
-                                        </div>
-                                    </Form>
-                                </> 
-                                :
-                                //user != author, show price
-                                <>
-                                    {auction.type == "Poptávka" && <div style={{ color: "#0d6efd", fontSize: 25, fontWeight: 600 }}>Cena {auction.price} Kč</div>}
-                                </>
+                                {loggedUser.userId == auction.author_id ?
+                                    <>
+                                        <Form style={{ paddingTop: 25 }}>
+                                            <InputGroup className="mb-3">
+                                                <FormControl style={{ maxWidth: 250 }}
+                                                    placeholder="Nová cena"
+                                                    aria-label="Nová cena"
+                                                    aria-describedby="basic-addon1"
+                                                    value={DemandPrice}
+                                                    onChange={(e) => { setDemandPrice(e.target.value) }}
+                                                    type="number"
+                                                    disabled={!DemandPriceEditing}
+                                                />
+                                                <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
+                                            </InputGroup>
+                                            <div>
+                                                {DemandPriceEditing ?
+                                                    <>
+                                                        <Button variant="primary" onClick={() => { setDemandPriceEditing(false); setcurrentPrice(DemandPrice) }}>Potvrdit novou cenu</Button>{' '}
+                                                        <Button variant="secondary" onClick={() => { setDemandPriceEditing(false); setDemandPrice(currentPrice) }}>Zrušit</Button>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <Button variant="primary" onClick={() => setDemandPriceEditing(true)}>Upravit cenu</Button>
+                                                    </>
+
+                                                }
+                                            </div>
+                                        </Form>
+                                    </>
+                                    :
+                                    //user != author, show price
+                                    <>
+                                        {auction.type == "Poptávka" && <div style={{ color: "#0d6efd", fontSize: 25, fontWeight: 600 }}>Cena {auction.price} Kč</div>}
+                                    </>
                                 }
 
                             </>

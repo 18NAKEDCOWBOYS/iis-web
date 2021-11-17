@@ -6,6 +6,7 @@ import UserManagementpage from "./pages/UserManagementPage"
 import NotFound from "./pages/NotFound"
 import AuctionsPage from './pages/AuctionsPage'
 import AuctionDetailPage from './pages/AuctionDetailPage'
+import UserProfilePage from './pages/UserProfilePage'
 
 export default function Router(props)
 {
@@ -15,6 +16,7 @@ export default function Router(props)
                 <Route path="/" element={<AuctionsPage/>}/>
                 <Route path="/login" element={<Loginpage/>}/>
                 <Route path="/register" element={<Registerpage/>}/>
+                <Route path="/user-profile" element={<UserProfilePage/>}/>
                 <Route path="/auction-detail/:auctionId" element={<AuctionDetailPage/>}/>
                 <Route path="/usr-man" element={<UserManagementpage/>}/>
                 <Route path='*' element={<NotFound/>} />               
