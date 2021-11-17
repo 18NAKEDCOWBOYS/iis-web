@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, BrowserRouter} from 'react-router-dom'
+import { Routes, Route, HashRouter} from 'react-router-dom'
 import Loginpage from "./pages/LoginPage"
 import Registerpage from "./pages/RegisterPage"
 import UserManagementpage from "./pages/UserManagementPage"
@@ -10,7 +10,7 @@ import AuctionsPage from './pages/AuctionsPage'
 export default function Router(props)
 {
     return(
-        <BrowserRouter>
+        <HashRouter>
               <Routes>
                 <Route path="/login" element={<Loginpage/>}/>
                 <Route path="/register" element={<Registerpage/>}/>
@@ -18,6 +18,6 @@ export default function Router(props)
                 <Route path="/" element={<AuctionsPage/>}/>
                 <Route path='*' element={<NotFound/>} />               
             </Routes>
-        </BrowserRouter>
+        </HashRouter>
     )
 }
