@@ -3,41 +3,100 @@ import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import {Formik} from 'formik';
+
+function emailExist(email){
+  return(email === "asd@dsa.cz")
+}
+
 
 export default function RegForm(props) {
   return (
-    <Form>
-      <label style={{width:"100%",textAlign:'center' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Registrační formulář</label>
+    <Formik
+      initialValues={{ email: '', password: '', name:'', surname:''}}
+      validate={values => {
+        const errors = {};
+        if(!values.email){
+          errors.email = 'Nezadali jste e-mailovou adresu';
+        }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+          errors.email = 'Nesprávný formát e-mailové adresy';
+        }
 
-      <Row className="mb-3">
-        <Form.Group style={{minWidth:200}} as={Col} controlId="formGridUsername">
-          <Form.Label>Uživatelké jméno</Form.Label>
-          <Form.Control type="text" placeholder="Zadejte uživatelké jméno" />
-        </Form.Group>
-      
-        <Form.Group style={{minWidth:200}} as={Col} controlId="formGridPassword">
-          <Form.Label>Heslo</Form.Label>
-          <Form.Control type="password" placeholder="Zadejte heslo" />
-        </Form.Group>
-      </Row>
+        if(!values.password){
+          errors.password = 'Nezadali jste heslo';
+        }else if (values.password.length < 8){
+          errors.password = 'Heslo je příliš krátké';
+        }
 
-      <Row className="mb-3">
-        <Form.Group style={{minWidth:200}} as={Col} controlId="formGridName">
-          <Form.Label>Jméno</Form.Label>
-          <Form.Control type="text" placeholder="Zadejte jméno" />
-        </Form.Group>
-
-        <Form.Group style={{minWidth:200}} as={Col} controlId="formGridSurname">
-          <Form.Label>Příjméní</Form.Label>
-          <Form.Control type="text" placeholder="Zadejte příjmení" />
-        </Form.Group>
-
+        if(!values.name){
+          errors.name = 'Nezadali jste jméno';
+        }
         
-      </Row>
+        if(!values.surname){
+          errors.surname = 'Nezadali jste příjmení';
+        }
+        
+        return errors;
+      }}
+      onSubmit={(values, bag) => {
+        setTimeout(() => {
+          if(emailExist(values.email)){
+            bag.setStatus('Účet pro e-mailovou adresu "' + values.email+'" již existuje')
+          }else{
+            bag.setStatus(null)
+          }
+          console.log('This will run after 4 second!');
+          bag.setSubmitting(false);
+        }, 4000);  
+      }}
+    >
+      {({
+       values,
+       errors,
+       status,
+       touched,
+       handleChange,
+       handleBlur,
+       handleSubmit,
+       isSubmitting,
+      }) => (
+        <Form onSubmit={handleSubmit}>
+          <label style={{width:"100%",textAlign:'center' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Registrační formulář</label>
 
-      <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
-        <Button variant="primary" type="submit" size="lg">Zaregistovat se</Button>
-      </div>
-    </Form>
+          <Row className="mb-3">
+            <Form.Group style={{minWidth:200}} as={Col} controlId="formGridUsername">
+              <Form.Label>E-mailová adresa</Form.Label>
+              <Form.Control type="text" name="email" placeholder="Zadejte e-mailovou adresu" onChange={handleChange} value={values.email}/>
+              {errors.email && touched.email? <div style={{color:'red'}}>{errors.email}</div> : null}
+            </Form.Group>
+
+            <Form.Group style={{minWidth:200}} as={Col} controlId="formGridPassword">
+              <Form.Label>Heslo</Form.Label>
+              <Form.Control type="password" name="password" placeholder="Zadejte heslo" onChange={handleChange} value={values.password}/>
+              {errors.password && touched.password ? <div style={{color:'red'}}>{errors.password}</div> : null}
+            </Form.Group>
+          </Row>
+
+          <Row className="mb-3">
+            <Form.Group style={{minWidth:200}} as={Col} controlId="formGridName">
+              <Form.Label>Jméno</Form.Label>
+              <Form.Control type="text" name="name" placeholder="Zadejte jméno" onChange={handleChange} value={values.name}/>
+              {errors.name && touched.name ? <div style={{color:'red'}}>{errors.name}</div> : null}
+            </Form.Group>
+
+            <Form.Group style={{minWidth:200}} as={Col} controlId="formGridSurname">
+              <Form.Label>Příjméní</Form.Label>
+              <Form.Control type="text" name="surname" placeholder="Zadejte příjmení" onChange={handleChange} value={values.surname}/>
+              {errors.surname && touched.surname? <div style={{color:'red'}}>{errors.surname}</div> : null}
+            </Form.Group>
+          </Row>
+
+          <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
+            <Button variant="primary" type="submit" disabled={isSubmitting} size="lg">Zaregistovat se</Button>
+            {status? <div style={{color:'red', width:'100%', textAlign:'center'}}>{status}</div> : null}
+          </div>
+        </Form>
+      )}
+    </Formik>
     )
 }

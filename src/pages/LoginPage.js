@@ -6,10 +6,24 @@ import Row from 'react-bootstrap/Row';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import {Formik} from 'formik';
 import { Link } from 'react-router-dom';
+
 import NavigationBar from './../components/NavigationBar';
 
 import Styles from './../css/LoginPage.module.css'
+
+function validatePassw(values, bag){
+  setTimeout(() => {
+    console.log('This will run after 4 second!');
+    bag.setSubmitting(false);
+    if(values.password !== 'spravne heslo'){
+      bag.setStatus('Zadali jste nespravne heslo');
+    }else{
+      bag.setStatus(null);
+    }
+  }, 4000);
+}
 
 export default function LoginPage(props) {
   return (
@@ -19,25 +33,63 @@ export default function LoginPage(props) {
       <Row style={{height:"100%"}}>
         <Col className={Styles.centerContent}>
           <div className={Styles.loginForm}>
-            <Form>
-              <label style={{width:"100%",textAlign:'center' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Zadejte přihlašovací údaje</label>
+            <Formik
+              initialValues={{ email: '', password: '' }}
+              validate={values => {
+                const errors = {};
+                if(!values.email){
+                  errors.email = 'Nezadali jste e-mailovou adresu';
+                }else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+                  errors.email = 'Nesprávný formát e-mailové adresy';
+                }
+                
+                if(!values.password){
+                  errors.password = 'Nezadali jste heslo';
+                }else if (values.password.length < 8){
+                  errors.password = 'Heslo je příliš krátké';
+                }
 
-              <FloatingLabel controlId="floatingInput" label="Uživatelské jméno" className="mb-3">
-                <Form.Control type="text" placeholder="Jmeno" />
-              </FloatingLabel>
+                
+                return errors;
+              }}
+              onSubmit={(values, bag) => {
+                validatePassw(values, bag);
+              }}
+            >
+              {({
+               values,
+               errors,
+               status,
+               touched,
+               handleChange,
+               handleBlur,
+               handleSubmit,
+               isSubmitting,
+              }) => (
+                <Form onSubmit={handleSubmit}>
+                  <label style={{width:"100%",textAlign:'center' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Zadejte přihlašovací údaje</label>
 
-              <FloatingLabel controlId="floatingPassword" label="Heslo">
-                <Form.Control type="password" placeholder="Heslo" />
-              </FloatingLabel>
+                  <FloatingLabel controlId="floatingInput" label="E-mailová adresa" className="mb-3">
+                    <Form.Control type="text" name='email' placeholder="example@domain.net"  onChange={handleChange} value={values.email}/>
+                    {errors.email && touched.email? <div style={{color:'red'}}>{errors.email}</div> : null}
+                  </FloatingLabel>
 
-              <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
-                <Button variant="primary" type="submit" size="lg">Přihlásit se</Button>
-              </div>
+                  <FloatingLabel controlId="floatingPassword" label="Heslo">
+                    <Form.Control type="password" name='password' placeholder="Heslo" onChange={handleChange} value={values.password}/>
+                    {errors.password && touched.password ? <div style={{color:'red'}}>{errors.password}</div> : null}
+                  </FloatingLabel>
 
-              <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
-                <label style={{marginRight:5}}>Ještě nemáte účet?</label><Link to="/register">Zaregistrujte se!</Link>
-              </div>
-            </Form>
+                  <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
+                    <Button variant="primary" type="submit" disabled={isSubmitting} size="lg">Přihlásit se</Button>
+                    {status? <div style={{color:'red', width:'100%', textAlign:'center'}}>{status}</div> : null}
+                  </div>
+
+                  <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
+                    <label style={{marginRight:5}}>Ještě nemáte účet?</label><Link to="/register">Zaregistrujte se!</Link>
+                  </div>
+                </Form>
+              )}
+            </Formik>  
           </div>
         </Col>
       </Row>
