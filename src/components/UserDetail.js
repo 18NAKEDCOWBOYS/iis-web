@@ -46,13 +46,13 @@ export default function UserDetail(bag) {
           </Form.Select>
           {bag.errors.role&& bag.touched.role? <div style={{color:'red'}}>{bag.errors.role}</div> : null}
         </Form.Group>
+      </Row>
         
-        <div style={{ paddingTop: 30, wight:'100%'}}>
+        <div style={{wight:'100%'}}>
           <Button variant="primary" style={{maxWidth:200,marginInline:10, float:'right'}} type="submit" disabled={bag.isSubmitting} >Uložit změny</Button>
           <Button variant='secondary' style={{maxWidth:200,marginInline:10, float:'right'}} disabled={bag.isSubmitting} onClick={bag.onHide} >Zrušit</Button>
         </div>
 
-      </Row>
     </Form>
     )
 }
