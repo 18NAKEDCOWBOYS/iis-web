@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Container from 'react-bootstrap/Container';
-import Modal from 'react-bootstrap/Container';
+import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import NavigationBar from '../components/NavigationBar';
 import Styles from './../css/AuctionsPage.module.css'
@@ -161,6 +161,8 @@ export default function AuctionsPage(props) {
         </Container>
 
       </Container>
+      <NewAuctionModal   show={newAuctionModalShow}
+      onHide={() => setNewAuctionModalShow(false)}/>
     </>
   )
 }
