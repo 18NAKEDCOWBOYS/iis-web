@@ -72,13 +72,9 @@ function NewModal(props) {
                handleChange,
                handleSubmit,
                isSubmitting,
-              }) => <UserDetail values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
+              }) => <UserDetail onHide={props.onHide} values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
             </Formik>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant='secondary' onClick={props.onHide}>Zrušit</Button>
-        <Button variant='primary' onClick={props.onHide}>Uložit nového uživatele</Button>
-      </Modal.Footer>
     </Modal>
   );
 }
@@ -133,21 +129,16 @@ function EditModal(props) {
               }}
             >
               {({
-               values,
-               errors,
-               status,
-               touched,
-               handleChange,
-               handleSubmit,
-               isSubmitting,
-              }) => <UserDetail values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
+                values,
+                errors,
+                status,
+                touched,
+                handleChange,
+                handleSubmit,
+                isSubmitting,
+              }) => <UserDetail onHide={props.onHide} values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting}/>}
             </Formik>        
-
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant='secondary' onClick={props.onHide}>Zrušit</Button>
-        <Button variant='primary' onClick={props.onHide}>Uložit změny</Button>
-      </Modal.Footer>
     </Modal>
   );
 }

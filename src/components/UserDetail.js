@@ -47,9 +47,9 @@ export default function UserDetail(bag) {
           {bag.errors.role&& bag.touched.role? <div style={{color:'red'}}>{bag.errors.role}</div> : null}
         </Form.Group>
         
-        <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
-          <Button variant="primary" type="submit" disabled={bag.isSubmitting} size="lg">Přihlásit se</Button>
-          {bag.status? <div style={{color:'red', width:'100%', textAlign:'center'}}>{bag.status}</div> : null}
+        <div style={{ paddingTop: 30, wight:'100%'}}>
+          <Button variant="primary" style={{maxWidth:200,marginInline:10, float:'right'}} type="submit" disabled={bag.isSubmitting} >Uložit změny</Button>
+          <Button variant='secondary' style={{maxWidth:200,marginInline:10, float:'right'}} disabled={bag.isSubmitting} onClick={bag.onHide} >Zrušit</Button>
         </div>
 
       </Row>
