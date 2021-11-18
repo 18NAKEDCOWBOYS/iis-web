@@ -217,6 +217,7 @@ export default function UserManagementPage(props) {
       <Row >
         <Col className={Styles.centerContent}>
           <label style={{width:"100%",textAlign:'left' ,paddingBottom:40, color:"#0d6efd", fontSize:"30px"}}>Seznam uživatelů</label>
+          <div style={{width:'100%', overflow:'auto'}}>
           <Table hover striped style={{textAlign:'center'}}>
             <thead>
               <tr>
@@ -246,7 +247,8 @@ export default function UserManagementPage(props) {
                 );
               })}  
             </tbody>
-          </Table>
+            </Table>
+            </div>
           <div style={{width:'100%', padding:'10px'}}>
             <Button variant='primary' onClick={() => setNewModalShow(true)} >Přidat nového uživatele</Button>
           </div>
