@@ -1,15 +1,9 @@
 import React from 'react'
 
 import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Form from 'react-bootstrap/Form';
 import NavigationBar from '../components/NavigationBar';
-import RegForm from '../components/RegForm';
-
 import Styles from './../css/AuctionsPage.module.css'
 import AuctionCard from '../components/AuctionCard';
-import { Link } from 'react-router-dom';
 
 
 export default function AuctionsPage(props) {
@@ -19,6 +13,7 @@ export default function AuctionsPage(props) {
   }
   let auctions = [
     {
+      "id":0,
       "name": "Aukce A",
       "type": "Nabídka",
       "rules": "Otevřená",
@@ -28,6 +23,7 @@ export default function AuctionsPage(props) {
       "auctioneer_id": 2
     },
     {
+      "id":1,
       "name": "Aukce B",
       "type": "Nabídka",
       "rules": "Uzavřená",
@@ -37,6 +33,7 @@ export default function AuctionsPage(props) {
       "auctioneer_id": undefined
     },
     {
+      "id":2,
       "name": "Aukce C",
       "type": "Poptávka",
       "rules": "Otevřená",
@@ -46,6 +43,7 @@ export default function AuctionsPage(props) {
       "auctioneer_id": 2
     },
     {
+      "id":3,
       "name": "Aukce D",
       "type": "Nabídka",
       "rules": "Otevřená",
@@ -55,6 +53,7 @@ export default function AuctionsPage(props) {
       "auctioneer_id": 1
     },
     {
+      "id":4,
       "name": "Aukce E",
       "type": "Poptávka",
       "rules": "Uzavřená",
@@ -66,7 +65,7 @@ export default function AuctionsPage(props) {
   ]
   //not admin or auctioneer
   if (loggedUser.roleId < 2) {
-    auctions = auctions.filter(item => item.approved == true)
+    auctions = auctions.filter(item => item.approved === true)
   }
   return (
     <>
@@ -78,16 +77,12 @@ export default function AuctionsPage(props) {
           {auctions.map(item => {
             return (
               <div style={{ padding: 15 }}>
-    
-                <AuctionCard title={item.name} type={item.type} rules={item.rules} price={item.price} preview_image={item.images[0]} approved = {item.approved} auctioneer_id = {item.auctioneer_id}/>
+                <AuctionCard {...item} link={'/auction-detail/' + item.id}/>
               </div>
             )
           })}
-
         </Container>
       </Container>
-
-
     </>
   )
 }
