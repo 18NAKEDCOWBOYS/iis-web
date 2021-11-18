@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Styles from '../css/previewCard.module.css'
 import { Link } from 'react-router-dom';
+import { FaTrashAlt} from "react-icons/fa";
 function ApprovalButtons(loggedUserRoleId)
 {
   //admin or auctioneer
@@ -19,7 +20,8 @@ function ApprovalButtons(loggedUserRoleId)
 
 export default function AuctionCard(props) {
   const loggedUser = {
-    "roleId" : 2
+    "roleId" : 2,
+    "Id":0
   }
   return (
    
@@ -38,8 +40,11 @@ export default function AuctionCard(props) {
 
       {loggedUser.roleId >= 2 && <Card.Footer> 
         {(loggedUser.roleId>=2 && props.auctioneer_id !== undefined)  && (props.approved? <div className={Styles.approvedText}>Schválena</div> : <div className={Styles.rejectedText}>Zamítnuta</div>)}
-      {props.auctioneer_id === undefined && ApprovalButtons(loggedUser.roleId)}
-      </Card.Footer>}
+      {props.auctioneer_id === undefined && ApprovalButtons(loggedUser.roleId)}</Card.Footer>}
+
+
+      {(loggedUser.Id == props.author_id || loggedUser.roleId == 3) && <Card.Footer> <Button variant="danger">Smazat <FaTrashAlt color="#ffffff" style={{marginBottom:3, marginLeft:5}}/></Button></Card.Footer>}
+      
     </Card>
     )
 }

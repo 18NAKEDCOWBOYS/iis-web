@@ -89,7 +89,8 @@ export default function AuctionsPage(props) {
       "price": 12354,
       "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "approved": true,
-      "auctioneer_id": 2
+      "auctioneer_id": 2,
+      "author_id": 0
     },
     {
       "id":1,
@@ -99,7 +100,8 @@ export default function AuctionsPage(props) {
       "price": 50,
       "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "approved": false,
-      "auctioneer_id": undefined
+      "auctioneer_id": undefined,
+      "author_id": 1
     },
     {
       "id":2,
@@ -109,7 +111,8 @@ export default function AuctionsPage(props) {
       "price": 542133,
       "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "approved": false,
-      "auctioneer_id": 2
+      "auctioneer_id": 2,
+      "author_id": 2
     },
     {
       "id":3,
@@ -119,7 +122,8 @@ export default function AuctionsPage(props) {
       "price": 2,
       "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "approved": true,
-      "auctioneer_id": 1
+      "auctioneer_id": 1,
+      "author_id": 1
     },
     {
       "id":4,
@@ -129,7 +133,8 @@ export default function AuctionsPage(props) {
       "price": 7823,
       "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "approved": false,
-      "auctioneer_id": undefined
+      "auctioneer_id": undefined,
+      "author_id": 2
     }
   ]
   //not admin or auctioneer
