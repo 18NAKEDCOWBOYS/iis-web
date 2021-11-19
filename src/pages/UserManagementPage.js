@@ -125,6 +125,7 @@ function EditUserModal(props) {
                 setTimeout(() => {
                   console.log('This will run after 2 second!');
                   bag.setSubmitting(false);
+                  props.onHide();
                 }, 2000);
               }}
             >
@@ -215,7 +216,6 @@ export default function UserManagementPage(props) {
     "role_id":3
    },
   ] 
-
 
   // Functions and states for newUserModal
   const [newUserModalShow, setNewUserModalShow] = React.useState(false);

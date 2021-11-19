@@ -37,7 +37,7 @@ export default function UserDetail(bag) {
 
         <Form.Group style={{minWidth:200}} as={Col} controlId="formGridRole">
           <Form.Label>Role uživatele</Form.Label>
-          <Form.Select aria-label="Výběr rolí" name="role" value={bag.values.role_id} onChange={bag.handleChange}>
+          <Form.Select aria-label="Výběr rolí" name="role_id" value={bag.values.role_id} onChange={bag.handleChange}>
             <option>Vyberte roli</option>
             <option value="0">Neregistrovaný uživatel</option>
             <option value="1">Registrovaný uživatel</option>
