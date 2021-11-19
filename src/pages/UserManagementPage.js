@@ -15,7 +15,7 @@ import UserDetail from '../components/UserDetail';
 
 import Styles from './../css/UserManagementPage.module.css'
 
-function NewModal(props) {
+function NewUserModal(props) {
   return (
     <Modal
       {...props}
@@ -30,7 +30,7 @@ function NewModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-              initialValues={{ email: '', password: '', name:'', surname:'', role:null}}
+              initialValues={{ id:props.item.id, email: props.item.email, password: props.item.password, name:props.item.name, surname:props.item.surname, role_id:props.item.role_id}}
               validate={values => {
                 const errors = {};
                 if(!values.email){
@@ -52,8 +52,8 @@ function NewModal(props) {
                 if(!values.surname){
                   errors.surname='Nezadali jste příjmení'
                 }
-                if(!values.role){
-                  errors.role = 'Vyberte prosím roli uživatele'
+                if(!values.role_id){
+                  errors.role_id = 'Vyberte prosím roli uživatele'
                 }
                 return errors;
               }}
@@ -79,7 +79,7 @@ function NewModal(props) {
   );
 }
 
-function EditModal(props) {
+function EditUserModal(props) {
   return (
     <Modal
       {...props}
@@ -94,7 +94,7 @@ function EditModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-              initialValues={{ email: '', password: '', name:'', surname:'', role:null}}
+              initialValues={{ id:props.item.id, email: props.item.email, password: props.item.password, name:props.item.name, surname:props.item.surname, role_id:props.item.role_id}}
               validate={values => {
                 const errors = {};
                 if(!values.email){
@@ -116,8 +116,8 @@ function EditModal(props) {
                 if(!values.surname){
                   errors.surname='Nezadali jste příjmení'
                 }
-                if(!values.role){
-                  errors.role = 'Vyberte prosím roli uživatele'
+                if(!values.role_id){
+                  errors.role_id = 'Vyberte prosím roli uživatele'
                 }
                 return errors;
               }}
@@ -143,7 +143,14 @@ function EditModal(props) {
   );
 }
 
-function DeleteModal(props){
+function DeleteUserModal(props){
+  
+  const deleteUser = function(props){
+     //TODO: odeslat požadavek na smazání uživatele
+    console.log(props.item.email);
+    props.onHide();
+  };
+
   return (
     <Modal {...props} aria-labelledby="contained-modal-title-vcenter" centered>
       <Modal.Header closeButton>
@@ -151,23 +158,21 @@ function DeleteModal(props){
       </Modal.Header>
 
       <Modal.Body>
-        Opravdu chcete vymazat uživatele: "někdo"
+        Opravdu chcete vymazat uživatele: {props.item.email} 
       </Modal.Body>
 
       <Modal.Footer>
         <Button variant="secondary" onClick={props.onHide}>Zrušit</Button>
-        <Button variant="danger" onClick={props.onHide}>Vymazat</Button>
+        <Button variant="danger" onClick={() => deleteUser(props)}>Vymazat</Button>
       </Modal.Footer>
     </Modal>
   );
 }
 
 export default function UserManagementPage(props) {
-    const [newModalShow, setNewModalShow] = React.useState(false);
-    const [editModalShow, setEditModalShow] = React.useState(false);
-    const [deleteModalShow, setDeleteModalShow] = React.useState(false);
-    const str_role=["Neregistrovaný", "Registrovaný", "Licitátor", "Administrátor"]
-    const users= [
+   
+  const str_role=["Neregistrovaný", "Registrovaný", "Licitátor", "Administrátor"]
+  const users= [
    {
     "id":1,
     "login":"xblbec92",
@@ -209,7 +214,43 @@ export default function UserManagementPage(props) {
     "password":"KIstOsTRIXEn",
     "role_id":3
    },
-] 
+  ] 
+
+
+  // Functions and states for newUserModal
+  const [newUserModalShow, setNewUserModalShow] = React.useState(false);
+  const [itemToBeAdded, setItemToBeAdded] = React.useState('');
+  const setNewItem = () => {
+    const item ={
+      "id":null,
+      "login":"",
+      "email":"",
+      "name":"",
+      "surname":"",
+      "password":"",
+      "role_id":null
+    };
+
+    setItemToBeAdded(item);
+    setNewUserModalShow(true);
+  };
+
+  // Functions and states for editUserModal
+  const [editUserModalShow, setEditUserModalShow] = React.useState(false);
+  const [itemToBeEdited, setItemToBeEdited] = React.useState('');
+  const setEditedItem = (item) => {
+    setItemToBeEdited(item);
+    setEditUserModalShow(true);
+  };
+
+  // Functions and states for deleteUserModal
+  const [deleteUserModalShow, setDeleteUserModalShow] = React.useState(false);
+  const [itemToBeDeleted, setItemToBeDeleted] = React.useState('');
+  const setDeletedItem = (item) => {
+    setItemToBeDeleted(item);
+    setDeleteUserModalShow(true);
+  };
+
   return (
     <>
     <NavigationBar page="usr-man"/>
@@ -222,7 +263,7 @@ export default function UserManagementPage(props) {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Uživatelké jméno</th>
+                <th>E-mail</th>
                 <th>Jméno</th>
                 <th>Příjmení</th>
                 <th>Heslo</th>
@@ -236,13 +277,13 @@ export default function UserManagementPage(props) {
                 return (
                   <tr key={item.id}>
                     <td>{ item.id}</td> 
-                    <td>{ item.login}</td>
+                    <td>{ item.email}</td>
                     <td>{ item.name}</td>
                     <td>{ item.surname}</td>
                     <td>{ item.password}</td>
                     <td>{ str_role[item.role_id]}</td>
-                    <td><Button onClick={() => setDeleteModalShow(true)} style={{border:0, backgroundColor:"#ffffff00"}}><FaTrashAlt color="#0d6efd" size="20"/></Button></td>
-                    <td><Button onClick={() => setEditModalShow(true)} style={{border:0, backgroundColor:"#ffffff00"}}><FaUserEdit color="#0d6efd" size="24"/></Button></td>
+                    <td><Button onClick={() => setDeletedItem(item)} style={{border:0, backgroundColor:"#ffffff00"}}><FaTrashAlt color="#0d6efd" size="20"/></Button></td>
+                    <td><Button onClick={() => setEditedItem(item)} style={{border:0, backgroundColor:"#ffffff00"}}><FaUserEdit color="#0d6efd" size="24"/></Button></td>
                   </tr>
                 );
               })}  
@@ -250,26 +291,28 @@ export default function UserManagementPage(props) {
             </Table>
             </div>
           <div style={{width:'100%', padding:'10px'}}>
-            <Button variant='primary' onClick={() => setNewModalShow(true)} >Přidat nového uživatele</Button>
+            <Button variant='primary' onClick={() => setNewItem()} >Přidat nového uživatele</Button>
           </div>
         </Col>
       </Row>
     </Container>
     
-    <NewModal
-      show={newModalShow}
-      onHide={() => setNewModalShow(false)}
+    <NewUserModal
+      show={newUserModalShow}
+      onHide={() => setNewUserModalShow(false)}
+      item={itemToBeAdded}
     />
 
-    <EditModal
-      show={editModalShow}
-      onHide={() => setEditModalShow(false)}
-
+    <EditUserModal
+      show={editUserModalShow}
+      onHide={() => setEditUserModalShow(false)}
+      item={itemToBeEdited}
     />
 
-    <DeleteModal
-      show={deleteModalShow}
-      onHide={() => setDeleteModalShow(false)}
+    <DeleteUserModal
+      show={deleteUserModalShow}
+      onHide={() => setDeleteUserModalShow(false)}
+      item={itemToBeDeleted}
     />
 
     </>
