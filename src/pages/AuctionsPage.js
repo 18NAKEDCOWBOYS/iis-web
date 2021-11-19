@@ -36,57 +36,88 @@ export default function AuctionsPage(props) {
     {
       "id":0,
       "name": "Aukce A",
-      "type": "Nabídka",
-      "rules": "Otevřená",
+      "is_demand": false,
+      "is_open": true,
       "price": 12354,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": true,
+      "author_id": 1,
       "auctioneer_id": 2,
-      "author_id": 0
+      "start_time":  new Date(2021, 12, 20, 10, 0, 0, 0),
+      "end_time": new Date(2021, 12, 2, 10, 0, 0, 0),
+      "description": "Skvělá aukce o věc v hodnotě milionů!",
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "winner_id": null,
+      "state_id":1, //schvaleno
+      "min_bid": 250,
+      "max_bid": null
+
     },
     {
       "id":1,
       "name": "Aukce B",
-      "type": "Nabídka",
-      "rules": "Uzavřená",
-      "price": 50,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": false,
-      "auctioneer_id": undefined,
-      "author_id": 1
+      "is_demand": true,
+      "is_open": false,
+      "price": 56489,
+      "author_id": 0,
+      "auctioneer_id":null,
+      "start_time":  null,
+      "end_time": null,
+      "description": "Zbytečná aukce",
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "winner_id": null,
+      "state_id":0, //zalozeno
+      "min_bid": 20,
+      "max_bid": null
     },
     {
       "id":2,
       "name": "Aukce C",
-      "type": "Poptávka",
-      "rules": "Otevřená",
-      "price": 542133,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": false,
+      "is_demand": true,
+      "is_open": true,
+      "price": 169,
+      "author_id": 0,
       "auctioneer_id": 2,
-      "author_id": 2
+      "start_time":  new Date(2021, 7, 20, 10, 0, 0, 0),
+      "end_time": new Date(2020, 10, 2, 10, 0, 0, 0),
+      "description": "Skvělá aukce o věc v hodnotě milionů!",
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "winner_id": 1,
+      "state_id":5, //znam vitez,
+      "min_bid": 250,
+      "max_bid": null
     },
     {
       "id":3,
       "name": "Aukce D",
-      "type": "Nabídka",
-      "rules": "Otevřená",
-      "price": 2,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": true,
-      "auctioneer_id": 1,
-      "author_id": 1
+      "is_demand": false,
+      "is_open": true,
+      "price": 5613,
+      "author_id": 0,
+      "auctioneer_id": 2,
+      "start_time":  new Date(2021, 11, 18, 10, 0, 0, 0),
+      "end_time": new Date(2021, 11, 22, 10, 0, 0, 0),
+      "description": "Skvělá aukce o věc v hodnotě milionů!",
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "winner_id": null,
+      "state_id":3, //probihajici
+      "min_bid": 250,
+      "max_bid": null
     },
     {
       "id":4,
-      "name": "Aukce E",
-      "type": "Poptávka",
-      "rules": "Uzavřená",
-      "price": 7823,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": false,
-      "auctioneer_id": undefined,
-      "author_id": 2
+      "name": "Aukce D",
+      "is_demand": false,
+      "is_open": true,
+      "price": 5613,
+      "author_id": 0,
+      "auctioneer_id": null,
+      "start_time":  null,
+      "end_time": null,
+      "description": "Skvělá aukce o věc v hodnotě milionů!",
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "winner_id": null,
+      "state_id":2, //zamitnuto
+      "min_bid": 250,
+      "max_bid": null
     }
   ]
   

@@ -3,48 +3,108 @@ import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Styles from '../css/previewCard.module.css'
 import { Link } from 'react-router-dom';
-import { FaTrashAlt} from "react-icons/fa";
-function ApprovalButtons(loggedUserRoleId)
-{
-  //admin or auctioneer
-  if(loggedUserRoleId >=2 )
-  {
-    return(
-      <div className={Styles.buttonsContainer}>
-          <Button variant="success" className={Styles.buttonApprove}>Schválit</Button>{' '}
-          <Button variant="danger" className={Styles.buttonReject}>Zamítnout</Button>
-      </div>
-    )
+import { FaTrashAlt } from "react-icons/fa";
+import { UseUserContext } from "../userContext";
+
+
+function CardBodyItems(props) {
+  let items = {
+    "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
+    "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
+    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : "Bohuš" //TODO vybrat jmeno podle id
   }
+  items[props.is_open ? "Aktuální cena:" : "Vyvolávací cena:"] = props.price + "Kč"
+  return items
+}
+
+function AuctionStateText(props) {
+  // console.log(props)
+  let textsByState = [
+    "Čeká se na schválení licitátorem",
+    "Začátek naplánován na " + (props.start_time == null ? "" : props.start_time.toLocaleString('cs-CZ')),
+    "Zamítnuta",
+    "Aukce probíhá do " + (props.end_time == null ? "" : props.end_time.toLocaleString('cs-CZ')),
+    "Aukce byla ukončena, čeká se na vyhodnocení",
+    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id ? "" : props.winner_id) //TODO get user name by id
+  ]
+  return textsByState[props.state_id]
+}
+
+function ApprovalButtonsFooter(props) {
+  //admin or auctioneer
+  if (props.userLogged) {
+    if (props.user.role_id >= 2) {
+      return (
+        <Card.Footer>
+          <div className={Styles.buttonsContainer}>
+            <Button variant="success" className={Styles.buttonApprove}>Schválit</Button>{' '}
+            <Button variant="danger" className={Styles.buttonReject}>Zamítnout</Button>
+          </div>
+        </Card.Footer>
+      )
+    }
+  }
+  return null
+}
+
+function AuctionReg(props) {
+  if (props.userLogged) {
+    if (props.user.id != props.auctioneer_id && props.user.id != props.author_id && (props.state_id == 1 || props.state_id == 3)) {
+      //TODO odhlasit / registrovat podle stavu, text "čeká se na schválení registrace" pokud se registruje, ale není approved
+      return(<>
+      <Card.Footer>
+      <Button variant="primary" className={Styles.buttonApprove}>Registrovat se</Button>
+      {/* <Button variant="danger" className={Styles.buttonApprove}>Odhlásit se</Button> */}
+      </Card.Footer>
+      </>
+      )
+    }
+  }
+  return null
+}
+
+function DeleteButton(props)
+{
+  if(props.userLogged)
+  {
+    if(props.user.id == props.author_id || props.user.role_id ==3 )
+    {
+      return(
+        <>
+        <Card.Footer>
+        <Button variant="danger"><FaTrashAlt/> Smazat</Button>
+        </Card.Footer>
+        </>
+      )
+    }
+  }
+  return null
 }
 
 export default function AuctionCard(props) {
-  const loggedUser = {
-    "roleId" : 2,
-    "Id":0
-  }
+  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+  let cardTextItems = CardBodyItems(props)
+  // console.log(cardTextItems)
   return (
-   
-    <Card style={{width:400}}>
+
+    <Card style={{ width: 400 }}>
       <Link to={props.link} >
-      <Card.Img variant="top" src={props.images[0]} />
-      <Card.Body>
-        <Card.Title className={Styles.cardTitle}>{props.name}</Card.Title>
-        <Card.Text>
-         <div className={Styles.cardItem}> <strong>Typ:</strong> {props.type}<br/></div>
-         <div className={Styles.cardItem}> <strong> Pravidla:</strong> {props.rules}<br/></div>
-         <div className={Styles.cardItem}> <strong>{props.rules === "Otevřená" ? "Aktuální cena:" : "Vyvolávací cena:"}</strong> {props.price} Kč<br/></div>
-         </Card.Text>
-      </Card.Body>
+        <Card.Img variant="top" src={props.photos[0]} />
+        <Card.Body>
+          <Card.Title className={Styles.cardTitle}>{props.name}</Card.Title>
+          <Card.Text>
+            {Object.keys(cardTextItems).map((key) => {
+              return (<div className={Styles.cardItem}> <strong>{key}</strong> {cardTextItems[key]}<br /></div>)
+            })}
+          </Card.Text>
+        </Card.Body>
+        <Card.Footer>
+          {<span className={Styles.cardText}><AuctionStateText {...props} /></span>}
+        </Card.Footer>
+        {props.state_id == 0 && <ApprovalButtonsFooter user={User} userLogged={IsLoggedIn} />}
+        <AuctionReg userLogged={IsLoggedIn} user={User} {...props}/>
+        <DeleteButton userLogged={IsLoggedIn} user={User} {...props} />
       </Link>
-
-      {loggedUser.roleId >= 2 && <Card.Footer> 
-        {(loggedUser.roleId>=2 && props.auctioneer_id !== undefined)  && (props.approved? <div className={Styles.approvedText}>Schválena</div> : <div className={Styles.rejectedText}>Zamítnuta</div>)}
-      {props.auctioneer_id === undefined && ApprovalButtons(loggedUser.roleId)}</Card.Footer>}
-
-
-      {(loggedUser.Id == props.author_id || loggedUser.roleId == 3) && <Card.Footer> <Button variant="danger">Smazat <FaTrashAlt color="#ffffff" style={{marginBottom:3, marginLeft:5}}/></Button></Card.Footer>}
-      
     </Card>
-    )
+  )
 }
