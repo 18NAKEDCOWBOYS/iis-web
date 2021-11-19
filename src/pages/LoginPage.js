@@ -8,10 +8,11 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {Formik} from 'formik';
 import { Link } from 'react-router-dom';
-
+import { useNavigate  } from 'react-router-dom';
 import NavigationBar from './../components/NavigationBar';
-
 import Styles from './../css/LoginPage.module.css'
+import { UseUserContext } from "../userContext";
+
 
 function validatePassw(values, bag){
   setTimeout(() => {
@@ -21,11 +22,16 @@ function validatePassw(values, bag){
       bag.setStatus('Zadali jste nespravne heslo');
     }else{
       bag.setStatus(null);
+    
+     
     }
   }, 4000);
 }
 
 export default function LoginPage(props) {
+  const {setIsLoggedIn, setUserName} = UseUserContext()
+  const navigate = useNavigate();
+
   return (
     <>
     <NavigationBar page="Login"/>
@@ -54,6 +60,10 @@ export default function LoginPage(props) {
               }}
               onSubmit={(values, bag) => {
                 validatePassw(values, bag);
+                setIsLoggedIn(true)
+                setUserName("Bohuš");
+                navigate('/')
+
               }}
             >
               {({
