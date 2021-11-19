@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { UseUserContext } from "../userContext";
 
 export default function NavigationBar(props) {
-  const {setIsLoggedIn, UserName, IsLoggedIn, setUserName} = UseUserContext()
+  const {setIsLoggedIn, User, IsLoggedIn, setUser} = UseUserContext()
   return (<Navbar collapseOnSelect fixed="top" expand="lg" bg="dark" variant="dark">
     <Container>
       <Navbar.Brand as={Link} to="/">
@@ -29,9 +29,9 @@ export default function NavigationBar(props) {
 
             <>
               <Nav.Item>
-                <NavDropdown align="end" menuVariant="dark" title={UserName} id="collasible-nav-dropdown">
+                <NavDropdown align="end" menuVariant="dark" title={User.name} id="collasible-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/user-profile" style={(props.page === "user-profile") ? { color: 'white' } : {}}> Můj profil </NavDropdown.Item>
-                  <NavDropdown.Item onClick={()=>{setIsLoggedIn(false);setUserName("") }}> Odhlásit se</NavDropdown.Item>
+                  <NavDropdown.Item onClick={()=>{setIsLoggedIn(false);setUser({}) }}> Odhlásit se</NavDropdown.Item>
                 </NavDropdown>
               </Nav.Item>
 

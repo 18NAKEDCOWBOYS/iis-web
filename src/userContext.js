@@ -1,26 +1,23 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState,  useContext } from "react";
 
 const UserContext = createContext({});
 
 const UserProvider = ({ children }) => {
   const [IsLoggedIn, setIsLoggedIn] = useState(false);
-  const [IsLoading, setIsLoading] = useState(true);
-  const [UserName, setUserName] = useState("");
-  const [UserRole, setUserRole] = useState(0);
+  const [User, setUser] = useState({
+    "email":"bohus@email.com",
+    "name":"bohus",
+    "surname":"Veselý",
+    "role_id":3
+  });
   
 
-  useEffect(() => {
-    setTimeout(() => { setIsLoading(false) }, 150);
-  }, []);
 
   const userContextValue = {
     IsLoggedIn,
     setIsLoggedIn,
-    IsLoading,
-    UserName,
-    setUserName,
-    UserRole,
-    setUserRole
+    User,
+    setUser
   };
 
   return (<UserContext.Provider value={userContextValue}  >

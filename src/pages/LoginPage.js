@@ -29,7 +29,7 @@ function validatePassw(values, bag){
 }
 
 export default function LoginPage(props) {
-  const {setIsLoggedIn, setUserName} = UseUserContext()
+  const {setIsLoggedIn, setUser} = UseUserContext()
   const navigate = useNavigate();
 
   return (
@@ -61,7 +61,10 @@ export default function LoginPage(props) {
               onSubmit={(values, bag) => {
                 validatePassw(values, bag);
                 setIsLoggedIn(true)
-                setUserName("Bohuš");
+                setUser({ "email":"bohus@email.com",
+                "name":"bohus",
+                "surname":"Veselý",
+                "role_id":3});
                 navigate('/')
 
               }}

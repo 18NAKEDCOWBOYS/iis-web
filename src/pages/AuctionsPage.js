@@ -1,83 +1,14 @@
 import React from 'react'
-
 import Container from 'react-bootstrap/Container';
-import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import NavigationBar from '../components/NavigationBar';
 import Styles from './../css/AuctionsPage.module.css'
 import AuctionCard from '../components/AuctionCard';
-import AuctionForm from '../components/AuctionForm';
-import {Formik} from 'formik'
-
-function NewAuctionModal(props) {
-  return (
-    <Modal
-      {...props}
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title style={{color:"#0d6efd"}} id="contained-modal-title-vcenter">
-          Tvorba nové aukce
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Formik
-              initialValues={{ name:'', is_open:null,is_demand:null, price:null, min_bid:null, max_bid:null, description:'', files:null }}
-              validate={values => {
-                const errors = {};
-                if(!values.name){
-                  errors.name='Nezadali jste jméno aukce'
-                }
-                
-                if(!values.is_open){
-                  errors.is_open = 'Vyberte prosím typ aukce'
-                }
- 
-                if(!values.is_demand){
-                  errors.is_demand = 'Vyberte prosím pravidla aukce'
-                }
-                
-                if(!values.price){
-                  errors.price='Nezadali jste vyvolávací cenu'
-                }
-
-                if(!values.files){
-                  errors.files='Nevybrali jste žádný obrázek'
-                }
-
-                if(!values.description){
-                  errors.description='Nezadali jste popisek'
-                }
-                return errors;
-              }}
-              onSubmit={(values, bag) => {
-                setTimeout(() => {
-                  console.log('This will run after 2 second!');
-                  console.log(values.files) 
-                  bag.setSubmitting(false);
-                  props.onHide();
-                }, 2000);
-              }}
-            >
-              {({
-               values,
-               errors,
-               status,
-               touched,
-               handleChange,
-               handleSubmit,
-               isSubmitting,
-               setFieldValue,
-              }) => <AuctionForm onHide={props.onHide} values={values} errors={errors} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting} setFieldValue={setFieldValue}/>}
-            </Formik>
-      </Modal.Body>
-    </Modal>
-  );
-}
-
+import NewAuctionModal from '../components/NewAuctionModal'
+import { UseUserContext } from "../userContext";
 export default function AuctionsPage(props) {
+
+  //modalLogic
   const [newAuctionModalShow, setNewAuctionModalShow] = React.useState(false);
   const [itemToBeAdded, setItemToBeAdded] = React.useState('');
   const setNewItem = () => {
@@ -96,7 +27,7 @@ export default function AuctionsPage(props) {
     setItemToBeAdded(item);
     setNewAuctionModalShow(true);
   };
-
+  //tmp data
   const loggedUser = {
     "roleId": 2
     
@@ -158,6 +89,10 @@ export default function AuctionsPage(props) {
       "author_id": 2
     }
   ]
+  
+  const {setIsLoggedIn, User, IsLoggedIn, setUser} = UseUserContext()
+  console.log(User)
+  
   //not admin or auctioneer
   if (loggedUser.roleId < 2) {
     auctions = auctions.filter(item => item.approved === true)
