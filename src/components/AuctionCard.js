@@ -27,7 +27,16 @@ function AuctionStateText(props) {
     "Aukce byla ukončena, čeká se na vyhodnocení",
     "Aukce úspěšně ukončena, výhercem je " + (props.winner_id ? "" : props.winner_id) //TODO get user name by id
   ]
-  return textsByState[props.state_id]
+  let index = props.state_id;
+  if (props.state_id ==1 && Date.now() > props.start_time && Date.now() < props.end_time)
+  {
+    index = 3
+  }
+  if(props.state_id == 1 && Date.now()>props.end_time)
+  {
+    index = 4
+  }
+  return textsByState[index]
 }
 
 function ApprovalButtonsFooter(props) {

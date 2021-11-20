@@ -118,13 +118,13 @@ export default function AuctionsPage(props) {
       "is_open": true,
       "price": 5613,
       "author_id": 0,
-      "auctioneer_id": null,
-      "start_time":  null,
-      "end_time": null,
+      "auctioneer_id": 1,
+      "start_time":  new Date(2021, 10, 17, 10, 0, 0, 0),
+      "end_time": new Date(2021, 10, 18, 10, 0, 0, 0),
       "description": "Skvělá aukce o věc v hodnotě milionů!",
       "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "winner_id": null,
-      "state_id":2, //zamitnuto
+      "state_id":1, //schvalena
       "min_bid": 250,
       "max_bid": null
     }
