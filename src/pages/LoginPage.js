@@ -98,7 +98,7 @@ export default function LoginPage(props) {
                   </div>
 
                   <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
-                    <label style={{marginRight:5}}>Ještě nemáte účet?</label><Link to="/register">Zaregistrujte se!</Link>
+                    <label style={{marginRight:5}}>Ještě nemáte účet?</label><Link style={{color:"#0d6efd"}} to="/register">Zaregistrujte se!</Link>
                   </div>
                 </Form>
               )}
