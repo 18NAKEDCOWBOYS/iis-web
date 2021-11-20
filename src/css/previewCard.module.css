@@ -30,3 +30,18 @@
 .cardTitle{
     font-weight: bold;
 }
+
+.notApproved{
+    color:red;
+    position:absolute;
+    width:100%;
+    text-align: center;
+    margin-top:35%;
+    font-size:35px;
+    font-weight: 600;
+}
+
+.cardText{
+    font-weight: 700;
+    font-size: 17px;
+}

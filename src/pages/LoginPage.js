@@ -14,19 +14,19 @@ import Styles from './../css/LoginPage.module.css'
 import { UseUserContext } from "../userContext";
 
 
-function validatePassw(values, bag){
-  setTimeout(() => {
-    console.log('This will run after 4 second!');
-    bag.setSubmitting(false);
-    if(values.password !== 'spravne heslo'){
-      bag.setStatus('Zadali jste nespravne heslo');
-    }else{
-      bag.setStatus(null);
+// function validatePassw(values, bag){
+//   setTimeout(() => {
+//     console.log('This will run after 4 second!');
+//     bag.setSubmitting(false);
+//     if(values.password !== 'spravne heslo'){
+//       bag.setStatus('Zadali jste nespravne heslo');
+//     }else{
+//       bag.setStatus(null);
     
      
-    }
-  }, 4000);
-}
+//     }
+//   }, 4000);
+// }
 
 export default function LoginPage(props) {
   const {setIsLoggedIn, setUser} = UseUserContext()
@@ -54,19 +54,23 @@ export default function LoginPage(props) {
                 }else if (values.password.length < 8){
                   errors.password = 'Heslo je příliš krátké';
                 }
-
-                
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                validatePassw(values, bag);
-                setIsLoggedIn(true)
-                setUser({ "email":"bohus@email.com",
-                "name":"bohus",
-                "surname":"Veselý",
-                "role_id":3});
-                navigate('/')
-
+                if(values.password !== 'spravne heslo'){
+                  bag.setStatus('Zadali jste nespravne heslo');
+                }else{
+                  bag.setStatus(null);
+                  setTimeout(() => {
+                  setIsLoggedIn(true)
+                  setUser({ 
+                  "id":1,
+                    "email":"bohus@email.com",
+                  "name":"bohus",
+                  "surname":"Veselý",
+                  "role_id":3});
+                  navigate('/')
+                }, 1000)}
               }}
             >
               {({
