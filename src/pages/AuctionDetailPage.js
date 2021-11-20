@@ -150,9 +150,9 @@ export default function AuctionDetailPage(props) {
                 <h1>{auction.type + ' - ' + auction.name}</h1>
                 <Container style={{ display: "flex", flexDirection: "row" }}>
                     <div style={{ flex: 1, position:"relative" }}>
-                        <FaArrowRight style={{position:"absolute", right:100, fontSize:30, marginTop:130, cursor:"pointer"}} onClick={()=>{setImgIndex((ImgIndex+1)%auction.photos.length)}}/>
-                        <FaArrowLeft style={{position:"absolute", left:10, fontSize:30, marginTop:130,  cursor:"pointer"}} onClick={()=>{setImgIndex((ImgIndex-1) < 0 ? auction.photos.length-1 : ImgIndex-1)}}/>
-                        <Image style={{width:550, height:300}} src={auction.photos[ImgIndex]} thumbnail  />
+                        <FaArrowRight className={Styles.iconRight} onClick={()=>{setImgIndex((ImgIndex+1)%auction.photos.length)}}/>
+                        <FaArrowLeft  className={Styles.iconLeft} onClick={()=>{setImgIndex((ImgIndex-1) < 0 ? auction.photos.length-1 : ImgIndex-1)}}/>
+                        <Image style={{width:550, height:300}} src={auction.photos[ImgIndex]} className={Styles.galleryImg} thumbnail  />
                     </div>
 
 
