@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/iis-web/static/css/main.af2e3369.chunk.css",
-    "main.js": "/iis-web/static/js/main.2afd87b6.chunk.js",
+    "main.css": "/iis-web/static/css/main.ee985d79.chunk.css",
+    "main.js": "/iis-web/static/js/main.68a02efa.chunk.js",
     "runtime-main.js": "/iis-web/static/js/runtime-main.b43bff77.js",
-    "static/js/2.66648ea7.chunk.js": "/iis-web/static/js/2.66648ea7.chunk.js",
+    "static/js/2.b42638ef.chunk.js": "/iis-web/static/js/2.b42638ef.chunk.js",
     "index.html": "/iis-web/index.html",
-    "static/js/2.66648ea7.chunk.js.LICENSE.txt": "/iis-web/static/js/2.66648ea7.chunk.js.LICENSE.txt"
+    "static/js/2.b42638ef.chunk.js.LICENSE.txt": "/iis-web/static/js/2.b42638ef.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.b43bff77.js",
-    "static/js/2.66648ea7.chunk.js",
-    "static/css/main.af2e3369.chunk.css",
-    "static/js/main.2afd87b6.chunk.js"
+    "static/js/2.b42638ef.chunk.js",
+    "static/css/main.ee985d79.chunk.css",
+    "static/js/main.68a02efa.chunk.js"
   ]
 }
