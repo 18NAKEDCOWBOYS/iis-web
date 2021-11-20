@@ -2,10 +2,8 @@ import React from 'react'
 import NavigationBar from '../components/NavigationBar'
 import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container"
-import Image from 'react-bootstrap/Image'
-import { FaRegClock } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa"
-import { FaArrowLeft } from "react-icons/fa"
+import Tab from "react-bootstrap/Tab"
+import Tabs from "react-bootstrap/Tabs"
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import InputGroup from "react-bootstrap/InputGroup"
@@ -13,9 +11,10 @@ import FormControl from "react-bootstrap/FormControl"
 import Styles from "../css/AuctionDetailPage.module.css"
 import { useState } from 'react';
 import { UseUserContext } from "../userContext";
+import SimpleImageSlider from "react-simple-image-slider";
+import Table from 'react-bootstrap/Table';
 
-import { ImageSlider } from "react-simple-gallery"
-import "react-simple-gallery/dist/index.css"
+
 function BidFormOpenedAuc() {
     //TODO zobrazit erory
     return (
@@ -38,21 +37,21 @@ function BidFormOpenedAuc() {
     )
 }
 function BidFormClosedAuc(props) {
-    return (<Form style={{ paddingTop: 25 }}>
-        {props.BidPriceEditing ? 
-        <InputGroup className="mb-3">
-            <FormControl style={{ maxWidth: 250 }}
-                placeholder="Nová cena"
-                aria-label="Nová cena"
-                aria-describedby="basic-addon1"
-                value={props.BidPrice}
-                onChange={(e) => { props.setBidPrice(e.target.value) }}
-                type="number"
-                disabled={!props.BidPriceEditing}
-            />
-            <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
-        </InputGroup> :
-        <p><strong>Vaše nabídka:</strong> {props.LastBidPrice =="" ? ("Zatím jste nezadal žádnou nabídku") : (props.LastBidPrice + " Kč")}  </p>}
+    return (<Form>
+        {props.BidPriceEditing ?
+            <InputGroup className="mb-3">
+                <FormControl style={{ maxWidth: 250 }}
+                    placeholder="Nová cena"
+                    aria-label="Nová cena"
+                    aria-describedby="basic-addon1"
+                    value={props.BidPrice}
+                    onChange={(e) => { props.setBidPrice(e.target.value) }}
+                    type="number"
+                    disabled={!props.BidPriceEditing}
+                />
+                <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
+            </InputGroup> :
+            <p><strong>Vaše nabídka:</strong> {props.LastBidPrice == "" ? ("Zatím jste nezadal žádnou nabídku") : (props.LastBidPrice + " Kč")}  </p>}
         <div>
             {props.BidPriceEditing ?
                 <>
@@ -87,7 +86,7 @@ function ItemPrice(props) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
-        result = "Aktuální cena: " + "MILION" + + " Kč"//TODO vytahnout z db nejvyssi nabidku
+        result = "Aktuální cena: " + "MILION" + " Kč"//TODO vytahnout z db nejvyssi nabidku
     }
     return (
         <div className={Styles.priceStyle}>{result}</div>
@@ -97,12 +96,15 @@ function ItemPrice(props) {
 function BidForm(props) {
     //TODO musi byt registrovany v aukci
     if (props.UserLogged) {
-        if (props.state_id == 1 && Date.now() > props.start_time && Date.now() < props.end_time) {
-            if (props.is_open) {
-                return (<BidFormOpenedAuc />)
-            }
-            else {
-                return (<BidFormClosedAuc {...props} />)
+        if (props.User.id != props.auctioneer_id) {
+
+            if (props.state_id == 1 && Date.now() > props.start_time && Date.now() < props.end_time) {
+                if (props.is_open) {
+                    return (<BidFormOpenedAuc />)
+                }
+                else {
+                    return (<BidFormClosedAuc {...props} />)
+                }
             }
         }
     }
@@ -110,6 +112,98 @@ function BidForm(props) {
 }
 
 
+function BidsHistory(props) {
+    let bids = [
+        {
+            "name": "Jan",
+            "surname": "Rychlý",
+            "bid": "23542"
+        },
+        {
+            "name": "Božena",
+            "surname": "Smutná",
+            "bid": "670"
+        },
+        {
+            "name": "Bohuš",
+            "surname": "Veselý",
+            "bid": "550"
+        }
+
+    ]
+    return (<>
+        <Table striped style={{ textAlign: 'center' }}>
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>Příjmení</th>
+                    <th>Částka</th>
+                </tr>
+            </thead>
+            <tbody>
+                {bids.map(item => {
+                    return (
+                        <tr>
+                            <td>{item.name}</td>
+                            <td>{item.surname}</td>
+                            <td>{item.bid} Kč</td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </Table>
+    </>
+    )
+}
+
+
+function AuctionRegistrations(props) {
+    let userRegistrations = [
+        {
+            "name": "Jan",
+            "surname": "Rychlý",
+            "approved": true
+        },
+        {
+            "name": "Božena",
+            "surname": "Smutná",
+            "approved": true
+        },
+        {
+            "name": "Bohuš",
+            "surname": "Veselý",
+            "approved": true
+        },
+        {
+            "name": "Květoslav",
+            "surname": "Novák",
+            "approved": false
+        }
+
+    ]
+    return (<>
+        <Table striped style={{ textAlign: 'center' }}>
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>Příjmení</th>
+                    {(props.userLogged && props.User.role_id>=2)? <th>Stav registrace</th> : ""}
+                    </tr>
+            </thead>
+            <tbody>
+                {userRegistrations.map(item => {
+                        return (<tr>
+                            <td>{item.name}</td>
+                            <td>{item.surname}</td>
+                            {(props.UserLogged && props.User.role_id >= 2) ? <td>{item.approved ? "Registrace schválena" : <Button variant="primary">Schválit registraci</Button>}</td> : ""}
+                        </tr>)
+                    }
+                )}
+            </tbody>
+        </Table>
+    </>
+    )
+}
 
 
 export default function AuctionDetailPage(props) {
@@ -177,13 +271,13 @@ export default function AuctionDetailPage(props) {
             "id": 3,
             "name": "Aukce D",
             "is_demand": true,
-            "is_open": false,
+            "is_open": true,
             "price": 5613,
             "author_id": 0,
             "auctioneer_id": 2,
             "start_time": new Date(2021, 10, 18, 10, 0, 0, 0),
             "end_time": new Date(2021, 10, 22, 10, 0, 0, 0),
-            "description": "Skvělá aukce o věc v hodnotě milionů!",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sit amet consectetur adipiscing elit ut aliquam purus. Auctor elit sed vulputat.",
             "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
             "winner_id": null,
             "state_id": 1, //probihajici
@@ -203,7 +297,7 @@ export default function AuctionDetailPage(props) {
             "description": "Skvělá aukce o věc v hodnotě milionů!",
             "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
             "winner_id": null,
-            "state_id": 1, //schvalena
+            "state_id": 2, //neschvalena
             "min_bid": 250,
             "max_bid": null
         }
@@ -214,14 +308,17 @@ export default function AuctionDetailPage(props) {
     //create images objects array
     let imagesGallerySrc = [];
     for (let i in auction.photos) {
-        imagesGallerySrc[i] = { "src": auction.photos[i] }
+        imagesGallerySrc[i] = { "url": auction.photos[i] }
     }
 
-
+    let overlay = auction.state_id == 2 || (auction.state_id == 1 && auction.start_time>Date.now())
     return (
+
         <>
             <NavigationBar />
-            <Container className="mainContainer">
+            {auction.state_id == 2 && <span style={{color:"#dc3545"}} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
+            {(auction.state_id == 1 && auction.start_time>Date.now()) && (<span style={{color:"#0d6efd"}} className={Styles.textStateCenter}>Aukce začne {auction.start_time.toLocaleString('cs-CZ') }</span>)}
+            <Container className="mainContainer" style={overlay? {opacity: 0.25} : {opacity:1}}>
                 <div style={{ display: "flex" }}>
                     <div style={{ flex: 0.7 }}>
                         <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
@@ -229,24 +326,38 @@ export default function AuctionDetailPage(props) {
                     </div>
                     <AuctioneerControlButtons User={User} {...auction} />
                 </div>
-                <Container style={{ display: "flex", flexDirection: "row" }}>
-                    <div style={{ flex: 1, paddingRight: 100, width: 300, height: 300 }}>
-                        <ImageSlider data={imagesGallerySrc} style={{ width: 500 }} />
+                <Container style={{ display: "flex" }}>
+                    <div style={{ flex: 1, paddingRight: 100, width: 300, height: 300, position: "relative" }}>
+                        <SimpleImageSlider width={550} height={309} images={imagesGallerySrc} showBullets={true} showNavs={true} />
                     </div>
 
 
                     <div style={{ flex: 1 }}>
-                        <p>{auction.description}</p>
+                        <p><strong>Popis: </strong>{auction.description}</p>
                         <ItemPrice {...auction} />
-                        <div className={Styles.auctionInfoItem}>Konec aukce: {auction.state_id == 0 ? "Neurčen" : auction.end_time.toLocaleString('cs-CZ')}</div>
-                        <div className={Styles.auctionInfoItem}>Typ: {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
-                        <div className={Styles.auctionInfoItem}>Pravidla: {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
+                        <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 0 ? "Neurčen" : auction.end_time.toLocaleString('cs-CZ')}</div>
+                        <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
+                        <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
 
                         <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
                             setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} />
 
                     </div>
                 </Container>
+                <div style={{ marginTop: 100 }}>
+
+                    <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
+                        {auction.is_open && <Tab eventKey="History" title="Historie nabídek">
+                            <h2>Historie nabídek</h2>
+                            <BidsHistory {...auction} />
+
+                        </Tab>}
+                        <Tab eventKey="RegisteredUsers" title="Registrování uživatelé v aukci">
+                            <h2>Registrování uživatelé v aukci</h2>
+                            <AuctionRegistrations {...auction} User={User} UserLogged={IsLoggedIn} />
+                        </Tab>
+                    </Tabs>
+                </div>
             </Container>
         </>
     )

@@ -15,7 +15,7 @@
     "react-icons": "^4.3.1",
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
-    "react-simple-gallery": "^1.2.1",
+    "react-simple-image-slider": "^2.3.0",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

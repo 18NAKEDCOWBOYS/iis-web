@@ -112,19 +112,19 @@ export default function AuctionsPage(props) {
       "max_bid": null
     },
     {
-      "id":4,
-      "name": "Aukce D",
+      "id": 4,
+      "name": "Aukce E",
       "is_demand": false,
       "is_open": true,
       "price": 5613,
       "author_id": 0,
       "auctioneer_id": 1,
-      "start_time":  new Date(2021, 10, 17, 10, 0, 0, 0),
+      "start_time": new Date(2021, 10, 17, 10, 0, 0, 0),
       "end_time": new Date(2021, 10, 18, 10, 0, 0, 0),
       "description": "Skvělá aukce o věc v hodnotě milionů!",
       "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
       "winner_id": null,
-      "state_id":1, //schvalena
+      "state_id": 2, //neschvalena
       "min_bid": 250,
       "max_bid": null
     }
@@ -167,7 +167,7 @@ export default function AuctionsPage(props) {
       <EditTimeModal   
         show={editTimeModalShow}
         onHide={() => setEditTimeModalShow(false)}
-        item={itemToChangeTime}
+        {...itemToChangeTime}
       />
     </>
   )
