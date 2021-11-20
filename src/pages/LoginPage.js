@@ -68,7 +68,7 @@ export default function LoginPage(props) {
                     "email":"bohus@email.com",
                   "name":"bohus",
                   "surname":"Veselý",
-                  "role_id":2});
+                  "role_id":3});
                   navigate('/')
                 }, 1000)}
               }}

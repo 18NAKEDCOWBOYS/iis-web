@@ -101,10 +101,10 @@ export default function AuctionCard(props) {
         <Card.Footer>
           {<span className={Styles.cardText}><AuctionStateText {...props} /></span>}
         </Card.Footer>
+      </Link>
         {props.state_id == 0 && <ApprovalButtonsFooter user={User} userLogged={IsLoggedIn} />}
         <AuctionReg userLogged={IsLoggedIn} user={User} {...props}/>
         <DeleteButton userLogged={IsLoggedIn} user={User} {...props} />
-      </Link>
     </Card>
   )
 }

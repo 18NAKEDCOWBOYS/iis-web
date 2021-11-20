@@ -28,10 +28,6 @@ export default function AuctionsPage(props) {
     setNewAuctionModalShow(true);
   };
   //tmp data
-  const loggedUser = {
-    "roleId": 2
-    
-  }
   let auctions = [
     {
       "id":0,
@@ -125,8 +121,12 @@ export default function AuctionsPage(props) {
   console.log(User)
   
   //not admin or auctioneer
-  if (loggedUser.roleId < 2) {
-    auctions = auctions.filter(item => item.approved === true)
+  if(!IsLoggedIn)
+  {
+    auctions = auctions.filter(item => item.state_id === 1 || item.state_id==3)
+  }
+  else if (User.role_id == 1) {
+    auctions = auctions.filter(item => item.state_id === 1 || item.state_id==3 || item.author_id == User.id) //TODO or user is registered and auction winner is published
   }
   return (
     <>
