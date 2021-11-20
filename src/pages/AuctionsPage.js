@@ -5,23 +5,36 @@ import NavigationBar from '../components/NavigationBar';
 import Styles from './../css/AuctionsPage.module.css'
 import AuctionCard from '../components/AuctionCard';
 import NewAuctionModal from '../components/NewAuctionModal'
+import EditTimeModal from '../components/EditTimeModal'
 import { UseUserContext } from "../userContext";
 export default function AuctionsPage(props) {
-
   //modalLogic
+  const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
+  const [itemToChangeTime, setItemToChangeTime] = React.useState('');
+  const setChangeTime = (item) => {
+    setItemToChangeTime(item);
+    setEditTimeModalShow(true);
+  }
+  
   const [newAuctionModalShow, setNewAuctionModalShow] = React.useState(false);
   const [itemToBeAdded, setItemToBeAdded] = React.useState('');
   const setNewItem = () => {
     const item = {
-      "id":4,
-      "name": "Aukce E",
-      "type": "Poptávka",
-      "rules": "Uzavřená",
-      "price": 7823,
-      "images": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-      "approved": false,
-      "auctioneer_id": undefined,
-      "author_id": 2
+      "id":null,
+      "name": "",
+      "is_demand": null,
+      "is_open": null,
+      "price": null,
+      "author_id": null,
+      "auctioneer_id": null,
+      "start_time": null,
+      "end_time": null,
+      "description": "",
+      "photos": null,
+      "winner_id": null,
+      "state_id":null,
+      "min_bid": null,
+      "max_bid": null
     }
 
     setItemToBeAdded(item);
@@ -139,7 +152,7 @@ export default function AuctionsPage(props) {
           {auctions.map(item => {
             return (
               <div style={{ padding: 15 }}>
-                <AuctionCard {...item} link={'/auction-detail/' + item.id}/>
+                <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id}/>
               </div>
             )
           })}
@@ -150,6 +163,11 @@ export default function AuctionsPage(props) {
         show={newAuctionModalShow}
         onHide={() => setNewAuctionModalShow(false)}
         item={itemToBeAdded}
+      />
+      <EditTimeModal   
+        show={editTimeModalShow}
+        onHide={() => setEditTimeModalShow(false)}
+        item={itemToChangeTime}
       />
     </>
   )

@@ -37,7 +37,7 @@ function ApprovalButtonsFooter(props) {
       return (
         <Card.Footer>
           <div className={Styles.buttonsContainer}>
-            <Button variant="success" className={Styles.buttonApprove}>Schválit</Button>{' '}
+            <Button variant="success" className={Styles.buttonApprove} onClick={() => props.setChangeTime(props.item)}>Schválit</Button>{' '}
             <Button variant="danger" className={Styles.buttonReject}>Zamítnout</Button>
           </div>
         </Card.Footer>
@@ -102,7 +102,7 @@ export default function AuctionCard(props) {
           {<span className={Styles.cardText}><AuctionStateText {...props} /></span>}
         </Card.Footer>
       </Link>
-        {props.state_id == 0 && <ApprovalButtonsFooter user={User} userLogged={IsLoggedIn} />}
+        {props.state_id == 0 && <ApprovalButtonsFooter user={User} userLogged={IsLoggedIn} {...props} />}
         <AuctionReg userLogged={IsLoggedIn} user={User} {...props}/>
         <DeleteButton userLogged={IsLoggedIn} user={User} {...props} />
     </Card>

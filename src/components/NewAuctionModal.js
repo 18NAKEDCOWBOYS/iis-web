@@ -17,7 +17,8 @@ export default function NewAuctionModal(props) {
         </Modal.Header>
         <Modal.Body>
           <Formik
-                initialValues={{ name:'', is_open:null,is_demand:null, price:null, min_bid:null, max_bid:null, description:'', files:null }}
+                //initialValues={{ name:'', is_open:null,is_demand:null, price:null, min_bid:null, max_bid:null, description:'', files:null }}
+                initialValues={{name:props.item.name, is_open:props.item.is_open, is_demand:props.item.is_demand, price:props.item.price, min_bid:props.item.min_bid, max_bid:props.item.max_bid, description:props.item.description, files:props.item.files}}
                 validate={values => {
                   const errors = {};
                   if(!values.name){
