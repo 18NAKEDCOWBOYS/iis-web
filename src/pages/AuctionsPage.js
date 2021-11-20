@@ -40,7 +40,7 @@ export default function AuctionsPage(props) {
       "start_time":  new Date(2021, 12, 20, 10, 0, 0, 0),
       "end_time": new Date(2021, 12, 2, 10, 0, 0, 0),
       "description": "Skvělá aukce o věc v hodnotě milionů!",
-      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
+      "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png", "https://pbs.twimg.com/profile_images/949787136030539782/LnRrYf6e_400x400.jpg", "https://pbs.twimg.com/media/E12BaOYXMAQeV9a.jpg", "https://c8.alamy.com/comp/EPF1YW/nun-with-handgun-isolated-on-white-EPF1YW.jpg", "https://ichef.bbci.co.uk/news/976/cpsprodpb/13F00/production/_95146618_bills.jpg"],
       "winner_id": null,
       "state_id":1, //schvaleno
       "min_bid": 250,
@@ -118,8 +118,6 @@ export default function AuctionsPage(props) {
   ]
   
   const {setIsLoggedIn, User, IsLoggedIn, setUser} = UseUserContext()
-  console.log(User)
-  
   //not admin or auctioneer
   if(!IsLoggedIn)
   {
