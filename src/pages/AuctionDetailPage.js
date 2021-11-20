@@ -271,7 +271,7 @@ export default function AuctionDetailPage(props) {
             "id": 3,
             "name": "Aukce D",
             "is_demand": true,
-            "is_open": true,
+            "is_open": false,
             "price": 5613,
             "author_id": 0,
             "auctioneer_id": 2,
@@ -347,7 +347,7 @@ export default function AuctionDetailPage(props) {
                 <div style={{ marginTop: 100 }}>
 
                     <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
-                        {auction.is_open && <Tab eventKey="History" title="Historie nabídek">
+                        {(auction.is_open && auction.start_time <= Date.now()) && <Tab eventKey="History" title="Historie nabídek">
                             <h2>Historie nabídek</h2>
                             <BidsHistory {...auction} />
 

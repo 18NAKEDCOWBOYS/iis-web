@@ -98,7 +98,7 @@ export default function AuctionsPage(props) {
       "id":3,
       "name": "Aukce D",
       "is_demand": false,
-      "is_open": true,
+      "is_open": false,
       "price": 5613,
       "author_id": 0,
       "auctioneer_id": 2,
