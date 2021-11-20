@@ -46,7 +46,7 @@ function ApprovalButtonsFooter(props) {
       return (
         <Card.Footer>
           <div className={Styles.buttonsContainer}>
-            <Button variant="success" className={Styles.buttonApprove} onClick={() => props.setChangeTime(props.item)}>Schválit</Button>{' '}
+            <Button variant="success" className={Styles.buttonApprove} onClick={() => props.setChangeTime()}>Schválit</Button>{' '}
             <Button variant="danger" className={Styles.buttonReject}>Zamítnout</Button>
           </div>
         </Card.Footer>
@@ -76,7 +76,7 @@ function DeleteButton(props)
 {
   if(props.userLogged)
   {
-    if(props.user.id == props.author_id || props.user.role_id ==3 )
+    if((props.user.id == props.author_id && props.state_id == 0) || props.user.role_id ==3 )
     {
       return(
         <>
