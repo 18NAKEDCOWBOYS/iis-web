@@ -58,6 +58,7 @@ function NewUserModal(props) {
             return errors;
           }}
           onSubmit={(values, bag) => {
+            values.role_id = Number(values.role_id)
             console.log(JSON.stringify(values))
             fetch('https://iis-api.herokuapp.com/users', {
               method: 'PUT',
@@ -127,6 +128,7 @@ function EditUserModal(props) {
             return errors;
           }}
           onSubmit={(values, bag) => {
+            values.role_id = Number(values.role_id)
             console.log(JSON.stringify(values))
             fetch('https://iis-api.herokuapp.com/users', {
               method: 'PUT',
