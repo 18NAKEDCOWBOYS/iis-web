@@ -30,7 +30,7 @@ function NewUserModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ email: props.item.email, password: props.item.password, name: props.item.name, surname: props.item.surname, role_id: props.item.role_id }}
+          initialValues={{ id:null, email: props.item.email, password: props.item.password, name: props.item.name, surname: props.item.surname, role_id: props.item.role_id }}
           validate={values => {
             const errors = {};
             if (!values.email) {
@@ -58,13 +58,15 @@ function NewUserModal(props) {
             return errors;
           }}
           onSubmit={(values, bag) => {
+            console.log(JSON.stringify(values))
             fetch('https://iis-api.herokuapp.com/users', {
               method: 'PUT',
-              headers: { "Content-type": "application/json; charset=UTF-8" },
+              headers: { "Content-type": "application/json; charset=UTF-8",'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
               body: JSON.stringify(values)
             }
             )
             bag.setSubmitting(false)
+            props.onHide();
           }}
         >
           {({
@@ -125,13 +127,15 @@ function EditUserModal(props) {
             return errors;
           }}
           onSubmit={(values, bag) => {
+            console.log(JSON.stringify(values))
             fetch('https://iis-api.herokuapp.com/users', {
               method: 'PUT',
-              headers: { "Content-type": "application/json; charset=UTF-8" },
+              headers: { "Content-type": "application/json; charset=UTF-8",'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
               body: JSON.stringify(values)
             }
             )
             bag.setSubmitting(false)
+            props.onHide();
           }}
         >
           {({
@@ -153,6 +157,7 @@ function DeleteUserModal(props) {
 
   const deleteUser = function (props) {
     fetch('https://iis-api.herokuapp.com/users/' + props.item.id, {
+      headers: { "Content-type": "application/json; charset=UTF-8",'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       method: 'DELETE'
     })
 
@@ -185,13 +190,13 @@ export default function UserManagementPage(props) {
   React.useEffect(() => {
     fetch("https://iis-api.herokuapp.com/users", {
       method: 'GET',
-      headers: { 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') }
+      headers: { "Content-type": "application/json; charset=UTF-8",'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') }
     })
-      .then(res => res.json())
+      .then(response => response.json())
       .then(
-        (result) => {
+        (items) => {
           setIsLoaded(true);
-          setItems(result);
+          setItems(items);
         },
         // Note: it's important to handle errors here
         // instead of a catch() block so that we don't swallow
@@ -281,7 +286,6 @@ export default function UserManagementPage(props) {
     setItemToBeDeleted(item);
     setDeleteUserModalShow(true);
   };
-
 
   if (error) {
     return <div>Error: {error.message}</div>;
