@@ -39,7 +39,6 @@ export default function UserManagementPage(props) {
             setItems(items);
           },
           (error) => {
-            console.log(error)
             setIsLoaded(true);
             setError(error);
           }
@@ -69,7 +68,7 @@ export default function UserManagementPage(props) {
 
   const onNewUserModalSubmit = (values, bag) => {
     values.role_id = Number(values.role_id)
-    console.log(JSON.stringify(values))
+    
     fetch('https://iis-api.herokuapp.com/users', {
       method: 'POST',
       headers: {
@@ -94,7 +93,7 @@ export default function UserManagementPage(props) {
 
   const onEditUserModalSubmit = (values, bag) => {
     values.role_id = Number(values.role_id)
-    console.log(JSON.stringify(values))
+    
     fetch('https://iis-api.herokuapp.com/users', {
       method: 'PUT',
       headers: {
@@ -128,7 +127,6 @@ export default function UserManagementPage(props) {
   }
 
   if (error) {
-    console.log(error)
     if (error == 'SyntaxError: Unexpected token < in JSON at position 0') {
       return (
         <>
@@ -151,16 +149,15 @@ export default function UserManagementPage(props) {
       )
     }
   } else if (!isLoaded) {
-    return (
-      <>
-        <Container className={Styles.fullCenterContent}>
-          <h1 style={{ fontSize: 90 }}>Loading</h1>
-          <Button variant='primary' href='/' size="lg" style={{ margin: 20 }}>Home</Button>
-        </Container>
-      </>
+    return(
+    <>
+      <Container className={Styles.fullCenterContent}>
+        <h1 style={{ fontSize: 90 }}>Loading</h1>
+        <Button variant='primary' href='/' size="lg" style={{ margin: 20 }}>Home</Button>
+      </Container>
+    </>
     )
   } else {
-    console.log(items)
     return (
       <>
         <Container style={{ paddingTop: 70 }}>
