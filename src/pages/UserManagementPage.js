@@ -21,22 +21,31 @@ export default function UserManagementPage(props) {
   const [items, setItems] = React.useState([]);
 
   React.useEffect(() => {
-    fetch("https://iis-api.herokuapp.com/users", {
-      method: 'GET',
-      headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') }
-    })
-      .then(response => response.json())
-      .then(
-        (items) => {
-          setIsLoaded(true);
-          setItems(items);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
+    getAllUsers()
   }, [])
+
+  const getAllUsers = () => {
+    return (
+      fetch("https://iis-api.herokuapp.com/users", {
+        method: 'GET',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+        }
+      })
+        .then(response => response.json())
+        .then(
+          (items) => {
+            setIsLoaded(true);
+            setItems(items);
+          },
+          (error) => {
+            setIsLoaded(true);
+            setError(error);
+          }
+        )
+    )
+  }
 
   const str_role = ["Neregistrovaný", "Uživatel", "Licitátor", "Administrátor"]
 
@@ -63,14 +72,18 @@ export default function UserManagementPage(props) {
     console.log(JSON.stringify(values))
     fetch('https://iis-api.herokuapp.com/users', {
       method: 'POST',
-      headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+      },
       body: JSON.stringify(values)
-    }
-    )
-    bag.setSubmitting(false)
-    setNewUserModalShow(false)
+    }).then(() => {
+      getAllUsers()
+      bag.setSubmitting(false)
+      setNewUserModalShow(false)
+    })
   }
-  
+
   // Functions and states for editUserModal
   const [editUserModalShow, setEditUserModalShow] = React.useState(false);
   const [itemToBeEdited, setItemToBeEdited] = React.useState('');
@@ -78,18 +91,22 @@ export default function UserManagementPage(props) {
     setItemToBeEdited(item);
     setEditUserModalShow(true);
   };
-  
+
   const onEditUserModalSubmit = (values, bag) => {
     values.role_id = Number(values.role_id)
     console.log(JSON.stringify(values))
     fetch('https://iis-api.herokuapp.com/users', {
       method: 'PUT',
-      headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+      },
       body: JSON.stringify(values)
-    }
-    )
-    bag.setSubmitting(false)
-    setEditUserModalShow(false);
+    }).then(() => {
+      getAllUsers()
+      bag.setSubmitting(false)
+      setEditUserModalShow(false);
+    })
   }
 
   // Functions and states for deleteUserModal
@@ -99,16 +116,17 @@ export default function UserManagementPage(props) {
     setItemToBeDeleted(item);
     setDeleteUserModalShow(true);
   };
-  
+
   const deleteUser = function (props) {
     fetch('https://iis-api.herokuapp.com/users/' + props.item.id, {
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       method: 'DELETE'
+    }).then(() => {
+      getAllUsers()
+      setDeleteUserModalShow(false)
     })
-    
-    props.onHide();
-  };
-  
+  }
+
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
