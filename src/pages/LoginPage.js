@@ -73,7 +73,6 @@ export default function LoginPage(props) {
                     })
                   }
                   bag.setSubmitting(false)
-                  navigate('/')
                 })
               }}
             >

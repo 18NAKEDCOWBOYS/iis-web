@@ -30,7 +30,7 @@ export default function UserDetail(bag) {
         </Form.Group>
 
         <Form.Group style={{minWidth:200}} as={Col} controlId="formGridSurname">
-          <Form.Label>Příjméní</Form.Label>
+          <Form.Label>Příjmení</Form.Label>
           <Form.Control type="text" name="surname" placeholder="Zadejte příjmení" onChange={bag.handleChange} value={bag.values.surname}/>
           {bag.errors.surname&& bag.touched.surname? <div style={{color:'red'}}>{bag.errors.surname}</div> : null}
         </Form.Group>
