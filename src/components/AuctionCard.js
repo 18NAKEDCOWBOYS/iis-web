@@ -18,24 +18,22 @@ function CardBodyItems(props) {
 }
 
 function AuctionStateText(props) {
-  // console.log(props)
-  let textsByState = [
+  if (props.state_id ==2 && Date.now() > props.start_time && Date.now() < props.end_time)
+  {
+    return "Aukce probíhá do " + (props.end_time == null ? "" : props.end_time.toLocaleString('cs-CZ'))
+  }
+  if(props.state_id == 2 && Date.now()>props.end_time)
+  {
+    return "Aukce byla ukončena, čeká se na vyhodnocení"
+  }
+ let textsByState = [
     "Čeká se na schválení licitátorem",
     "Začátek naplánován na " + (props.start_time == null ? "" : props.start_time.toLocaleString('cs-CZ')),
     "Zamítnuta",
-    "Aukce probíhá do " + (props.end_time == null ? "" : props.end_time.toLocaleString('cs-CZ')),
-    "Aukce byla ukončena, čeká se na vyhodnocení",
-    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id ? "" : props.winner_id) //TODO get user name by id
+    "Aukce předčasně ukončena, čeká se na vyhodnocení",
+    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id ? "" : props.winner_id), //TODO get user name by id
   ]
-  let index = props.state_id;
-  if (props.state_id ==1 && Date.now() > props.start_time && Date.now() < props.end_time)
-  {
-    index = 3
-  }
-  if(props.state_id == 1 && Date.now()>props.end_time)
-  {
-    index = 4
-  }
+  let index = (props.state_id)-1;
   return textsByState[index]
 }
 
@@ -98,7 +96,7 @@ export default function AuctionCard(props) {
 
     <Card style={{ width: 400 }}>
       <Link to={props.link} >
-        <Card.Img variant="top" src={props.photos[0]} />
+        <Card.Img variant="top" src={props.photos.length==0 ? "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" : props.photos[0]} />
         <Card.Body>
           <Card.Title className={Styles.cardTitle}>{props.name}</Card.Title>
           <Card.Text>
