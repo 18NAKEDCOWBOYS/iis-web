@@ -19,10 +19,10 @@ export default function NavigationBar(props) {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ms-auto">
           <Nav.Item>
-            <Nav.Link as={Link} to="/" style={(props.page === "auctions") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
+            <Nav.Link as={Link} to="/" style={(props.page === "/") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to="/usr-man" style={(props.page === "usr-man") ? { color: 'white' } : {}}> Správa uživatelů</Nav.Link>
+            <Nav.Link as={Link} to="/usr-man" style={(props.page === "/usr-man") ? { color: 'white' } : {}}> Správa uživatelů</Nav.Link>
           </Nav.Item>
 
           {IsLoggedIn ?
@@ -30,7 +30,7 @@ export default function NavigationBar(props) {
             <>
               <Nav.Item>
                 <NavDropdown align="end" menuVariant="dark" title={User.name} id="collasible-nav-dropdown">
-                  <NavDropdown.Item as={Link} to="/user-profile" style={(props.page === "user-profile") ? { color: 'white' } : {}}> Můj profil </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/user-profile" style={(props.page === "/user-profile") ? { color: 'white' } : {}}> Můj profil </NavDropdown.Item>
                   <NavDropdown.Item onClick={()=>{setIsLoggedIn(false);setUser({}) }}> Odhlásit se</NavDropdown.Item>
                 </NavDropdown>
               </Nav.Item>
@@ -39,7 +39,7 @@ export default function NavigationBar(props) {
             :
             <>
               <Nav.Item style={{ borderRadius: 5, backgroundColor: '#0d6efd' }}>
-                <Nav.Link as={Link} to="/Login" style={(props.page === "Login") ? { color: 'white' } : { color: '#cfcfcf' }}> Přihlásit se</Nav.Link>
+                <Nav.Link as={Link} to="/Login" style={(props.page === "/Login") ? { color: 'white' } : { color: '#cfcfcf' }}> Přihlásit se</Nav.Link>
               </Nav.Item>
             </>
           }

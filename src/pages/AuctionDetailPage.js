@@ -1,5 +1,4 @@
 import React from 'react'
-import NavigationBar from '../components/NavigationBar'
 import { useParams } from "react-router-dom";
 import Container from "react-bootstrap/Container"
 import Tab from "react-bootstrap/Tab"
@@ -315,7 +314,7 @@ export default function AuctionDetailPage(props) {
     return (
 
         <>
-            <NavigationBar />
+            
             {auction.state_id == 2 && <span style={{color:"#dc3545"}} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
             {(auction.state_id == 1 && auction.start_time>Date.now()) && (<span style={{color:"#0d6efd"}} className={Styles.textStateCenter}>Aukce začne {auction.start_time.toLocaleString('cs-CZ') }</span>)}
             <Container className="mainContainer" style={overlay? {opacity: 0.25} : {opacity:1}}>

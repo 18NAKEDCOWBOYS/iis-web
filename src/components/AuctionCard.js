@@ -31,7 +31,7 @@ function AuctionStateText(props) {
     "Začátek naplánován na " + (props.start_time == null ? "" : props.start_time.toLocaleString('cs-CZ')),
     "Zamítnuta",
     "Aukce předčasně ukončena, čeká se na vyhodnocení",
-    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id ? "" : props.winner_id), //TODO get user name by id
+    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id==null? ("") : (props.user_auction_winner_idTouser.name + " "+ props.user_auction_winner_idTouser.surname)) , //TODO get user name by id
   ]
   let index = (props.state_id)-1;
   return textsByState[index]

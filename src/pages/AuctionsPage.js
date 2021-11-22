@@ -1,7 +1,6 @@
 import React from 'react'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import NavigationBar from '../components/NavigationBar';
 import Styles from './../css/AuctionsPage.module.css'
 import AuctionCard from '../components/AuctionCard';
 import NewAuctionModal from '../components/NewAuctionModal'
@@ -141,6 +140,8 @@ export default function AuctionsPage(props) {
   const [auctions, setAuctions] = useState([]);
 
   useEffect(() => {
+
+    
     fetch("https://iis-api.herokuapp.com/auctions")
       .then(res => res.json())
       .then(
@@ -177,7 +178,6 @@ export default function AuctionsPage(props) {
   } else {
     return (
       <>
-      <NavigationBar page="auctions" />
       <Container className="mainContainer">
 
         <h1>Přehled aukcí</h1>

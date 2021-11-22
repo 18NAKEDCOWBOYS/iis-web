@@ -1,5 +1,4 @@
 import React from 'react'
-import NavigationBar from '../components/NavigationBar'
 import { Container } from 'react-bootstrap'
 import { Tab, Tabs } from 'react-bootstrap'
 import AuctionPreviewStyles from './../css/AuctionsPage.module.css'
@@ -64,7 +63,6 @@ export default function UserProfilePage() {
 
     return (
         <>
-            <NavigationBar page="user-profile" />
             <Container className="mainContainer">
                 <h1>Bohuš Veselý</h1>
                 <div style={{ fontSize: 20 }}>
