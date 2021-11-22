@@ -45,18 +45,7 @@ export default function EditUserModal(props) {
             }
             return errors;
           }}
-          onSubmit={(values, bag) => {
-            values.role_id = Number(values.role_id)
-            console.log(JSON.stringify(values))
-            fetch('https://iis-api.herokuapp.com/users', {
-              method: 'PUT',
-              headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-              body: JSON.stringify(values)
-            }
-            )
-            bag.setSubmitting(false)
-            props.onHide();
-          }}
+          onSubmit={(values, bag) => {props.onSubmit(values, bag)}}
         >
           {({
             values,
