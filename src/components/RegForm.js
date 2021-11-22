@@ -60,7 +60,9 @@ export default function RegForm(props) {
               method:'GET',
               headers:{'Authorization': 'Bearer ' + newUser.accessToken}
             })
+            .then((response) => response.text())
             .then((usrRsp)=>{
+              console.log(usrRsp)
               setUser(JSON.parse(usrRsp))
               navigate('/')
             })

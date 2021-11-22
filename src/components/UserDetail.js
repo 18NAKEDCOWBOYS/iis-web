@@ -39,7 +39,6 @@ export default function UserDetail(bag) {
           <Form.Label>Role uživatele</Form.Label>
           <Form.Select aria-label="Výběr rolí" name="role_id" value={bag.values.role_id} onChange={bag.handleChange}>
             <option>Vyberte roli</option>
-            <option value="0">Neregistrovaný uživatel</option>
             <option value="1">Registrovaný uživatel</option>
             <option value="2">Licitátor</option>
             <option value="3">Administrátor</option>

@@ -30,7 +30,7 @@ function NewUserModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ id:null, email: props.item.email, password: props.item.password, name: props.item.name, surname: props.item.surname, role_id: props.item.role_id }}
+          initialValues={{ email: props.item.email, password: props.item.password, name: props.item.name, surname: props.item.surname, role_id: props.item.role_id }}
           validate={values => {
             const errors = {};
             if (!values.email) {
@@ -61,7 +61,7 @@ function NewUserModal(props) {
             values.role_id = Number(values.role_id)
             console.log(JSON.stringify(values))
             fetch('https://iis-api.herokuapp.com/users', {
-              method: 'PUT',
+              method: 'POST',
               headers: { "Content-type": "application/json; charset=UTF-8",'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
               body: JSON.stringify(values)
             }
@@ -210,7 +210,7 @@ export default function UserManagementPage(props) {
       )
   }, [])
 
-  const str_role = ["Neregistrovaný", "Registrovaný", "Licitátor", "Administrátor"]
+  const str_role = ["Neregistrovaný", "Uživatel", "Licitátor", "Administrátor"]
   const users = [
     {
       "id": 1,

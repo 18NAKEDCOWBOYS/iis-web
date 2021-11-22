@@ -61,7 +61,7 @@ export default function LoginPage(props) {
                     sessionStorage.setItem('accessToken', authUser.accessToken)
                     setIsLoggedIn(true)
                     
-                    /*fetch('https://iis-api.herokuapp.com/users/current', {
+                    fetch('https://iis-api.herokuapp.com/users/current', {
                       method:'GET',
                       headers:{'Authorization': 'Bearer ' + authUser.accessToken}
                     })
@@ -70,7 +70,7 @@ export default function LoginPage(props) {
                       console.log(usrRsp)
                       setUser(JSON.parse(usrRsp))
                       navigate('/')
-                    })*/
+                    })
                   }
                   bag.setSubmitting(false)
                   navigate('/')
