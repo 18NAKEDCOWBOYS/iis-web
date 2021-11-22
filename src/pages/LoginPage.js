@@ -13,21 +13,6 @@ import NavigationBar from './../components/NavigationBar';
 import Styles from './../css/LoginPage.module.css'
 import { UseUserContext } from "../userContext";
 
-
-// function validatePassw(values, bag){
-//   setTimeout(() => {
-//     console.log('This will run after 4 second!');
-//     bag.setSubmitting(false);
-//     if(values.password !== 'spravne heslo'){
-//       bag.setStatus('Zadali jste nespravne heslo');
-//     }else{
-//       bag.setStatus(null);
-    
-     
-//     }
-//   }, 4000);
-// }
-
 export default function LoginPage(props) {
   const {setIsLoggedIn, setUser} = UseUserContext()
   const navigate = useNavigate();
@@ -51,26 +36,43 @@ export default function LoginPage(props) {
                 
                 if(!values.password){
                   errors.password = 'Nezadali jste heslo';
-                }else if (values.password.length < 8){
-                  errors.password = 'Heslo je příliš krátké';
                 }
+                /* TODO: else if (values.password.length < 8){
+                  errors.password = 'Heslo je příliš krátké';
+                }*/
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                if(values.password !== 'spravne heslo'){
-                  bag.setStatus('Zadali jste nespravne heslo');
-                }else{
-                  bag.setStatus(null);
-                  setTimeout(() => {
-                  setIsLoggedIn(true)
-                  setUser({ 
-                  "id":1,
-                    "email":"bohus@email.com",
-                  "name":"bohus",
-                  "surname":"Veselý",
-                  "role_id":3});
-                  navigate('/')
-                }, 1000)}
+                console.log(JSON.stringify(values))
+                fetch('https://iis-api.herokuapp.com/auth/login', {
+                  method:'POST',
+                  headers: {"Content-type": "application/json; charset=UTF-8"},
+                  body: JSON.stringify(values)
+                  }
+                )
+                .then(response=>response.text()) 
+                .then((authRsp)=>{
+                  console.log(authRsp)
+                  if(authRsp === 'Username or password incorrect'){
+                    bag.setStatus('Zadali jste špatný e-mail nebo heslo')
+                  }else{
+                    let authUser = JSON.parse(authRsp)
+                    
+                    sessionStorage.setItem('accessToken', authUser.accessToken)
+                    setIsLoggedIn(true)
+                    
+                    fetch('https://iis-api.herokuapp.com/users/current', {
+                      method:'GET',
+                      headers:{'Authorization': 'Bearer ' + authUser.accessToken}
+                    })
+                    .then((usrRsp)=>{
+                      console.log(usrRsp)
+                      setUser(JSON.parse(usrRsp))
+                      navigate('/')
+                    })
+                  }
+                  bag.setSubmitting(false)
+                })
               }}
             >
               {({
@@ -98,7 +100,7 @@ export default function LoginPage(props) {
 
                   <div style={{ paddingTop: 30 }} className="d-grid align-items-center">
                     <Button variant="primary" type="submit" disabled={isSubmitting} size="lg">Přihlásit se</Button>
-                    {status? <div style={{color:'red', width:'100%', textAlign:'center'}}>{status}</div> : null}
+                    {status? <div style={{color:'red', width:'100%', paddingTop:10, textAlign:'center'}}>{status}</div> : null}
                   </div>
 
                   <div style={{width:"100%", textAlign:"center", paddingTop:10}}>

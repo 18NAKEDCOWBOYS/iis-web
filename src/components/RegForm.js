@@ -4,13 +4,13 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import {Formik} from 'formik';
-
-function emailExist(email){
-  return(email === "asd@dsa.cz")
-}
-
+import { UseUserContext } from "../userContext";
+import { useNavigate  } from 'react-router-dom';
 
 export default function RegForm(props) {
+  const {setIsLoggedIn, setUser} = UseUserContext()
+  const navigate = useNavigate();
+
   return (
     <Formik
       initialValues={{ email: '', password: '', name:'', surname:''}}
@@ -39,15 +39,33 @@ export default function RegForm(props) {
         return errors;
       }}
       onSubmit={(values, bag) => {
-        setTimeout(() => {
-          if(emailExist(values.email)){
-            bag.setStatus('Účet pro e-mailovou adresu "' + values.email+'" již existuje')
-          }else{
-            bag.setStatus(null)
+
+      fetch('https://iis-api.herokuapp.com/auth/register', {
+          method:'POST',
+          headers: {"Content-type": "application/json; charset=UTF-8"},
+          body: JSON.stringify(values)
           }
-          console.log('This will run after 4 second!');
-          bag.setSubmitting(false);
-        }, 4000);  
+        ) 
+        .then((response)=>response.text())
+        .then((regRsp)=>{
+          if(regRsp == 'User already exists'){
+            bag.setStatus('Uživatel již existuje')
+          }else{
+            let newUser = JSON.parse(regRsp)
+            
+            sessionStorage.setItem('accessToken', newUser.accessToken)
+            setIsLoggedIn(true)
+        
+            fetch('https://iis-api.herokuapp.com/users/current', {
+              method:'GET',
+              headers:{'Authorization': 'Bearer ' + newUser.accessToken}
+            })
+            .then((usrRsp)=>{
+              setUser(JSON.parse(usrRsp))
+              navigate('/')
+            })
+          }
+        })
       }}
     >
       {({
