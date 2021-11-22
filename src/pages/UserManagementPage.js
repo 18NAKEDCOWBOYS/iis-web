@@ -312,6 +312,7 @@ export default function UserManagementPage(props) {
                   </thead>
                   <tbody>
                     {items.map(item => {
+                      return(
                       <tr key={item.id}>
                         <td>{item.id}</td>
                         <td>{item.email}</td>
@@ -322,6 +323,7 @@ export default function UserManagementPage(props) {
                         <td><Button onClick={() => setDeletedItem(item)} style={{ border: 0, backgroundColor: "#ffffff00" }}><FaTrashAlt color="#0d6efd" size="20" /></Button></td>
                         <td><Button onClick={() => setEditedItem(item)} style={{ border: 0, backgroundColor: "#ffffff00" }}><FaUserEdit color="#0d6efd" size="24" /></Button></td>
                       </tr>
+                      )
                     })}
                   </tbody>
                 </Table>
