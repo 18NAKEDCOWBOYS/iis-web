@@ -30,7 +30,7 @@ function NewUserModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-              initialValues={{ id:props.item.id, email: props.item.email, password: props.item.password, name:props.item.name, surname:props.item.surname, role_id:props.item.role_id}}
+              initialValues={{ email: props.item.email, password: props.item.password, name:props.item.name, surname:props.item.surname, role_id:props.item.role_id}}
               validate={values => {
                 const errors = {};
                 if(!values.email){
@@ -58,10 +58,13 @@ function NewUserModal(props) {
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                setTimeout(() => {
-                  console.log('This will run after 2 second!');
-                  bag.setSubmitting(false);
-                }, 2000);
+                fetch('https://iis-api.herokuapp.com/users', {
+                  method:'PUT',
+                  headers: {"Content-type": "application/json; charset=UTF-8"},
+                  body: JSON.stringify(values)
+                  }
+                )   
+                bag.setSubmitting(false)
               }}
             >
               {({
@@ -122,11 +125,13 @@ function EditUserModal(props) {
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                setTimeout(() => {
-                  console.log('This will run after 2 second!');
-                  bag.setSubmitting(false);
-                  props.onHide();
-                }, 2000);
+                fetch('https://iis-api.herokuapp.com/users', {
+                  method:'PUT',
+                  headers: {"Content-type": "application/json; charset=UTF-8"},
+                  body: JSON.stringify(values)
+                  }
+                )
+                bag.setSubmitting(false)
               }}
             >
               {({
@@ -147,8 +152,10 @@ function EditUserModal(props) {
 function DeleteUserModal(props){
   
   const deleteUser = function(props){
-     //TODO: odeslat požadavek na smazání uživatele
-    console.log(props.item.email);
+    fetch('https://iis-api.herokuapp.com/users/'+props.item.id,{
+      method:'DELETE'   
+    })
+    
     props.onHide();
   };
 
