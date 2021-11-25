@@ -32,3 +32,11 @@ a, a:hover{
 .image{
   height:300px
 }
+
+.fullCenterContent{
+  display:flex;
+  align-items: center;
+  flex-direction:column;
+  justify-content:center; 
+  height:100%
+}
