@@ -8,11 +8,10 @@ import Button from "react-bootstrap/Button"
 import InputGroup from "react-bootstrap/InputGroup"
 import FormControl from "react-bootstrap/FormControl"
 import Styles from "../css/AuctionDetailPage.module.css"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
-
 
 function BidFormOpenedAuc() {
     //TODO zobrazit erory
@@ -68,7 +67,7 @@ function BidFormClosedAuc(props) {
 }
 
 function AuctioneerControlButtons(props) {
-    if (props.User.id == props.auctioneer_id && Date.now() >= props.end_time) {
+    if (props.User.id == props.auctioneer_id && Date.now() >= new Date(props.end_time)) {
         return (
             <div style={{ flex: 0.3, padding: 35 }}>
                 <Button variant="primary">Ukončit a určit výherce</Button>
@@ -81,7 +80,7 @@ function AuctioneerControlButtons(props) {
 
 function ItemPrice(props) {
     let result;
-    if (!props.is_open || props.state_id == 0) {
+    if (!props.is_open || props.state_id == 1) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
@@ -97,7 +96,7 @@ function BidForm(props) {
     if (props.UserLogged) {
         if (props.User.id != props.auctioneer_id) {
 
-            if (props.state_id == 1 && Date.now() > props.start_time && Date.now() < props.end_time) {
+            if (props.state_id == 2 && Date.now() > new Date(props.start_time) && Date.now() < new Date(props.end_time)) {
                 if (props.is_open) {
                     return (<BidFormOpenedAuc />)
                 }
@@ -112,40 +111,22 @@ function BidForm(props) {
 
 
 function BidsHistory(props) {
-    let bids = [
-        {
-            "name": "Jan",
-            "surname": "Rychlý",
-            "bid": "23542"
-        },
-        {
-            "name": "Božena",
-            "surname": "Smutná",
-            "bid": "670"
-        },
-        {
-            "name": "Bohuš",
-            "surname": "Veselý",
-            "bid": "550"
-        }
-
-    ]
     return (<>
-        <Table striped style={{ textAlign: 'center' }}>
+        <Table key={'jmeno'} striped style={{ textAlign: 'center' }}>
             <thead>
                 <tr>
-                    <th>Jméno</th>
+                    <th id='jmeno'>Jméno</th>
                     <th>Příjmení</th>
                     <th>Částka</th>
                 </tr>
             </thead>
             <tbody>
-                {bids.map(item => {
+                {props.bid && props.bid.map(item => {
                     return (
                         <tr>
-                            <td>{item.name}</td>
-                            <td>{item.surname}</td>
-                            <td>{item.bid} Kč</td>
+                            <td>{item.user.name}</td>
+                            <td>{item.user.surname}</td>
+                            <td>{item.price} Kč</td>
                         </tr>
                     );
                 })}
@@ -157,46 +138,32 @@ function BidsHistory(props) {
 
 
 function AuctionRegistrations(props) {
-    let userRegistrations = [
-        {
-            "name": "Jan",
-            "surname": "Rychlý",
-            "approved": true
-        },
-        {
-            "name": "Božena",
-            "surname": "Smutná",
-            "approved": true
-        },
-        {
-            "name": "Bohuš",
-            "surname": "Veselý",
-            "approved": true
-        },
-        {
-            "name": "Květoslav",
-            "surname": "Novák",
-            "approved": false
-        }
-
-    ]
+    if(props.bidders)
+    {
+        console.log("sdfsdf")
+        props.bidders.sort((a,b)=>(a.user.surname < b.user.surname ? 1 : (a.user.surname > b.user.surname ? -1 : 0)))
+    }
+    console.log(props.bidders)
     return (<>
         <Table striped style={{ textAlign: 'center' }}>
             <thead>
                 <tr>
                     <th>Jméno</th>
                     <th>Příjmení</th>
-                    {(props.userLogged && props.User.role_id>=2)? <th>Stav registrace</th> : ""}
-                    </tr>
+                    {(props.userLogged && props.User.role_id >= 2) ? <th>Stav registrace</th> : ""}
+                </tr>
             </thead>
             <tbody>
-                {userRegistrations.map(item => {
-                        return (<tr>
-                            <td>{item.name}</td>
-                            <td>{item.surname}</td>
-                            {(props.UserLogged && props.User.role_id >= 2) ? <td>{item.approved ? "Registrace schválena" : <Button variant="primary">Schválit registraci</Button>}</td> : ""}
-                        </tr>)
-                    }
+                {props.bidders && props.bidders.map(item => {
+                    return (<tr>
+                        <td>{item.user.name}</td>
+                        <td>{item.user.surname}</td>
+                        {(props.UserLogged && props.User.role_id >= 2) ? <td>{item.is_approved ? 
+                            <Button variant="danger" onClick={() => props.approveBidder(props.id, item.user.id, false)}>Zrušit registraci</Button>
+                            : 
+                            <Button variant="primary" onClick={() => props.approveBidder(props.id, item.user.id, true)}>Schválit registraci</Button>}</td> : ""}
+                    </tr>)
+                }
                 )}
             </tbody>
         </Table>
@@ -213,152 +180,111 @@ export default function AuctionDetailPage(props) {
     const [LastBidPrice, setLastBidPrice] = useState("")  //TODO iniciovat last bid moji nabídkou
     const [BidPrice, setBidPrice] = useState("")
     const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
-    let auctions = [
-        {
-            "id": 0,
-            "name": "Aukce A",
-            "is_demand": true,
-            "is_open": true,
-            "price": 12354,
-            "author_id": 1,
-            "auctioneer_id": 2,
-            "start_time": new Date(2021, 12, 20, 10, 0, 0, 0),
-            "end_time": new Date(2021, 12, 2, 10, 0, 0, 0),
-            "description": "Skvělá aukce o věc v hodnotě milionů!",
-            "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png", "https://pbs.twimg.com/profile_images/949787136030539782/LnRrYf6e_400x400.jpg", "https://pbs.twimg.com/media/E12BaOYXMAQeV9a.jpg", "https://c8.alamy.com/comp/EPF1YW/nun-with-handgun-isolated-on-white-EPF1YW.jpg", "https://ichef.bbci.co.uk/news/976/cpsprodpb/13F00/production/_95146618_bills.jpg"],
-            "winner_id": null,
-            "state_id": 1, //schvaleno
-            "min_bid": 250,
-            "max_bid": null
-
-        },
-        {
-            "id": 1,
-            "name": "Aukce B",
-            "is_demand": true,
-            "is_open": false,
-            "price": 56489,
-            "author_id": 0,
-            "auctioneer_id": null,
-            "start_time": null,
-            "end_time": null,
-            "description": "Zbytečná aukce",
-            "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-            "winner_id": null,
-            "state_id": 0, //zalozeno
-            "min_bid": 20,
-            "max_bid": null
-        },
-        {
-            "id": 2,
-            "name": "Aukce C",
-            "is_demand": true,
-            "is_open": true,
-            "price": 169,
-            "author_id": 0,
-            "auctioneer_id": 2,
-            "start_time": new Date(2021, 7, 20, 10, 0, 0, 0),
-            "end_time": new Date(2020, 10, 2, 10, 0, 0, 0),
-            "description": "Skvělá aukce o věc v hodnotě milionů!",
-            "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-            "winner_id": 1,
-            "state_id": 5, //znam vitez,
-            "min_bid": 250,
-            "max_bid": null
-        },
-        {
-            "id": 3,
-            "name": "Aukce D",
-            "is_demand": true,
-            "is_open": false,
-            "price": 5613,
-            "author_id": 0,
-            "auctioneer_id": 2,
-            "start_time": new Date(2021, 10, 18, 10, 0, 0, 0),
-            "end_time": new Date(2021, 10, 22, 10, 0, 0, 0),
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sit amet consectetur adipiscing elit ut aliquam purus. Auctor elit sed vulputat.",
-            "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-            "winner_id": null,
-            "state_id": 1, //probihajici
-            "min_bid": 250,
-            "max_bid": null
-        },
-        {
-            "id": 4,
-            "name": "Aukce E",
-            "is_demand": false,
-            "is_open": true,
-            "price": 5613,
-            "author_id": 0,
-            "auctioneer_id": 1,
-            "start_time": new Date(2021, 10, 17, 10, 0, 0, 0),
-            "end_time": new Date(2021, 10, 18, 10, 0, 0, 0),
-            "description": "Skvělá aukce o věc v hodnotě milionů!",
-            "photos": ["https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png"],
-            "winner_id": null,
-            "state_id": 2, //neschvalena
-            "min_bid": 250,
-            "max_bid": null
-        }
-    ]
     const { auctionId } = useParams()
-    let auction = auctions.find(item => item.id === Number(auctionId)) //TODO vybrat z DB
+
+
+
+
+    const [error, setError] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [auction, setAuction] = useState([]);
+
+
+    const loadAuction = () =>  {
+        return(
+        fetch("https://iis-api.herokuapp.com/auctions/" + auctionId)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setIsLoaded(true);
+                    setAuction(result);
+                },
+                (error) => {
+                    setIsLoaded(true);
+                    setError(error);
+                }
+            )
+        )
+    }
+
+    const ApproveBidder =  (auctionId, userId, approved) =>  {
+        return (fetch('https://iis-api.herokuapp.com/bidders/', {
+            method: 'PUT',
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+            body: JSON.stringify({ "auction_id": auctionId, "user_id": userId, "is_approved": approved })
+        
+        }).then(result => result.text()).then(result =>console.log(result)).then(() => loadAuction()))
+    }
+
+
+    useEffect(() => {
+        loadAuction()
+    }, [])
 
     //create images objects array
     let imagesGallerySrc = [];
     for (let i in auction.photos) {
         imagesGallerySrc[i] = { "url": auction.photos[i] }
     }
+    if (imagesGallerySrc.length == 0) {
+        imagesGallerySrc = [{ "url": "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" }]
+    }
 
-    let overlay = auction.state_id == 2 || (auction.state_id == 1 && auction.start_time>Date.now())
-    return (
+    let overlay = auction.state_id == 3 || (auction.state_id == 2 && new Date(auction.start_time) > Date.now())
 
-        <>
-            
-            {auction.state_id == 2 && <span style={{color:"#dc3545"}} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
-            {(auction.state_id == 1 && auction.start_time>Date.now()) && (<span style={{color:"#0d6efd"}} className={Styles.textStateCenter}>Aukce začne {auction.start_time.toLocaleString('cs-CZ') }</span>)}
-            <Container className="mainContainer" style={overlay? {opacity: 0.25} : {opacity:1}}>
-                <div style={{ display: "flex" }}>
-                    <div style={{ flex: 0.7 }}>
-                        <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
-                        <h4 style={{ paddingBottom: 25 }}>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+    else if (!isLoaded) {
+        return <div>Loading...</div>;
+    } else {
+        return (
+            <>
+                {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
+                {(auction.state_id == 2 && new Date(auction.start_time) > Date.now()) && (<span style={{ color: "#0d6efd" }} className={Styles.textStateCenter}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</span>)}
+                <Container className="mainContainer" style={overlay ? { opacity: 0.25 } : { opacity: 1 }}>
+                    <div style={{ display: "flex" }}>
+                        <div style={{ flex: 0.7 }}>
+                            <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
+                            <h4 style={{ paddingBottom: 25 }}>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
+                        </div>
+                        <AuctioneerControlButtons User={User} {...auction} />
                     </div>
-                    <AuctioneerControlButtons User={User} {...auction} />
-                </div>
-                <Container style={{ display: "flex" }}>
-                    <div style={{ flex: 1, paddingRight: 100, width: 300, height: 300, position: "relative" }}>
-                        <SimpleImageSlider width={550} height={309} images={imagesGallerySrc} showBullets={true} showNavs={true} />
-                    </div>
+                    <Container style={{ display: "flex" }}>
+                        <div style={{ flex: 1, paddingRight: 100, width: 300, height: 300, position: "relative" }}>
+                            <SimpleImageSlider width={550} height={309} images={imagesGallerySrc} showBullets={true} showNavs={true} />
+                        </div>
 
 
-                    <div style={{ flex: 1 }}>
-                        <p><strong>Popis: </strong>{auction.description}</p>
-                        <ItemPrice {...auction} />
-                        <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 0 ? "Neurčen" : auction.end_time.toLocaleString('cs-CZ')}</div>
-                        <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
-                        <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
+                        <div style={{ flex: 1 }}>
+                            <p><strong>Popis: </strong>{auction.description}</p>
+                            <ItemPrice {...auction} />
+                            <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 1 ? "Neurčen" : new Date(auction.end_time).toLocaleString('cs-CZ')}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
 
-                        <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
-                            setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} />
+                            <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
+                                setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} />
 
+                        </div>
+                    </Container>
+                    <div style={{ marginTop: 100 }}>
+
+                        <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
+                            {(auction.is_open && new Date(auction.start_time) <= Date.now()) && <Tab eventKey="History" title="Historie nabídek">
+                                <h2>Historie nabídek</h2>
+                                <BidsHistory {...auction} />
+
+                            </Tab>}
+                            <Tab eventKey="RegisteredUsers" title="Registrování uživatelé v aukci">
+                                <h2>Registrování uživatelé v aukci</h2>
+                                <AuctionRegistrations {...auction} User={User} UserLogged={IsLoggedIn} approveBidder = {ApproveBidder} />
+                            </Tab>
+                        </Tabs>
                     </div>
                 </Container>
-                <div style={{ marginTop: 100 }}>
-
-                    <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
-                        {(auction.is_open && auction.start_time <= Date.now()) && <Tab eventKey="History" title="Historie nabídek">
-                            <h2>Historie nabídek</h2>
-                            <BidsHistory {...auction} />
-
-                        </Tab>}
-                        <Tab eventKey="RegisteredUsers" title="Registrování uživatelé v aukci">
-                            <h2>Registrování uživatelé v aukci</h2>
-                            <AuctionRegistrations {...auction} User={User} UserLogged={IsLoggedIn} />
-                        </Tab>
-                    </Tabs>
-                </div>
-            </Container>
-        </>
-    )
+            </>
+        )
+    }
 }
 

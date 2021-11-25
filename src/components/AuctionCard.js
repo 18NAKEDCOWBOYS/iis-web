@@ -18,17 +18,17 @@ function CardBodyItems(props) {
 }
 
 function AuctionStateText(props) {
-  if (props.state_id ==2 && Date.now() > props.start_time && Date.now() < props.end_time)
+  if (props.state_id ==2 && Date.now() > new Date(props.start_time) && Date.now() < new Date(props.end_time))
   {
-    return "Aukce probíhá do " + (props.end_time == null ? "" : props.end_time.toLocaleString('cs-CZ'))
+    return "Aukce probíhá do " + (props.end_time == null ? "" : new Date(props.end_time).toLocaleString('cs-CZ'))
   }
-  if(props.state_id == 2 && Date.now()>props.end_time)
+  if(props.state_id == 2 && Date.now()>new Date(props.end_time))
   {
     return "Aukce byla ukončena, čeká se na vyhodnocení"
   }
  let textsByState = [
     "Čeká se na schválení licitátorem",
-    "Začátek naplánován na " + (props.start_time == null ? "" : props.start_time.toLocaleString('cs-CZ')),
+    "Začátek naplánován na " + (props.start_time == null ? "" : new Date(props.start_time).toLocaleString('cs-CZ')),
     "Zamítnuta",
     "Aukce předčasně ukončena, čeká se na vyhodnocení",
     "Aukce úspěšně ukončena, výhercem je " + (props.winner_id==null? ("") : (props.user_auction_winner_idTouser.name + " "+ props.user_auction_winner_idTouser.surname)) , //TODO get user name by id
