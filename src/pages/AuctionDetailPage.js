@@ -12,25 +12,84 @@ import { useState, useEffect } from 'react';
 import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
-
-function BidFormOpenedAuc() {
+import { Formik } from 'formik';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+function BidFormOpenedAuc(props) {
     //TODO zobrazit erory
     return (
         <>
-            <Form style={{ paddingTop: 25 }}>
-                <InputGroup className="mb-3">
+            <Formik
+                initialValues={{ bid: '' }}
+                validate={values => {
+                    const errors = {};
+                    let last_bid = props.bid.length == 0 ? props.price : props.bid[props.bid.length-1].price
+                    console.log(last_bid)
+                    if(Number(values.bid) <= 0)
+                    {
+                        errors.bid = "Nabídka musí být větší než 0 Kč"
+                    }
+                    else if(props.is_demand && last_bid >= values.bid)
+                    {
+                        errors.bid = "Nová nabídka musí být v poptávkové aukcí vyšší než aktuální cena"
+                    }
+                    else if(!props.is_demand && values.bid >= last_bid)
+                    {
+                        errors.bid = "Nová nabídka musí být v nabídkové aukci nižší než aktuální cena"
+                    }
+                    else if(Math.abs(last_bid-Number(values.bid)) < props.min_bid){
+                        errors.bid = "Minimální" + (props.is_demand? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.min_bid 
+                    }
+                    else if(Math.abs(last_bid-Number(values.bid)) > props.max_bid)
+                    {
+                        errors.bid = "Maximální" (props.is_demand? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid
+                    }
+                    return errors
+                }}
+                onSubmit={(values, actions) => {
+                    fetch('https://iis-api.herokuapp.com/bids', {
+                        method:'POST',
+                        headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+                        body: JSON.stringify({
+                            auction_id: props.id,
+                            user_id: props.User.id,
+                            price: values.bid,
+                            time: Date.now()
+                        })
+                        }
+                      ).then(()=>{
+                          props.loadAuction()
+                          actions.setSubmitting(false)
+                      })
+
+                }}>
+                {({
+                    values,
+                    errors,
+                    status,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    isSubmitting,
+                }) => (<Form onSubmit={handleSubmit} style={{ paddingTop: 25 }}>
+                    <InputGroup className="mb-3">
                     <FormControl style={{ maxWidth: 250 }}
+                        onChange={handleChange}
                         placeholder="Výše nabídky"
                         aria-label="Výše nabídky"
                         aria-describedby="basic-addon1"
                         type="number"
+                        name="bid"
+                        required={true}
                     />
-                    <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
+                    <InputGroup.Text id="basic-addon1">Kč</InputGroup.Text>
                 </InputGroup>
-                <div>
-                    <Button variant="primary" type="submit">Odeslat nabídku</Button>
-                </div>
-            </Form>
+                {errors.bid? <div style={{ color: 'red', paddingTop:2}}>{errors.bid}</div> : null}
+                    <div>
+                        <Button style={{marginTop:10}} disabled={isSubmitting} variant="primary" type="submit">Odeslat nabídku</Button>
+                    </div>
+                </Form>)}
+            </Formik>
         </>
     )
 }
@@ -80,11 +139,11 @@ function AuctioneerControlButtons(props) {
 
 function ItemPrice(props) {
     let result;
-    if (!props.is_open || props.state_id == 1) {
+    if (!props.is_open || props.state_id == 1 || props.bidders.length == 0) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
-        result = "Aktuální cena: " + "MILION" + " Kč"//TODO vytahnout z db nejvyssi nabidku
+        result = "Aktuální cena: " + props.bid[props.bid.length - 1].price + " Kč" //TODO možná vzít max místo spoléhání se na to, že max je poslední
     }
     return (
         <div className={Styles.priceStyle}>{result}</div>
@@ -98,10 +157,10 @@ function BidForm(props) {
 
             if (props.state_id == 2 && Date.now() > new Date(props.start_time) && Date.now() < new Date(props.end_time)) {
                 if (props.is_open) {
-                    return (<BidFormOpenedAuc />)
+                    return (<BidFormOpenedAuc {...props}   loadAuction = {props.loadAuction}  />)
                 }
                 else {
-                    return (<BidFormClosedAuc {...props} />)
+                    return (<BidFormClosedAuc {...props}   loadAuction = {props.loadAuction} />)
                 }
             }
         }
@@ -111,12 +170,16 @@ function BidForm(props) {
 
 
 function BidsHistory(props) {
+    if (props.bid) {
+            props.bid.sort((a, b) => (a.time < b.time? 1 : (a.time > b.time ? -1 : 0)))
+    }
     return (<>
         <Table key={'jmeno'} striped style={{ textAlign: 'center' }}>
             <thead>
                 <tr>
                     <th id='jmeno'>Jméno</th>
                     <th>Příjmení</th>
+                    <th>Čas</th>
                     <th>Částka</th>
                 </tr>
             </thead>
@@ -126,6 +189,7 @@ function BidsHistory(props) {
                         <tr>
                             <td>{item.user.name}</td>
                             <td>{item.user.surname}</td>
+                            <td>{new Date(item.time).toLocaleString('cs-CZ')}</td>
                             <td>{item.price} Kč</td>
                         </tr>
                     );
@@ -138,12 +202,9 @@ function BidsHistory(props) {
 
 
 function AuctionRegistrations(props) {
-    if(props.bidders)
-    {
-        console.log("sdfsdf")
-        props.bidders.sort((a,b)=>(a.user.surname < b.user.surname ? 1 : (a.user.surname > b.user.surname ? -1 : 0)))
+    if (props.bidders) {
+        props.bidders.sort((a, b) => (a.user.surname < b.user.surname ? 1 : (a.user.surname > b.user.surname ? -1 : 0)))
     }
-    console.log(props.bidders)
     return (<>
         <Table striped style={{ textAlign: 'center' }}>
             <thead>
@@ -158,9 +219,9 @@ function AuctionRegistrations(props) {
                     return (<tr>
                         <td>{item.user.name}</td>
                         <td>{item.user.surname}</td>
-                        {(props.UserLogged && props.User.role_id >= 2) ? <td>{item.is_approved ? 
+                        {(props.UserLogged && props.User.role_id >= 2 && props.User.id == props.auctioneer_id) ? <td>{item.is_approved ?
                             <Button variant="danger" onClick={() => props.approveBidder(props.id, item.user.id, false)}>Zrušit registraci</Button>
-                            : 
+                            :
                             <Button variant="primary" onClick={() => props.approveBidder(props.id, item.user.id, true)}>Schválit registraci</Button>}</td> : ""}
                     </tr>)
                 }
@@ -190,30 +251,30 @@ export default function AuctionDetailPage(props) {
     const [auction, setAuction] = useState([]);
 
 
-    const loadAuction = () =>  {
-        return(
-        fetch("https://iis-api.herokuapp.com/auctions/" + auctionId)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setIsLoaded(true);
-                    setAuction(result);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error);
-                }
-            )
+    const loadAuction = () => {
+        return (
+            fetch("https://iis-api.herokuapp.com/auctions/" + auctionId)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        setIsLoaded(true);
+                        setAuction(result);
+                    },
+                    (error) => {
+                        setIsLoaded(true);
+                        setError(error);
+                    }
+                )
         )
     }
 
-    const ApproveBidder =  (auctionId, userId, approved) =>  {
+    const ApproveBidder = (auctionId, userId, approved) => {
         return (fetch('https://iis-api.herokuapp.com/bidders/', {
             method: 'PUT',
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
             body: JSON.stringify({ "auction_id": auctionId, "user_id": userId, "is_approved": approved })
-        
-        }).then(result => result.text()).then(result =>console.log(result)).then(() => loadAuction()))
+
+        }).then(result => result.text()).then(result => console.log(result)).then(() => loadAuction()))
     }
 
 
@@ -262,9 +323,11 @@ export default function AuctionDetailPage(props) {
                             <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 1 ? "Neurčen" : new Date(auction.end_time).toLocaleString('cs-CZ')}</div>
                             <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
                             <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Minimální {auction.is_demand?  "příhoz: " : "snížení nabídky: "}</strong> {auction.min_bid == null ? "Neomezen" : (auction.min_bid + "Kč")}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Maximální {auction.is_demand?  "příhoz: " : "snížení nabídky: "}</strong> {auction.max_bid == null ? "Neomezen" : (auction.max_bid + "Kč")}</div>
 
                             <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
-                                setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} />
+                                setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice}  loadAuction = {loadAuction} />
 
                         </div>
                     </Container>
@@ -273,12 +336,16 @@ export default function AuctionDetailPage(props) {
                         <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
                             {(auction.is_open && new Date(auction.start_time) <= Date.now()) && <Tab eventKey="History" title="Historie nabídek">
                                 <h2>Historie nabídek</h2>
-                                <BidsHistory {...auction} />
+                                <BidsHistory {...auction}/>
 
                             </Tab>}
                             <Tab eventKey="RegisteredUsers" title="Registrování uživatelé v aukci">
                                 <h2>Registrování uživatelé v aukci</h2>
-                                <AuctionRegistrations {...auction} User={User} UserLogged={IsLoggedIn} approveBidder = {ApproveBidder} />
+                                {(auction.bidders && auction.bidders.length == 0) ?
+                                    "Nikdo není v aukci registrován"
+                                    :
+                                    <AuctionRegistrations {...auction} User={User} UserLogged={IsLoggedIn} approveBidder={ApproveBidder}  />
+                                }
                             </Tab>
                         </Tabs>
                     </div>
