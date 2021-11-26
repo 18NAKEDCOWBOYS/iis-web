@@ -15,12 +15,12 @@ export default function AuctionsPage(props) {
     setItemToChangeTime(item);
     setEditTimeModalShow(true);
   }
-  
+
   const [newAuctionModalShow, setNewAuctionModalShow] = React.useState(false);
   const [itemToBeAdded, setItemToBeAdded] = React.useState('');
   const setNewItem = () => {
     const item = {
-      "id":null,
+      "id": null,
       "name": "",
       "is_demand": null,
       "is_open": null,
@@ -32,7 +32,7 @@ export default function AuctionsPage(props) {
       "description": "",
       "photos": null,
       "winner_id": null,
-      "state_id":null,
+      "state_id": null,
       "min_bid": null,
       "max_bid": null
     }
@@ -42,76 +42,76 @@ export default function AuctionsPage(props) {
   };
 
 
-  
-  const {setIsLoggedIn, User, IsLoggedIn, setUser} = UseUserContext()
+
+  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [auctions, setAuctions] = useState([]);
 
-  useEffect(() => {    
-    fetch("https://iis-api.herokuapp.com/auctions")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoaded(true);
-          setAuctions(result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-        }
-      )
+
+  const loadAuctions = () => {
+    return (    fetch("https://iis-api.herokuapp.com/auctions")
+    .then(res => res.json())
+    .then(
+      (result) => {
+        setIsLoaded(true);
+        setAuctions(result)
+
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
+      }
+    ))
+  }
+  useEffect(() => {
+    loadAuctions()
   }, [])
 
 
-
+//TODO mazani jen autor nebo licitator
   //not admin or auctioneer
-  // if(!IsLoggedIn)
-  // {
-  //   auctions = auctions.filter(item => item.state_id === 1 || item.state_id==3)
-  // }
-  // else if (User.role_id == 1) {
-  //   auctions = auctions.filter(item => item.state_id === 1 || item.state_id==3 || item.author_id == User.id) //TODO or user is registered and auction winner is published
-  // }
 
-  
+
+
   if (error) {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
     return <div>Loading...</div>;
   } else {
+
     return (
+
       <>
-      <Container className="mainContainer">
+        <Container className="mainContainer">
 
-        <h1>Přehled aukcí</h1>
-        <div style={{width:'100%', padding:'10px'}}>
-          <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>
-        </div>
-        <Container className={Styles.flexContainer}>
-          {auctions.map(item => {
-            console.log(item)
-            return (
-              <div style={{ padding: 15 }}>
-                <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id}/>
-              </div>
-            )
-          })}
+          <h1>Přehled aukcí</h1>
+          <div style={{ width: '100%', padding: '10px' }}>
+            <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>
+          </div>
+          <Container className={Styles.flexContainer}>
+            {auctions.map(item => {
+              return (
+                  <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
+              )
+            })}
+          </Container>
+
         </Container>
-
-      </Container>
-      <NewAuctionModal   
-        show={newAuctionModalShow}
-        onHide={() => setNewAuctionModalShow(false)}
-        item={itemToBeAdded}
-      />
-      <EditTimeModal   
-        show={editTimeModalShow}
-        onHide={() => setEditTimeModalShow(false)}
-        {...itemToChangeTime}
-      />
-    </>
+        <NewAuctionModal
+          show={newAuctionModalShow}
+          onHide={() => setNewAuctionModalShow(false)}
+          item={itemToBeAdded}
+        />
+        <EditTimeModal
+          show={editTimeModalShow}
+          onHide={() => setEditTimeModalShow(false)}
+          loadAuctions = {loadAuctions}
+          user={User}
+          {...itemToChangeTime}
+        />
+      </>
     );
   }
 }

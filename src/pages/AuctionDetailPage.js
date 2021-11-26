@@ -8,14 +8,15 @@ import Button from "react-bootstrap/Button"
 import InputGroup from "react-bootstrap/InputGroup"
 import FormControl from "react-bootstrap/FormControl"
 import Styles from "../css/AuctionDetailPage.module.css"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 function BidFormOpenedAuc(props) {
-    //TODO zobrazit erory
+
+    //TODO error from backend
     return (
         <>
             <Formik
@@ -36,12 +37,13 @@ function BidFormOpenedAuc(props) {
                     {
                         errors.bid = "Nová nabídka musí být v nabídkové aukci nižší než aktuální cena"
                     }
+                    //TODO nemusi byt setnuto min a max bid
                     else if(Math.abs(last_bid-Number(values.bid)) < props.min_bid){
                         errors.bid = "Minimální" + (props.is_demand? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.min_bid 
                     }
                     else if(Math.abs(last_bid-Number(values.bid)) > props.max_bid)
                     {
-                        errors.bid = "Maximální" (props.is_demand? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid
+                        errors.bid = "Maximální" + (props.is_demand? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid
                     }
                     return errors
                 }}
@@ -94,35 +96,80 @@ function BidFormOpenedAuc(props) {
     )
 }
 function BidFormClosedAuc(props) {
-    return (<Form>
-        {props.BidPriceEditing ?
+    
+    const bidInputRef = useRef(null)
+
+    const changeValidationClassTo = (className, obj) => {
+        if (className === "is-valid") {
+            obj.current.classList.remove("is-invalid");
+            obj.current.classList.add("is-valid")
+        } else if (className === "is-invalid") {
+            obj.current.classList.remove("is-valid");
+            obj.current.classList.add("is-invalid")
+        }
+    }
+
+    const submitNewBid = () => {
+        console.log("submitting")
+       //TODO změnit class inputu aby byla zpětná vazba odesílání
+       if(props.BidPrice == "")
+       {
+        changeValidationClassTo("is-invalid", bidInputRef)
+       }
+       else{
+           changeValidationClassTo("is-valid", bidInputRef)
+          props.setBidPriceEditing(false); 
+          props.setLastBidPrice(props.BidPrice);
+       }
+            // fetch('https://iis-api.herokuapp.com/bids', {
+            //     method:'PUT',
+            //     headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+            //     body: JSON.stringify({
+            //         auction_id: props.id,
+            //         user_id: props.User.id,
+            //         price: props.BidPrice,
+            //         time: Date.now()
+            //     })
+            //     }).then(result => result.text()).then(result => console.log(result))
+            }
+    return (
+    <Form style={{ paddingTop:20}}>
+        {/* {props.BidPriceEditing ? */}
             <InputGroup className="mb-3">
                 <FormControl style={{ maxWidth: 250 }}
+                    ref={bidInputRef}
                     placeholder="Nová cena"
                     aria-label="Nová cena"
                     aria-describedby="basic-addon1"
                     value={props.BidPrice}
                     onChange={(e) => { props.setBidPrice(e.target.value) }}
                     type="number"
+                    name="bid"
                     disabled={!props.BidPriceEditing}
                 />
                 <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
-            </InputGroup> :
-            <p><strong>Vaše nabídka:</strong> {props.LastBidPrice == "" ? ("Zatím jste nezadal žádnou nabídku") : (props.LastBidPrice + " Kč")}  </p>}
-        <div>
+            </InputGroup> 
+            {/* :
+            <p style={{fontSize:20}}><strong>Vaše nabídka:</strong> {props.LastBidPrice == "" ? ("Zatím jste nezadal žádnou nabídku") : (props.LastBidPrice + " Kč")}  </p>} */}
+        <div >
             {props.BidPriceEditing ?
                 <>
-                    <Button variant="primary" onClick={() => { props.setBidPriceEditing(false); props.setLastBidPrice(props.BidPrice); }}>Potvrdit novou nabídku</Button>{' '}
-                    <Button variant="secondary" onClick={() => { props.setBidPriceEditing(false); props.setBidPrice(props.LastBidPrice) }}>Zrušit</Button>
+                    <Button variant="primary" onClick={() => {  submitNewBid() }}>Potvrdit novou nabídku</Button>{' '}
+                    <Button variant="secondary" onClick={() => { 
+                        props.setBidPriceEditing(false); 
+                        props.setBidPrice(props.LastBidPrice);  
+                        bidInputRef.current.classList.remove("is-valid"); 
+                        bidInputRef.current.classList.remove("is-invalid"); }}>Zrušit</Button>
                 </>
                 :
                 <>
-                    <Button variant="primary" onClick={() => props.setBidPriceEditing(true)}>Upravit nabídku</Button>
+                    <Button variant="primary" type="submit" onClick={() => props.setBidPriceEditing(true)}>Upravit nabídku</Button>
                 </>
 
             }
         </div>
-    </Form>)
+    </Form>
+    )
 }
 
 function AuctioneerControlButtons(props) {
@@ -151,20 +198,19 @@ function ItemPrice(props) {
 }
 
 function BidForm(props) {
-    //TODO musi byt registrovany v aukci
     if (props.UserLogged) {
-        if (props.User.id != props.auctioneer_id) {
-
-            if (props.state_id == 2 && Date.now() > new Date(props.start_time) && Date.now() < new Date(props.end_time)) {
-                if (props.is_open) {
-                    return (<BidFormOpenedAuc {...props}   loadAuction = {props.loadAuction}  />)
-                }
-                else {
-                    return (<BidFormClosedAuc {...props}   loadAuction = {props.loadAuction} />)
+            if (props.bidders && props.bidders.some(bidder => bidder.user_id == props.User.id)) {
+    
+                if (props.state_id == 2 && Date.now() > new Date(props.start_time) && Date.now() < new Date(props.end_time)) {
+                    if (props.is_open) {
+                        return (<BidFormOpenedAuc {...props}   loadAuction = {props.loadAuction}  />)
+                    }
+                    else {
+                        return (<BidFormClosedAuc {...props}   loadAuction = {props.loadAuction} />)
+                    }
                 }
             }
         }
-    }
     return null
 }
 
@@ -220,9 +266,9 @@ function AuctionRegistrations(props) {
                         <td>{item.user.name}</td>
                         <td>{item.user.surname}</td>
                         {(props.UserLogged && props.User.role_id >= 2 && props.User.id == props.auctioneer_id) ? <td>{item.is_approved ?
-                            <Button variant="danger" onClick={() => props.approveBidder(props.id, item.user.id, false)}>Zrušit registraci</Button>
-                            :
-                            <Button variant="primary" onClick={() => props.approveBidder(props.id, item.user.id, true)}>Schválit registraci</Button>}</td> : ""}
+                            <Button variant="danger" disabled={Date.now() > new Date(props.start_time)} onClick={() => props.approveBidder(props.id, item.user.id, false)}>Zrušit registraci</Button>
+                            : 
+                            <Button variant="primary" disabled={Date.now() > new Date(props.start_time)} onClick={() => props.approveBidder(props.id, item.user.id, true)}>Schválit registraci</Button>}</td> : ""}
                     </tr>)
                 }
                 )}
@@ -238,7 +284,7 @@ export default function AuctionDetailPage(props) {
 
 
     const [BidPriceEditing, setBidPriceEditing] = useState(false)
-    const [LastBidPrice, setLastBidPrice] = useState("")  //TODO iniciovat last bid moji nabídkou
+    const [LastBidPrice, setLastBidPrice] = useState("")
     const [BidPrice, setBidPrice] = useState("")
     const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
     const { auctionId } = useParams()
@@ -259,6 +305,18 @@ export default function AuctionDetailPage(props) {
                     (result) => {
                         setIsLoaded(true);
                         setAuction(result);
+                        if(IsLoggedIn)
+                        {
+                            if(auction.bid)
+                            {
+                                let userBids = auction.bid.filter(item => item.user_id == User.id)
+                                if(userBids.length!=0)
+                                {
+                                    setLastBidPrice(userBids[0].price)
+                                }
+                            }
+
+                        }
                     },
                     (error) => {
                         setIsLoaded(true);

@@ -6,9 +6,11 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { UseUserContext } from "../userContext";
+import { useNavigate  } from 'react-router-dom';
 
 export default function NavigationBar(props) {
   const {setIsLoggedIn, User, IsLoggedIn, setUser} = UseUserContext()
+  const navigate = useNavigate();
   return (<Navbar collapseOnSelect fixed="top" expand="lg" bg="dark" variant="dark">
     <Container>
       <Navbar.Brand as={Link} to="/">
@@ -21,9 +23,10 @@ export default function NavigationBar(props) {
           <Nav.Item>
             <Nav.Link as={Link} to="/" style={(props.page === "/") ? { color: 'white' } : {}}> Seznam aukcí</Nav.Link>
           </Nav.Item>
+          {(IsLoggedIn && User.role_id==3) &&
           <Nav.Item>
             <Nav.Link as={Link} to="/usr-man" style={(props.page === "/usr-man") ? { color: 'white' } : {}}> Správa uživatelů</Nav.Link>
-          </Nav.Item>
+          </Nav.Item>}
 
           {IsLoggedIn ?
 
@@ -31,7 +34,7 @@ export default function NavigationBar(props) {
               <Nav.Item>
                 <NavDropdown align="end" menuVariant="dark" title={User.name} id="collasible-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/user-profile" style={(props.page === "/user-profile") ? { color: 'white' } : {}}> Můj profil </NavDropdown.Item>
-                  <NavDropdown.Item onClick={()=>{setIsLoggedIn(false);setUser({}) }}> Odhlásit se</NavDropdown.Item>
+                  <NavDropdown.Item onClick={()=>{setIsLoggedIn(false);setUser({}); sessionStorage.removeItem("accessToken");navigate('/');  }}> Odhlásit se</NavDropdown.Item>
                 </NavDropdown>
               </Nav.Item>
 
