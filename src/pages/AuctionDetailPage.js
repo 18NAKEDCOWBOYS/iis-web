@@ -53,7 +53,6 @@ function BidFormOpenedAuc(props) {
                         headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
                         body: JSON.stringify({
                             auction_id: props.id,
-                            user_id: props.User.id,
                             price: values.bid,
                             time: Date.now()
                         })
@@ -118,20 +117,26 @@ function BidFormClosedAuc(props) {
        }
        else{
            changeValidationClassTo("is-valid", bidInputRef)
-          props.setBidPriceEditing(false); 
-          props.setLastBidPrice(props.BidPrice);
+           props.setBidPriceEditing(false); 
+           props.setLastBidPrice(props.BidPrice);
        }
-            // fetch('https://iis-api.herokuapp.com/bids', {
-            //     method:'PUT',
-            //     headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-            //     body: JSON.stringify({
-            //         auction_id: props.id,
-            //         user_id: props.User.id,
-            //         price: props.BidPrice,
-            //         time: Date.now()
-            //     })
-            //     }).then(result => result.text()).then(result => console.log(result))
-            }
+        console.log(props.id)
+        console.log(props.BidPrice)
+        let last_user_bid =props.bid.find(bid => bid.user_id == props.User.id)
+        console.log(last_user_bid.time)
+           
+        return (fetch('https://iis-api.herokuapp.com/bids', {
+            method:'PUT',
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+            body: JSON.stringify({
+                auction_id: props.id,
+                price: Number(props.BidPrice),
+                time: last_user_bid.time
+            })}).then(result => result.text()).then(result => console.log(result)))
+                // .then(()=>{
+                //     props.loadAuction()
+                // })
+    }
     return (
     <Form style={{ paddingTop:20}}>
         {/* {props.BidPriceEditing ? */}
@@ -186,7 +191,7 @@ function AuctioneerControlButtons(props) {
 
 function ItemPrice(props) {
     let result;
-    if (!props.is_open || props.state_id == 1 || props.bidders.length == 0) {
+    if (!props.is_open || props.state_id == 1 || props.bid.length == 0) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
@@ -349,7 +354,7 @@ export default function AuctionDetailPage(props) {
         imagesGallerySrc = [{ "url": "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" }]
     }
 
-    let overlay = auction.state_id == 3 || (auction.state_id == 2 && new Date(auction.start_time) > Date.now())
+    let overlay = auction.state_id == 3 || (auction.state_id == 2 && new Date(auction.start_time) > Date.now() &&auction.auctioneer_id != User.id )
 
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -360,7 +365,7 @@ export default function AuctionDetailPage(props) {
         return (
             <>
                 {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
-                {(auction.state_id == 2 && new Date(auction.start_time) > Date.now()) && (<span style={{ color: "#0d6efd" }} className={Styles.textStateCenter}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</span>)}
+                {overlay && (<span style={{ color: "#0d6efd" }} className={Styles.textStateCenter}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</span>)}
                 <Container className="mainContainer" style={overlay ? { opacity: 0.25 } : { opacity: 1 }}>
                     <div style={{ display: "flex" }}>
                         <div style={{ flex: 0.7 }}>

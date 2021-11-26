@@ -41,7 +41,7 @@ export default function EditTimeModal(props) {
             fetch('https://iis-api.herokuapp.com/auctions/approve', {
               method: 'PUT',
               headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-              body: JSON.stringify({ "id": props.id,  "state_id": 2})
+              body: JSON.stringify({ "id": props.id,  "state_id": 2, "start_time": new Date(values.start_time),  "end_time": new Date(values.end_time)})
             }).then(response => response.text()).then(resp => console.log(resp)).then(resp => {
               props.loadAuctions()
               actions.setSubmitting(false);
