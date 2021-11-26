@@ -11,7 +11,8 @@ function CardBodyItems(props) {
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
     "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
-    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : "Bohuš" //TODO vybrat jmeno podle id
+    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname), //TODO vybrat jmeno podle id
+    "Autor": props.user_auction_author_idTouser.name + " " + props.user_auction_author_idTouser.surname
   }
   items[props.is_open ? "Aktuální cena:" : "Vyvolávací cena:"] = props.price + "Kč"
   return items
