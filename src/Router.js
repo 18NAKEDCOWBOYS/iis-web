@@ -9,6 +9,7 @@ import AuctionDetailPage from './pages/AuctionDetailPage'
 import UserProfilePage from './pages/UserProfilePage'
 import NavigationBar from './components/NavigationBar'
 import { useLocation } from 'react-router'
+import Unauthorized from './pages/Unauthorized'
 export default function Router() {
     let location = useLocation().pathname
     return (
@@ -23,6 +24,7 @@ export default function Router() {
                 <Route path="/auction-detail/:auctionId" element={<AuctionDetailPage />} />
                 <Route path="/usr-man" element={<UserManagementpage />} />
                 <Route path='*' element={<NotFound />} />
+                <Route path='/unauthorized' element={<Unauthorized/>} />
             </Routes>
         </>
     )
