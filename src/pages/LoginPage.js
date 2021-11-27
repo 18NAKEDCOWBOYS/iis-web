@@ -43,7 +43,6 @@ export default function LoginPage(props) {
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                console.log(JSON.stringify(values))
                 fetch('https://iis-api.herokuapp.com/auth/login', {
                   method:'POST',
                   headers: {"Content-type": "application/json; charset=UTF-8"},
@@ -52,7 +51,6 @@ export default function LoginPage(props) {
                 )
                 .then(response=>response.text()) 
                 .then((authRsp)=>{
-                  console.log(authRsp)
                   if(authRsp === 'Username or password incorrect'){
                     bag.setStatus('Zadali jste špatný e-mail nebo heslo')
                   }else{
@@ -67,7 +65,6 @@ export default function LoginPage(props) {
                     })
                     .then((response)=>response.text())
                     .then((usrRsp)=>{
-                      console.log(usrRsp)
                       setUser(JSON.parse(usrRsp))
                       navigate('/')
                     })

@@ -84,8 +84,6 @@ export default function AuctionsPage(props) {
   const [selected, setSelected] = useState([]);
 
   const filterByOptions = (auctionsParam) => {
-    console.log("vybrano:")
-    console.log(selected)
     if (selected.length == 0 || selected.length == options.length) {
       return auctionsParam
     }
@@ -121,7 +119,6 @@ export default function AuctionsPage(props) {
     return (
       <>
 
-        {selected.map(option => console.log("jede tooo"))}
         <Container className="mainContainer">
           <div style={{ display: "flex" }}>
             <div style={{ flex: 0.8, }}>

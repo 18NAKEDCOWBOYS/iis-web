@@ -44,13 +44,17 @@ export default function UserManagementPage(props) {
           "Content-type": "application/json; charset=UTF-8",
           'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
         }
-      }).then(CheckError)
-        .then(jsonResponse => {
+      }).then(response => {
+        if (response.status == 200)
+        {
           setItems(jsonResponse)
           setIsLoaded(true)
-        }).catch((error) => {
-          console.log(error)
-        })
+        }
+        else
+        {
+          navigate("/error/" + response.status +"/" + response.text())
+        }
+      })
     )}
 
 const str_role = ["Neregistrovaný", "Uživatel", "Licitátor", "Administrátor"]
@@ -134,7 +138,6 @@ const deleteUser = function (props) {
 }
 
 if (error) {
-  console.log(error)
   return (
     <>
       {navigate("/error/" + error.ID + "/" + error.Text)}
