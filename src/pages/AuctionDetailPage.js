@@ -323,7 +323,7 @@ export default function AuctionDetailPage(props) {
     const [BidPriceEditing, setBidPriceEditing] = useState(false)
     const [LastBidPrice, setLastBidPrice] = useState("")
     const [BidPrice, setBidPrice] = useState("")
-    const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+    const { User, IsLoggedIn} = UseUserContext()
     const { auctionId } = useParams()
 
 
@@ -332,7 +332,6 @@ export default function AuctionDetailPage(props) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [auction, setAuction] = useState([]);
-    const [stateFilter, setStateFilter] = useState()
 
     const loadAuction = () => {
         return (

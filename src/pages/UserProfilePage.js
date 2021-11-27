@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 export default function UserProfilePage() {
 
     const [auctions, setAuctions] = useState([]);
-    const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+    const {User } = UseUserContext()
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -56,9 +56,7 @@ export default function UserProfilePage() {
                                             <AuctionCard {...item} link={'/auction-detail/' + item.id} />
                                         )
                                     }
-                                    else {
                                         return null
-                                    }
                                 })}
                             </Container>
                         </Tab>
@@ -71,6 +69,7 @@ export default function UserProfilePage() {
                                             <AuctionCard {...item} link={'/auction-detail/' + item.id} />
                                         )
                                     }
+                                    return null
                                 })}
                             </Container>
                         </Tab>
@@ -84,6 +83,7 @@ export default function UserProfilePage() {
                                                 <AuctionCard {...item} link={'/auction-detail/' + item.id} />
                                             )
                                         }
+                                        return null
                                     })}
                                 </Container>
                             </Tab> 

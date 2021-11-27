@@ -44,7 +44,7 @@ export default function AuctionsPage(props) {
 
 
 
-  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+  const { User} = UseUserContext()
 
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
