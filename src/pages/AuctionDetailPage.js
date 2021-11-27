@@ -13,8 +13,8 @@ import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-//TODO info o licitátorovi a autorovi, možná tlačítko na schválení
+
+//TODO  možná tlačítko na schválení
 function BidFormOpenedAuc(props) {
 
     return (
@@ -331,7 +331,7 @@ export default function AuctionDetailPage(props) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [auction, setAuction] = useState([]);
-
+    const [stateFilter, setStateFilter] = useState()
 
     const loadAuction = () => {
         return (
@@ -400,8 +400,8 @@ export default function AuctionDetailPage(props) {
     else if (!isLoaded) {
         return <div>Loading...</div>;
     } else {
-        console.log(auction)
         return (
+
             <>
                 {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
                 {overlay && (<span style={{ color: "#0d6efd" }} className={Styles.textStateCenter}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</span>)}
@@ -413,7 +413,9 @@ export default function AuctionDetailPage(props) {
                         </div>
                         <AuctioneerControlButtons User={User} {...auction} />
                     </div>
+
                     <Container style={{ display: "flex" }}>
+                    
                         <div style={{ flex: 1, paddingRight: 100, width: 300, height: 300, position: "relative" }}>
                             <SimpleImageSlider width={550} height={309} images={imagesGallerySrc} showBullets={true} showNavs={true} />
                         </div>
