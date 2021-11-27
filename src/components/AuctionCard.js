@@ -42,7 +42,6 @@ function AuctionStateText(props) {
 
 function ApprovalButtonsFooter(props) {
   //admin or auctioneer
-  console.log(props)
   const Not_approved = () => {
     return (fetch('https://iis-api.herokuapp.com/auctions/approve', {
       method: 'PUT',

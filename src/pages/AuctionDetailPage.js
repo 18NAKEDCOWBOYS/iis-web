@@ -88,7 +88,7 @@ function BidFormOpenedAuc(props) {
                     </InputGroup>
                     {errors.bid ? <div style={{ color: 'red', paddingTop: 2 }}>{errors.bid}</div> : null}
                     <div>
-                        <Button style={{ marginTop: 10 }} disabled={isSubmitting} variant="primary" type="submit">Odeslat nabídku</Button>
+                        <Button style={{ marginTop: 10 }} disabled={isSubmitting || errors.bid} variant="primary" type="submit">Odeslat nabídku</Button>
                     </div>
                 </Form>)}
             </Formik>
@@ -98,6 +98,7 @@ function BidFormOpenedAuc(props) {
 function BidFormClosedAuc(props) {
 
     const bidInputRef = useRef(null)
+    const [error, seterror] = useState(null)
     const changeValidationClassTo = (className, obj) => {
         if (className === "is-valid") {
             obj.current.classList.remove("is-invalid");
@@ -109,8 +110,9 @@ function BidFormClosedAuc(props) {
     }
 
     const submitNewBid = () => {
-        if (props.BidPrice == "") {
+        if (error != "") {
             changeValidationClassTo("is-invalid", bidInputRef)
+            return;
         }
         else {
             changeValidationClassTo("is-valid", bidInputRef)
@@ -138,31 +140,57 @@ function BidFormClosedAuc(props) {
                 
             })    )
     }
+
+    const validateBidInput = (value) => {
+        let value_num = Number(value)
+        let price_num = Number(props.price)
+        if(value <= 0)
+        {
+            seterror("Nabídka musí být kladné číslo")
+            changeValidationClassTo("is-invalid", bidInputRef)
+        }
+        else if(value_num < price_num && props.is_demand)
+        {
+            seterror("Nabídka musí být v poptávkové aukci vyšší než vyvolávací cena")
+            changeValidationClassTo("is-invalid", bidInputRef)
+        }
+        else if(value_num > price_num && !props.is_demand)
+        {
+            seterror("Nabídka musí být v nabídkové aukci menší než vyvolávací cena")
+            changeValidationClassTo("is-invalid", bidInputRef)
+        }
+        else{
+            seterror("")
+            changeValidationClassTo("is-valid", bidInputRef)
+        }
+    }
     return (
-        <Form style={{ paddingTop: 20 }}>
-            <InputGroup className="mb-3">
+        <Form style={{ paddingTop: 20 }} onSubmit={(e) => {e.preventDefault()}} >
+            <InputGroup>
                 <FormControl style={{ maxWidth: 250 }}
                     ref={bidInputRef}
                     placeholder="Nová cena"
                     aria-label="Nová cena"
                     aria-describedby="basic-addon1"
                     value={props.BidPrice}
-                    onChange={(e) => { props.setBidPrice(e.target.value) }}
+                    onChange={(e) => { props.setBidPrice(e.target.value); validateBidInput(e.target.value) }}
                     type="number"
                     name="bid"
                     disabled={!props.BidPriceEditing}
                 />
                 <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
             </InputGroup>
-            <div >
+            <div style={{ color: 'red', paddingTop: 5 }}>{error}</div>
+            <div style={{ paddingTop: 10 }}>
                 {props.BidPriceEditing ?
                     <>
-                        <Button variant="primary" onClick={() => { submitNewBid() }}>Potvrdit novou nabídku</Button>{' '}
+                        <Button variant="primary" onClick={() => { submitNewBid() } } disabled={error != ""}>Potvrdit novou nabídku</Button>{' '}
                         <Button variant="secondary" onClick={() => {
                             props.setBidPriceEditing(false);
                             props.setBidPrice(props.LastBidPrice);
                             bidInputRef.current.classList.remove("is-valid");
                             bidInputRef.current.classList.remove("is-invalid");
+                            seterror("")
                         }}>Zrušit</Button>
                     </>
                     :
@@ -396,8 +424,8 @@ export default function AuctionDetailPage(props) {
                             <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 1 ? "Neurčen" : new Date(auction.end_time).toLocaleString('cs-CZ')}</div>
                             <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
                             <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
-                            <div className={Styles.auctionInfoItem}><strong>Minimální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.min_bid == null ? "Neomezen" : (auction.min_bid + "Kč")}</div>
-                            <div className={Styles.auctionInfoItem}><strong>Maximální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.max_bid == null ? "Neomezen" : (auction.max_bid + "Kč")}</div>
+                            {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Minimální {auction.is_demand ? "příhoz: " : "snížení nabídky: " }</strong> {auction.min_bid == null ? "Neomezen" : (auction.min_bid + "Kč")}</div>}
+                            {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Maximální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.max_bid == null ? "Neomezen" : (auction.max_bid + "Kč")}</div>}
 
                             <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
                                 setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} loadAuction={loadAuction} />
