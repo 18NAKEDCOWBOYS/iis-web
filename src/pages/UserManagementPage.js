@@ -47,7 +47,7 @@ export default function UserManagementPage(props) {
       }).then(response => {
         if (response.status == 200)
         {
-          setItems(jsonResponse)
+          setItems(response)
           setIsLoaded(true)
         }
         else
