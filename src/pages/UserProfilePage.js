@@ -66,7 +66,6 @@ export default function UserProfilePage() {
                             <h2>Aukce, do kterých jste se registroval</h2>
                             <Container className={AuctionPreviewStyles.flexContainer}>
                                 {auctions.map(item => {
-                                    // console.log(item.bidders)
                                     if (item.bidders.some(bidder => bidder.user_id == User.id)) {
                                         return (
                                             <AuctionCard {...item} link={'/auction-detail/' + item.id} />
