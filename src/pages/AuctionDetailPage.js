@@ -13,10 +13,11 @@ import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
-
+import { useNavigate } from 'react-router-dom';
 //TODO  možná tlačítko na schválení
 function BidFormOpenedAuc(props) {
 
+    const navigate = useNavigate();
     return (
         <>
             <Formik
@@ -59,7 +60,7 @@ function BidFormOpenedAuc(props) {
                         }
                         else
                         {
-                            //TODO redirect to error page
+                            navigate("/error/" + response.status +"/" + response.text())
                         }
                     })
 
@@ -109,6 +110,7 @@ function BidFormClosedAuc(props) {
         }
     }
 
+    const navigate = useNavigate();
     const submitNewBid = () => {
         if (error != "") {
             changeValidationClassTo("is-invalid", bidInputRef)
@@ -120,7 +122,6 @@ function BidFormClosedAuc(props) {
             props.setLastBidPrice(props.BidPrice);
         }
         let last_user_bid = props.bid.find(bid => bid.user_id == props.User.id)
-
         return (fetch('https://iis-api.herokuapp.com/bids', {
             method: 'PUT',
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
@@ -135,7 +136,7 @@ function BidFormClosedAuc(props) {
                 }
                 else
                 {
-                    //TODO redirect to error page
+                    navigate("/error/" + response.status +"/" + response.text())
                 }
                 
             })    )
@@ -360,6 +361,7 @@ export default function AuctionDetailPage(props) {
     }
 
     const ApproveBidder = (auctionId, userId, approved) => {
+        const navigate = useNavigate();
         return (fetch('https://iis-api.herokuapp.com/bidders/', {
             method: 'PUT',
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
@@ -373,7 +375,7 @@ export default function AuctionDetailPage(props) {
             }
             else
             {
-                //TODO redirect
+                navigate("/error/" + response.status +"/" + response.text())
             }
         }))
     }
@@ -393,7 +395,7 @@ export default function AuctionDetailPage(props) {
     }
 
     let overlay = auction.state_id == 3 || (auction.state_id == 2 && new Date(auction.start_time) > Date.now() && auction.auctioneer_id != User.id)
-
+   
     if (error) {
         return <div>Error: {error.message}</div>;
     }
