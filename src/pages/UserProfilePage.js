@@ -5,10 +5,12 @@ import AuctionPreviewStyles from './../css/AuctionsPage.module.css'
 import AuctionCard from '../components/AuctionCard'
 import { UseUserContext } from "../userContext";
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 export default function UserProfilePage() {
 
+    
     const [auctions, setAuctions] = useState([]);
-    const {User } = UseUserContext()
+    const {User, IsLoggedIn } = UseUserContext()
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -27,7 +29,12 @@ export default function UserProfilePage() {
                 }
             ))
     }
+    const navigate = useNavigate();
     useEffect(() => {
+        if(!IsLoggedIn)
+        {
+            navigate("/error/403/Unauthorized")
+        }
         loadAuctions()
     }, [])
     if (error) {
