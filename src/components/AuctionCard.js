@@ -8,11 +8,10 @@ import { UseUserContext } from "../userContext";
 
 
 function CardBodyItems(props) {
-  console.log(props)
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
     "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
-    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname), //TODO vybrat jmeno podle id
+    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname), 
     "Autor": props.user_auction_author_idTouser.name + " " + props.user_auction_author_idTouser.surname
   }
   items[props.is_open ? "Aktuální cena:" : "Vyvolávací cena:"] = props.price + "Kč"
@@ -31,7 +30,7 @@ function AuctionStateText(props) {
     "Začátek naplánován na " + (props.start_time == null ? "" : new Date(props.start_time).toLocaleString('cs-CZ')),
     "Zamítnuta",
     "Aukce předčasně ukončena, čeká se na vyhodnocení",
-    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id == null ? ("") : (props.user_auction_winner_idTouser.name + " " + props.user_auction_winner_idTouser.surname)), //TODO get user name by id
+    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id == null ? ("") : (props.user_auction_winner_idTouser.name + " " + props.user_auction_winner_idTouser.surname)),
   ]
   let index = (props.state_id) - 1;
   return textsByState[index]

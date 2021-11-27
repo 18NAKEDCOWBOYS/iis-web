@@ -400,6 +400,7 @@ export default function AuctionDetailPage(props) {
     else if (!isLoaded) {
         return <div>Loading...</div>;
     } else {
+        console.log(auction)
         return (
             <>
                 {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
@@ -422,8 +423,10 @@ export default function AuctionDetailPage(props) {
                             <p><strong>Popis: </strong>{auction.description}</p>
                             <ItemPrice {...auction} />
                             <div className={Styles.auctionInfoItem}><strong>Konec aukce: </strong>{auction.state_id == 1 ? "Neurčen" : new Date(auction.end_time).toLocaleString('cs-CZ')}</div>
-                            <div className={Styles.auctionInfoItem}><strong>Typ:</strong> {auction.is_demand ? "Poptávková" : "Nabídková"}</div>
-                            <div className={Styles.auctionInfoItem}><strong>Pravidla:</strong> {auction.is_open ? "Otevřená" : "Uzavřená"}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Typ: </strong>{auction.is_demand ? "Poptávková" : "Nabídková"}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Pravidla: </strong>{auction.is_open ? "Otevřená" : "Uzavřená"}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Licitátor: </strong>{auction.auctioneer_id == null ? "Nepřiřazen" : (auction.user_auction_author_idTouser && (auction.user_auction_auctioneer_idTouser.name + " " + auction.user_auction_auctioneer_idTouser.surname))}</div>
+                            <div className={Styles.auctionInfoItem}><strong>Autor: </strong>{auction.user_auction_author_idTouser && (auction.user_auction_author_idTouser.name + " " + auction.user_auction_author_idTouser.surname)}</div>
                             {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Minimální {auction.is_demand ? "příhoz: " : "snížení nabídky: " }</strong> {auction.min_bid == null ? "Neomezen" : (auction.min_bid + "Kč")}</div>}
                             {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Maximální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.max_bid == null ? "Neomezen" : (auction.max_bid + "Kč")}</div>}
 
