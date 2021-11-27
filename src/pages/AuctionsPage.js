@@ -7,6 +7,7 @@ import NewAuctionModal from '../components/NewAuctionModal'
 import EditTimeModal from '../components/EditTimeModal'
 import { UseUserContext } from "../userContext";
 import { useState, useEffect } from 'react';
+
 export default function AuctionsPage(props) {
   //modalLogic
   const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
@@ -68,11 +69,6 @@ export default function AuctionsPage(props) {
   useEffect(() => {
     loadAuctions()
   }, [])
-
-
-//TODO mazani jen autor nebo licitator
-  //not admin or auctioneer
-
 
 
   if (error) {

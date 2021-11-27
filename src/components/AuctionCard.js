@@ -8,6 +8,7 @@ import { UseUserContext } from "../userContext";
 
 
 function CardBodyItems(props) {
+  console.log(props)
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
     "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
@@ -107,14 +108,14 @@ function DeleteButton(props) {
     return (fetch('https://iis-api.herokuapp.com/auctions/' + props.id, {
       method: 'DELETE',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-    }).then(response => response.text()).then(resp => console.log(resp))).then(resp => props.item_prop.loadAuctions())
+    }).then(response => response.text()).then(resp => console.log(resp))).then(resp => props.loadAuctions())
   }
   if (props.userLogged) {
     if (props.user.id == props.author_id) {
       return (
         <>
           <Card.Footer>
-            <Button variant="danger" onclick={() => deleteAuction()}><FaTrashAlt /> Smazat</Button>
+            <Button variant="danger" onClick={() => deleteAuction()}><FaTrashAlt /> Smazat</Button>
           </Card.Footer>
         </>
       )

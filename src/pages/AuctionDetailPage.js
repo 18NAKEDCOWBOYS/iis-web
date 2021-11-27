@@ -14,6 +14,7 @@ import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+//TODO info o licitátorovi a autorovi, možná tlačítko na schválení
 function BidFormOpenedAuc(props) {
 
     return (
@@ -193,7 +194,7 @@ function ItemPrice(props) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
-        result = "Aktuální cena: " + props.bid[props.bid.length - 1].price + " Kč" //TODO možná vzít max místo spoléhání se na to, že max je poslední
+        result = "Aktuální cena: " + props.bid[props.bid.length - 1].price + " Kč"
     }
     return (
         <div className={Styles.priceStyle}>{result}</div>
