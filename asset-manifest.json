@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/iis-web/static/css/main.90d678b2.chunk.css",
-    "main.js": "/iis-web/static/js/main.ecf1192a.chunk.js",
+    "main.js": "/iis-web/static/js/main.5b12e632.chunk.js",
     "runtime-main.js": "/iis-web/static/js/runtime-main.b43bff77.js",
-    "static/js/2.a4a40e58.chunk.js": "/iis-web/static/js/2.a4a40e58.chunk.js",
+    "static/js/2.657619f1.chunk.js": "/iis-web/static/js/2.657619f1.chunk.js",
     "index.html": "/iis-web/index.html",
-    "static/js/2.a4a40e58.chunk.js.LICENSE.txt": "/iis-web/static/js/2.a4a40e58.chunk.js.LICENSE.txt"
+    "static/js/2.657619f1.chunk.js.LICENSE.txt": "/iis-web/static/js/2.657619f1.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.b43bff77.js",
-    "static/js/2.a4a40e58.chunk.js",
+    "static/js/2.657619f1.chunk.js",
     "static/css/main.90d678b2.chunk.css",
-    "static/js/main.ecf1192a.chunk.js"
+    "static/js/main.5b12e632.chunk.js"
   ]
 }
