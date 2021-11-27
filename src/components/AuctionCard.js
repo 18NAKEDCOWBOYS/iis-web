@@ -11,10 +11,23 @@ function CardBodyItems(props) {
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
     "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
-    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname), 
+    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname),
     "Autor": props.user_auction_author_idTouser.name + " " + props.user_auction_author_idTouser.surname
   }
-  items[props.is_open ? "Aktuální cena:" : "Vyvolávací cena:"] = props.price + "Kč"
+  if (props.is_open) {
+    if (props.bid.length == 0) {
+      items["Aktuální cena:"] = props.price + "Kč"
+    }
+    else {
+      let last_bid_obj = props.bid.reduce(function (a, b) {
+        return new Date(a.time) > new Date(b.time) ? a : b
+      }, 0);
+      items["Aktuální cena:"] = last_bid_obj.price + "Kč"
+    }
+  }
+  else {
+    items["Vyvolávací cena:"] = props.price + "Kč"
+  }
   return items
 }
 
@@ -48,13 +61,11 @@ function ApprovalButtonsFooter(props) {
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({ "id": props.item_prop.id, "state_id": 3 })
     }).then(response => {
-      if(response.status == 200)
-      {
+      if (response.status == 200) {
         return response
       }
-      else
-      {
-        navigate("/error/" + response.status +"/" + response.text())
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
       }
     }).then(resp => props.item_prop.loadAuctions()))
   }
@@ -81,13 +92,11 @@ function AuctionReg(props) {
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({ "auction_id": props.id })
     }).then(response => {
-      if(response.status == 200)
-      {
+      if (response.status == 200) {
         return response
       }
-      else
-      {
-        navigate("/error/" + response.status +"/" + response.text())
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
       }
     }).then(resp => props.loadAuctions()))
   }
@@ -127,13 +136,11 @@ function DeleteButton(props) {
       method: 'DELETE',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
     }).then(response => {
-      if(response.status == 200)
-      {
+      if (response.status == 200) {
         return response
       }
-      else
-      {
-        navigate("/error/" + response.status +"/" + response.text())
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
       }
     }).then(resp => props.loadAuctions()))
   }

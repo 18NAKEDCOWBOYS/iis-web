@@ -14,6 +14,7 @@ import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+
 //TODO  možná tlačítko na schválení
 function BidFormOpenedAuc(props) {
 
@@ -24,20 +25,28 @@ function BidFormOpenedAuc(props) {
                 initialValues={{ bid: '' }}
                 validate={values => {
                     const errors = {};
-                    let last_bid = props.bid.length == 0 ? props.price : props.bid[props.bid.length - 1].price
+                    let last_bid;
+                    if(props.bid.length === 0)
+                    {
+                        last_bid = props.price 
+                    } 
+                    let last_bid_obj = props.bid.reduce(function(a, b) {
+                        return new Date(a.time) > new Date(b.time) ? a :b
+                    }, 0);
+                    last_bid = last_bid_obj.price
                     if (Number(values.bid) <= 0) {
                         errors.bid = "Nabídka musí být větší než 0 Kč"
                     }
-                    else if (props.is_demand && last_bid >= values.bid) {
+                    else if (props.is_demand && Number(last_bid) >= Number(values.bid)) {
                         errors.bid = "Nová nabídka musí být v poptávkové aukcí vyšší než aktuální cena"
                     }
-                    else if (!props.is_demand && values.bid >= last_bid) {
+                    else if (!props.is_demand && Number(values.bid) >= Number(last_bid)) {
                         errors.bid = "Nová nabídka musí být v nabídkové aukci nižší než aktuální cena"
                     }
-                    else if (props.min_bid != null && Math.abs(last_bid - Number(values.bid)) < props.min_bid) {
+                    else if (props.min_bid != null && Math.abs( Number(last_bid) - Number(values.bid)) < Number(props.min_bid)) {
                         errors.bid = "Minimální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.min_bid
                     }
-                    else if (props.max_bid != null && Math.abs(last_bid - Number(values.bid)) > props.max_bid) {
+                    else if (props.max_bid != null && Math.abs(Number(last_bid) - Number(values.bid)) > Number(props.max_bid)) {
                         errors.bid = "Maximální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid
                     }
                     return errors
@@ -223,7 +232,10 @@ function ItemPrice(props) {
         result = "Vyvolávací cena: " + props.price + " Kč"
     }
     else {
-        result = "Aktuální cena: " + props.bid[props.bid.length - 1].price + " Kč"
+        let last_bid_obj = props.bid.reduce(function(a, b) {
+            return new Date(a.time) > new Date(b.time) ? a :b
+        }, 0);
+        result = "Aktuální cena: " + last_bid_obj.price + " Kč"
     }
     return (
         <div className={Styles.priceStyle}>{result}</div>
