@@ -84,7 +84,8 @@ const onNewUserModalSubmit = (values, bag) => {
       'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
     },
     body: JSON.stringify(values)
-  }).then(() => {
+  }).then(CheckError)
+  .then(() => {
     getAllUsers()
     bag.setSubmitting(false)
     setNewUserModalShow(false)
@@ -109,7 +110,8 @@ const onEditUserModalSubmit = (values, bag) => {
       'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
     },
     body: JSON.stringify(values)
-  }).then(() => {
+  }).then(CheckError)
+  .then(() => {
     getAllUsers()
     bag.setSubmitting(false)
     setEditUserModalShow(false);
@@ -128,7 +130,8 @@ const deleteUser = function (props) {
   fetch('https://iis-api.herokuapp.com/users/' + props.item.id, {
     headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
     method: 'DELETE'
-  }).then(() => {
+  }).then(CheckError)
+  .then(() => {
     getAllUsers()
     setDeleteUserModalShow(false)
   })

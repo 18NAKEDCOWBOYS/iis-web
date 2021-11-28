@@ -56,7 +56,8 @@ export default function AuctionsPage(props) {
         'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
       },
       body: JSON.stringify(values)
-    }).then(() => {
+    }).then(CheckError)
+    .then(() => {
       loadAuctions()
       bag.setSubmitting(false)
       setNewAuctionModalShow(false)
@@ -70,6 +71,17 @@ export default function AuctionsPage(props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [auctions, setAuctions] = useState([]);
 
+  function CheckError(response) {
+    if (response.status >= 200 && response.status <= 299) {
+      return response.json();
+    } else {
+      let err =[]
+      err["ID"] = response.status
+      err["Text"] = response.statusText
+      setError(err)
+      setIsLoaded(true)
+    }
+  }
 
   const loadAuctions = () => {
     return (fetch("https://iis-api.herokuapp.com/auctions")
@@ -132,7 +144,10 @@ export default function AuctionsPage(props) {
 
   }
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+    <>
+      {navigate("/error/" + error.ID + "/" + error.Text)}
+    </>)
   } else if (!isLoaded) {
     return <Loading/>
   } else {
