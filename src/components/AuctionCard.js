@@ -145,7 +145,7 @@ function DeleteButton(props) {
     }).then(resp => props.loadAuctions()))
   }
   if (props.userLogged) {
-    if (props.user.id == props.author_id && props.state_id == 1) {
+    if (props.user.id == props.author_id) {
       return (
         <>
           <Card.Footer>
