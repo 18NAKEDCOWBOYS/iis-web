@@ -230,11 +230,9 @@ function BidFormClosedAuc(props) {
 }
 
 function AuctioneerControlButtons(props) {
-    if (props.User.id == props.auctioneer_id && Date.now() >= new Date(props.end_time)) {
+    if (props.User.id == props.auctioneer_id) {
         return (
-            <div style={{ flex: 0.3, padding: 35 }}>
-                <Button variant="primary" onClick={() => props.onClick()}>Ukončit a určit výherce</Button>
-            </div>
+                <Button variant="primary" onClick={() => props.onClick()}>{(new Date(props.end_time) > Date.now() ? "Předčasně ukončit a určit výherce" : "Ukončit a určit výherce ")}</Button>
         )
     }
     return null
@@ -491,9 +489,8 @@ export default function AuctionDetailPage(props) {
                         </div>
                         <div style={{ flex: 0.3, padding: 35 }}>
                         <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister}/>
-                        <AuctioneerControlButtons User={User} IsLoggedIn={IsLoggedIn} {...auction} />
+                        <AuctioneerControlButtons onClick = {() => setEvaluatedItem(auction)} IsLoggedIn={IsLoggedIn} User={User} {...auction} />
                         </div>
-                        <AuctioneerControlButtons onClick = {() => setEvaluatedItem(auction)} User={User} {...auction} />
                     </div>
 
                     <Container style={{ display: "flex" }}>
