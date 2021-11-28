@@ -9,6 +9,7 @@ import { UseUserContext } from "../userContext";
 import { useState, useEffect } from 'react';
 import { MultiSelect } from "react-multi-select-component";
 import Loading from "../components/Loading"
+import { useNavigate } from 'react-router';
 export default function AuctionsPage(props) {
   //modalLogic
   const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
@@ -43,7 +44,7 @@ export default function AuctionsPage(props) {
     setNewAuctionModalShow(true);
   };
 
-  const { User} = UseUserContext()
+  const { User, IsLoggedIn} = UseUserContext()
 
   const onSubmitNewAuction = (values, bag) => {
     console.log(User)
@@ -111,9 +112,7 @@ export default function AuctionsPage(props) {
     { value: '5', label: 'Vyhodnocena' },
   ]
 
-  //TODO mazani jen autor nebo licitator
-  //not admin or auctioneer
-
+  const navigate = useNavigate()
   const [selected, setSelected] = useState([]);
 
   const filterByOptions = (auctionsParam) => {
@@ -125,7 +124,7 @@ export default function AuctionsPage(props) {
       for (let auction in auctionsParam) {
         selected.forEach(option => {
           if (auctionsParam[auction].state_id == 2) {
-            if ((option.value == '6' && auctionsParam[auction].start_time > Date.now()) ||  //naplanovana
+            if ((option.value == '6' && new Date(auctionsParam[auction].start_time) > Date.now()) ||  //naplanovana
               (option.value == '7' && new Date(auctionsParam[auction].start_time) <= Date.now() && new Date(auctionsParam[auction].end_time) > Date.now()) || //probiha
               (option.value == '8' && new Date(auctionsParam[auction].end_time) <= Date.now())) //ukoncena, nevyhlasen vitez
             {
@@ -161,7 +160,7 @@ export default function AuctionsPage(props) {
               <h1 style={{ paddingBottom: 0 }}> Přehled aukcí</h1>
             </div>
             <div style={{ flex: 0.2, textAlign: 'right', padding: 20 }}>
-              <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>
+              {IsLoggedIn && User.role_id >1 && <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>}
             </div>
           </div>
 
@@ -185,7 +184,7 @@ export default function AuctionsPage(props) {
             />
           </div>
           <Container className={Styles.flexContainer}>
-            {auctions.map(item => {
+            {filterByOptions(auctions).map(item => {
               return (
                 <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
               )

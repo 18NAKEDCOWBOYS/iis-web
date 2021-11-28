@@ -145,7 +145,7 @@ function DeleteButton(props) {
     }).then(resp => props.loadAuctions()))
   }
   if (props.userLogged) {
-    if (props.user.id == props.author_id) {
+    if (props.user.id == props.author_id && props.state_id == 1) {
       return (
         <>
           <Card.Footer>
@@ -165,7 +165,7 @@ export default function AuctionCard(props) {
     <div style={{ padding: 15 }}>
       <Card style={{ width: 400 }}>
         <Link to={props.link} >
-          <Card.Img variant="top" src={props.photos.length == 0 ? "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" : props.photos[0]} />
+          <Card.Img variant="top" style={{maxHeight:400}} src={props.photos.length == 0 ? "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" : props.photos[0]} />
           <Card.Body>
             <Card.Title className={Styles.cardTitle}>{props.name}</Card.Title>
             <Card.Text>

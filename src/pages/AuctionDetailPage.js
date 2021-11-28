@@ -33,10 +33,13 @@ function BidFormOpenedAuc(props) {
           if (props.bid.length === 0) {
             last_bid = props.price
           }
-          let last_bid_obj = props.bid.reduce(function (a, b) {
-            return new Date(a.time) > new Date(b.time) ? a : b
-          }, 0);
-          last_bid = last_bid_obj.price
+          else
+          {
+            let last_bid_obj = props.bid.reduce(function (a, b) {
+              return new Date(a.time) > new Date(b.time) ? a : b
+            }, 0);
+            last_bid = last_bid_obj.price
+          }
           if (Number(values.bid) <= 0) {
             errors.bid = "Nabídka musí být větší než 0 Kč"
           }
@@ -55,6 +58,7 @@ function BidFormOpenedAuc(props) {
 
           if (errors.bid) {
             changeValidationClassTo("is-invalid", bidInputRef)
+            console.log(errors.bid)
           }
           else {
             bidInputRef.current.classList.remove("is-invalid");
@@ -133,23 +137,16 @@ function BidFormClosedAuc(props) {
 
   const navigate = useNavigate();
   const submitNewBid = () => {
-    if (error != "") {
-      changeValidationClassTo("is-invalid", bidInputRef)
-      return;
-    }
-    else {
-      bidInputRef.current.classList.remove("is-invalid");
-      props.setBidPriceEditing(false);
-      props.setLastBidPrice(props.BidPrice);
-    }
+    props.setBidPriceEditing(false);
+    props.setLastBidPrice(props.BidPrice);
     let last_user_bid = props.bid.find(bid => bid.user_id == props.User.id)
     return (fetch('https://iis-api.herokuapp.com/bids', {
-      method: 'PUT',
+      method: last_user_bid? 'PUT' : 'POST',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({
         auction_id: props.id,
         price: Number(props.BidPrice),
-        time: last_user_bid.time
+        time: last_user_bid? last_user_bid.time : Date.now()
       })
     }).then(response => {
       if (response.status == 200) {
@@ -179,7 +176,7 @@ function BidFormClosedAuc(props) {
     }
     else {
       seterror("")
-      changeValidationClassTo("is-valid", bidInputRef)
+      bidInputRef.current.classList.remove("is-invalid");
     }
   }
   return (
@@ -223,7 +220,7 @@ function BidFormClosedAuc(props) {
 }
 
 function AuctioneerControlButtons(props) {
-  if (props.User.id == props.auctioneer_id) {
+  if (props.User.id == props.auctioneer_id && props.state_id == 2) {
     return (
       <Button variant="primary" onClick={() => props.onClick(props.auction)}>{(new Date(props.end_time) > Date.now() ? "Předčasně ukončit a určit výherce" : "Ukončit a určit výherce ")}</Button>
     )
@@ -354,16 +351,16 @@ export default function AuctionDetailPage(props) {
     setEditTimeModalShow(true);
   }
 
+
   const [pickWinnerModalShow, setPickWinnerModalShow] = React.useState(false);
   const [auctionToBeEvaluated, setAuctionToBeEvaluated] = React.useState('');
   const setEvaluatedItem = (item) => {
     setAuctionToBeEvaluated(item);
     setPickWinnerModalShow(true);
   };
-
   const onPickWinnerModalSubmit = (values, bag) => {
     let body = { "id": values.id, "state_id": 5}
-    if(values.winner_id == ''){
+    if(values.winner_id == null){
         body["winner_id"] = null;
     }else{
         body["winner_id"] = Number(values.winner_id);
@@ -372,7 +369,6 @@ export default function AuctionDetailPage(props) {
     if (new Date(values.end_time) >= Date.now()) {
       body["end_time"] = Date.now()
     }
-    console.log(body)
     fetch('https://iis-api.herokuapp.com/auctions/approve', {
       method: 'PUT',
       headers: {
@@ -445,11 +441,11 @@ export default function AuctionDetailPage(props) {
     }))
   }
 
-  const Not_approved = () => {
+  const Not_approved = (id) => {
     return (fetch('https://iis-api.herokuapp.com/auctions/approve', {
       method: 'PUT',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-      body: JSON.stringify({ "id": props.item_prop.id, "state_id": 3 })
+      body: JSON.stringify({ "id": id, "state_id": 3 })
     }).then(response => {
       if (response.status == 200) {
         return response
@@ -457,7 +453,7 @@ export default function AuctionDetailPage(props) {
       else {
         navigate("/error/" + response.status + "/" + response.statusText)
       }
-    }).then(resp => props.item_prop.loadAuctions()))
+    }).then(resp => props.item_prop.loadAuction()))
   }
 
   const auctionRegister = () => {
@@ -509,13 +505,16 @@ export default function AuctionDetailPage(props) {
             <div style={{ flex: 0.7, paddingBottom: 25 }}>
               <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
               <h4>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
-              {(auction.state_id == 2 && new Date(auction.start_time) > Date.now() && auction.auctioneer_id != User.id) && <h4 style={{ color: "#0d6efd" }}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</h4>}
+              {(auction.state_id == 2 && new Date(auction.start_time) > Date.now()) && <h4 style={{ color: "#0d6efd" }}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</h4>}
+              {(auction.state_id == 5) && <h4 style={{ color: "#0d6efd" }}>Aukce ukončena{auction.winner_id == null? " bez výherce" : ", výhercem je " + 
+              auction.user_auction_winner_idTouser.name + " " + auction.user_auction_winner_idTouser.surname} </h4>}
             </div>
             <div style={{ flex: 0.3, padding: 35 }}>
               <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister} />
               <AuctioneerControlButtons onClick={setEvaluatedItem} IsLoggedIn={IsLoggedIn} User={User} {...auction} auction={auction} />
-              <Button variant="success" onClick={() => setChangeTime(auction)}>Schválit</Button>
-              <Button variant="danger" onClieck={() => Not_approved()}>Zamítnout</Button>
+              {IsLoggedIn && User.role_id > 1 && User.id != auction.author_id && auction.state_id == 1 &&<>
+              <Button variant="success" onClick={() => setChangeTime(auction)}>Schválit</Button>{' '}
+              <Button variant="danger" onClick={() => Not_approved(auction.id)}>Zamítnout</Button></>}
             </div>
           </div>
 
@@ -572,7 +571,7 @@ export default function AuctionDetailPage(props) {
          <EditTimeModal
           show={editTimeModalShow}
           onHide={() => setEditTimeModalShow(false)}
-          loadAuctions={loadAuctions}
+          loadAuctions={loadAuction}
           user={User}
           {...itemToChangeTime}
         />

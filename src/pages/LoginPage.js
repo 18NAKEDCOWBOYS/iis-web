@@ -42,9 +42,6 @@ export default function LoginPage(props) {
                 if(!values.password){
                   errors.password = 'Nezadali jste heslo';
                 }
-                else if (values.password.length < 8){
-                  errors.password = 'Heslo je příliš krátké';
-                }
                 return errors;
               }}
               onSubmit={(values, bag) => {

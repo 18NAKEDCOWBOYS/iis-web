@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import {Formik} from 'formik';
 import { UseUserContext } from "../userContext";
 import { useNavigate  } from 'react-router-dom';
-
+import { Link } from 'react-router-dom';
 export default function RegForm(props) {
   const {setIsLoggedIn, setUser} = UseUserContext()
   const navigate = useNavigate();
@@ -116,7 +116,7 @@ export default function RegForm(props) {
           </div>
                 
                   <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
-                    <Link style={{color:"#0d6efd"}} to="/login">Zpět ne přihlášení</Link>
+                    <Link style={{color:"#0d6efd"}} to="/login">Zpět na přihlášení</Link>
                   </div>
    
         </Form>
