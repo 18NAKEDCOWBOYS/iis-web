@@ -232,7 +232,7 @@ function BidFormClosedAuc(props) {
 function AuctioneerControlButtons(props) {
     if (props.User.id == props.auctioneer_id) {
         return (
-                <Button variant="primary" onClick={() => props.onClick()}>{(new Date(props.end_time) > Date.now() ? "Předčasně ukončit a určit výherce" : "Ukončit a určit výherce ")}</Button>
+                <Button variant="primary" onClick={() => props.onClick(props.auction)}>{(new Date(props.end_time) > Date.now() ? "Předčasně ukončit a určit výherce" : "Ukončit a určit výherce ")}</Button>
         )
     }
     return null
@@ -365,20 +365,23 @@ export default function AuctionDetailPage(props) {
     };
 
     const onPickWinnerModalSubmit = (values, bag) => {
-      //values.role_id = Number(values.role_id)
-
-      /*fetch('https://iis-api.herokuapp.com/users', {
+        let body = {"id" : values.id, "state_id": 5, "winner_id":Number(values.winner_id)}
+        if(new Date(values.end_time) >= Date.now()){
+            body["end_time"]=Date.now()
+        }
+        console.log(body)
+        fetch('https://iis-api.herokuapp.com/auctions/approve', {
         method: 'PUT',
         headers: {
           "Content-type": "application/json; charset=UTF-8",
           'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify(body)
       }).then(() => {
-        getAllUsers()
+        loadAuction()
         bag.setSubmitting(false)
-        setEditUserModalShow(false);
-      })*/
+        setPickWinnerModalShow(false);
+      })
     }
 
     const [BidPriceEditing, setBidPriceEditing] = useState(false)
@@ -489,7 +492,7 @@ export default function AuctionDetailPage(props) {
                         </div>
                         <div style={{ flex: 0.3, padding: 35 }}>
                         <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister}/>
-                        <AuctioneerControlButtons onClick = {() => setEvaluatedItem(auction)} IsLoggedIn={IsLoggedIn} User={User} {...auction} />
+                        <AuctioneerControlButtons onClick = {setEvaluatedItem} IsLoggedIn={IsLoggedIn} User={User} {...auction} auction={auction}/>
                         </div>
                     </div>
 

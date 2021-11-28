@@ -19,15 +19,7 @@ export default function PickWinnerModal(props) {
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ bidders : props.item.bidders }}
-          validate={values => {
-            const errors = {};
-            console.log(props.item)
-            //if (!values.bidders) {
-            //  errors.bidders= 'Nevybral'
-            //}
-            return errors;
-          }}
+          initialValues={{ id:props.item.id, bidders : props.item.bidders, winner_id:null, end_time:props.item.end_time}}
           onSubmit={(values, bag) => {props.onSubmit(values, bag)}}
         >
           {({
