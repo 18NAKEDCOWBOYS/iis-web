@@ -41,6 +41,22 @@ export default function AuctionsPage(props) {
     setNewAuctionModalShow(true);
   };
 
+  const onSubmitNewAuction = (values, bag) => {
+    console.log(bag)
+    /*fetch('https://iis-api.herokuapp.com/auctions', {
+      method: 'POST',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+      },
+      body: JSON.stringify(values)
+    }).then(() => {
+      loadAuctions()
+      bag.setSubmitting(false)
+      setNewAuctionModalShow(false)
+    })*/
+  }
+
 
 
   const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
@@ -51,26 +67,26 @@ export default function AuctionsPage(props) {
 
 
   const loadAuctions = () => {
-    return (    fetch("https://iis-api.herokuapp.com/auctions")
-    .then(res => res.json())
-    .then(
-      (result) => {
-        setIsLoaded(true);
-        setAuctions(result)
+    return (fetch("https://iis-api.herokuapp.com/auctions")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setAuctions(result)
 
-      },
-      (error) => {
-        setIsLoaded(true);
-        setError(error);
-      }
-    ))
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      ))
   }
   useEffect(() => {
     loadAuctions()
   }, [])
 
 
-//TODO mazani jen autor nebo licitator
+  //TODO mazani jen autor nebo licitator
   //not admin or auctioneer
 
 
@@ -93,7 +109,7 @@ export default function AuctionsPage(props) {
           <Container className={Styles.flexContainer}>
             {auctions.map(item => {
               return (
-                  <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
+                <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
               )
             })}
           </Container>
@@ -103,11 +119,12 @@ export default function AuctionsPage(props) {
           show={newAuctionModalShow}
           onHide={() => setNewAuctionModalShow(false)}
           item={itemToBeAdded}
+          onSubmit={onSubmitNewAuction()}
         />
         <EditTimeModal
           show={editTimeModalShow}
           onHide={() => setEditTimeModalShow(false)}
-          loadAuctions = {loadAuctions}
+          loadAuctions={loadAuctions}
           user={User}
           {...itemToChangeTime}
         />
