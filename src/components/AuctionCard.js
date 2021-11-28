@@ -132,7 +132,6 @@ function AuctionReg(props) {
 
 
 function DeleteButton(props) {
-  const navigate = useNavigate()
 
   if (props.userLogged) {
     if (props.user.id == props.author_id) {
@@ -198,7 +197,7 @@ export default function AuctionCard(props) {
           item={props}
           title={"Vymazat aukci"}
           bodyText={"Opravdu chcete vymazat aukci " + props.name + "?"}
-          action={() => deleteAuction(props)}
+          action={() => {deleteAuction(props); setDeleteUserModalShow(false)}}
         />
 
       </Card>

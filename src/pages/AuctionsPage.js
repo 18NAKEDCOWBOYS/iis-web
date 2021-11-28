@@ -145,7 +145,7 @@ export default function AuctionsPage(props) {
   } else if (!isLoaded) {
     return <Loading/>
   } else {
-
+  
     return (
       <>
 
@@ -179,7 +179,8 @@ export default function AuctionsPage(props) {
             />
           </div>
           <Container className={Styles.flexContainer}>
-            {filterByOptions(auctions).map(item => {
+            {/* sort auctions by id descending and filter by multiselect filter options */}
+            {filterByOptions(auctions).sort((a,b)=>{return a.id < b.id ? 1 : -1}).map(item => {
               return (
                 <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
               )
