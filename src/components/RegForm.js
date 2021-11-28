@@ -114,6 +114,11 @@ export default function RegForm(props) {
             <Button variant="primary" type="submit" disabled={isSubmitting} size="lg">Zaregistovat se</Button>
             {status? <div style={{color:'red', width:'100%', textAlign:'center'}}>{status}</div> : null}
           </div>
+                
+                  <div style={{width:"100%", textAlign:"center", paddingTop:10}}>
+                    <Link style={{color:"#0d6efd"}} to="/login">Zpět ne přihlášení</Link>
+                  </div>
+   
         </Form>
       )}
     </Formik>
