@@ -354,7 +354,13 @@ export default function AuctionDetailPage(props) {
   };
 
   const onPickWinnerModalSubmit = (values, bag) => {
-    let body = { "id": values.id, "state_id": 5, "winner_id": Number(values.winner_id) }
+    let body = { "id": values.id, "state_id": 5}
+    if(values.winner_id == ''){
+        body["winner_id"] = null;
+    }else{
+        body["winner_id"] = Number(values.winner_id);
+    }
+    
     if (new Date(values.end_time) >= Date.now()) {
       body["end_time"] = Date.now()
     }
