@@ -13,9 +13,10 @@ import { UseUserContext } from "../userContext";
 import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
-//TODO  možná tlačítko na schválení
+import PickWinnerModal from '../components/PickWinnerModal';
+
 function BidFormOpenedAuc(props) {
     const bidInputRef = useRef(null)
     const navigate = useNavigate();
@@ -229,14 +230,12 @@ function BidFormClosedAuc(props) {
 }
 
 function AuctioneerControlButtons(props) {
-    if(props.IsLoggedIn)
-    {
-        if (props.User.id == props.auctioneer_id && Date.now() >= new Date(props.end_time)) {
-            return (
-             
-                    <Button variant="primary">Ukončit a určit výherce</Button>
-            )
-        }
+    if (props.User.id == props.auctioneer_id && Date.now() >= new Date(props.end_time)) {
+        return (
+            <div style={{ flex: 0.3, padding: 35 }}>
+                <Button variant="primary" onClick={props.onClick()}>Ukončit a určit výherce</Button>
+            </div>
+        )
     }
     return null
 }
@@ -360,7 +359,29 @@ function RegisterButton(props) {
 
 export default function AuctionDetailPage(props) {
 
+    const [pickWinnerModalShow, setPickWinnerModalShow] = React.useState(false);
+    const [auctionToBeEvaluated, setAuctionToBeEvaluated] = React.useState('');
+    const setEvaluatedItem = (item) => {
+      setAuctionToBeEvaluated(item);
+      setPickWinnerModalShow(true);
+    };
 
+    const onPickWinnerModalSubmit = (values, bag) => {
+      //values.role_id = Number(values.role_id)
+
+      /*fetch('https://iis-api.herokuapp.com/users', {
+        method: 'PUT',
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+        },
+        body: JSON.stringify(values)
+      }).then(() => {
+        getAllUsers()
+        bag.setSubmitting(false)
+        setEditUserModalShow(false);
+      })*/
+    }
 
     const [BidPriceEditing, setBidPriceEditing] = useState(false)
     const [LastBidPrice, setLastBidPrice] = useState("")
@@ -516,6 +537,13 @@ export default function AuctionDetailPage(props) {
                         </Tabs>
                     </div>
                 </Container>
+
+                <PickWinnerModal
+                    show={pickWinnerModalShow}
+                    onHide={() => setPickWinnerModalShow(false)}
+                    item={auctionToBeEvaluated}
+                    onSubmit={onPickWinnerModalSubmit}
+                />
             </>
         )
     }

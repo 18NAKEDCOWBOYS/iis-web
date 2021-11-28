@@ -42,6 +42,22 @@ export default function AuctionsPage(props) {
     setNewAuctionModalShow(true);
   };
 
+  const onSubmitNewAuction = (values, bag) => {
+    console.log(bag)
+    /*fetch('https://iis-api.herokuapp.com/auctions', {
+      method: 'POST',
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
+      },
+      body: JSON.stringify(values)
+    }).then(() => {
+      loadAuctions()
+      bag.setSubmitting(false)
+      setNewAuctionModalShow(false)
+    })*/
+  }
+
 
 
   const { User} = UseUserContext()
@@ -57,8 +73,7 @@ export default function AuctionsPage(props) {
       .then(
         (result) => {
           setIsLoaded(true);
-          setAuctions(result);
-
+          setAuctions(result)
 
         },
         (error) => {
@@ -80,6 +95,8 @@ export default function AuctionsPage(props) {
     { value: '5', label: 'Vyhodnocena' },
   ]
 
+  //TODO mazani jen autor nebo licitator
+  //not admin or auctioneer
 
   const [selected, setSelected] = useState([]);
 
@@ -148,22 +165,20 @@ export default function AuctionsPage(props) {
               }}
             />
           </div>
-          <div className={Styles.flexContainer}>
-            {
-
-              filterByOptions(auctions).map(item => {
-                return (
-                  <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
-                )
-              })}
-          </div>
-
+          <Container className={Styles.flexContainer}>
+            {auctions.map(item => {
+              return (
+                <AuctionCard {...item} setChangeTime={setChangeTime} link={'/auction-detail/' + item.id} loadAuctions={loadAuctions} />
+              )
+            })}
+          </Container>
 
         </Container>
         <NewAuctionModal
           show={newAuctionModalShow}
           onHide={() => setNewAuctionModalShow(false)}
           item={itemToBeAdded}
+          onSubmit={onSubmitNewAuction()}
         />
         <EditTimeModal
           show={editTimeModalShow}
