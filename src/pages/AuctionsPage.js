@@ -85,16 +85,11 @@ export default function AuctionsPage(props) {
 
   const loadAuctions = () => {
     return (fetch("https://iis-api.herokuapp.com/auctions")
-      .then(res => res.json())
+      .then(CheckError)
       .then(
         (result) => {
           setIsLoaded(true);
           setAuctions(result)
-
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
         }
       ))
   }
