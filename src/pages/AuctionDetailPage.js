@@ -14,7 +14,7 @@ import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-
+import {useNavigate} from 'react-router-dom'
 import PickWinnerModal from '../components/PickWinnerModal';
 
 function BidFormOpenedAuc(props) {
