@@ -10,7 +10,7 @@ import { FaTrashAlt, FaUserEdit } from "react-icons/fa";
 
 import NewUserModal from '../components/NewUserModal';
 import EditUserModal from '../components/EditUserModal';
-import DeleteUserModal from '../components/DeleteUserModal';
+import DeleteModal from '../components/DeleteModal';
 
 import Styles from './../css/UserManagementPage.module.css'
 import { useNavigate } from 'react-router';
@@ -117,7 +117,7 @@ const onEditUserModalSubmit = (values, bag) => {
 
 // Functions and states for deleteUserModal
 const [deleteUserModalShow, setDeleteUserModalShow] = React.useState(false);
-const [itemToBeDeleted, setItemToBeDeleted] = React.useState('');
+const [itemToBeDeleted, setItemToBeDeleted] = React.useState({});
 const setDeletedItem = (item) => {
   setItemToBeDeleted(item);
   setDeleteUserModalShow(true);
@@ -208,11 +208,13 @@ if (error) {
         onSubmit={onEditUserModalSubmit}
       />
 
-      <DeleteUserModal
+      <DeleteModal
         show={deleteUserModalShow}
         onHide={() => setDeleteUserModalShow(false)}
         item={itemToBeDeleted}
-        deleteUser={deleteUser}
+        title={"Vymazat uživatele"}
+        bodyText={"Opravdu chcete vymazat uživatele " + itemToBeDeleted.email + "?"}
+        action={deleteUser}
       />
 
     </>

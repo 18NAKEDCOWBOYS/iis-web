@@ -65,7 +65,7 @@ function ApprovalButtonsFooter(props) {
         return response
       }
       else {
-        navigate("/error/" + response.status + "/" + response.text())
+        navigate("/error/" + response.status + "/" + response.statusText)
       }
     }).then(resp => props.item_prop.loadAuctions()))
   }
@@ -96,7 +96,7 @@ function AuctionReg(props) {
         return response
       }
       else {
-        navigate("/error/" + response.status + "/" + response.text())
+        navigate("/error/" + response.status + "/" + response.statusText)
       }
     }).then(resp => props.loadAuctions()))
   }
@@ -140,7 +140,7 @@ function DeleteButton(props) {
         return response
       }
       else {
-        navigate("/error/" + response.status + "/" + response.text())
+        navigate("/error/" + response.status + "/" + response.statusText)
       }
     }).then(resp => props.loadAuctions()))
   }

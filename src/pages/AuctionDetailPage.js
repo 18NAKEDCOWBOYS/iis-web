@@ -14,11 +14,11 @@ import SimpleImageSlider from "react-simple-image-slider";
 import Table from 'react-bootstrap/Table';
 import { Formik } from 'formik';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-
+import {useNavigate} from 'react-router-dom'
 import PickWinnerModal from '../components/PickWinnerModal';
 
 function BidFormOpenedAuc(props) {
-
+    const bidInputRef = useRef(null)
     const navigate = useNavigate();
     return (
         <>
@@ -45,10 +45,19 @@ function BidFormOpenedAuc(props) {
                         errors.bid = "Nová nabídka musí být v nabídkové aukci nižší než aktuální cena"
                     }
                     else if (props.min_bid != null && Math.abs( Number(last_bid) - Number(values.bid)) < Number(props.min_bid)) {
-                        errors.bid = "Minimální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.min_bid
+                        errors.bid = "Minimální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.min_bid + " Kč"
                     }
                     else if (props.max_bid != null && Math.abs(Number(last_bid) - Number(values.bid)) > Number(props.max_bid)) {
-                        errors.bid = "Maximální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid
+                        errors.bid = "Maximální" + (props.is_demand ? " příhoz " : " snížení nabídky ") + "pro tuto aukci je " + props.max_bid + " Kč"
+                    }
+
+                    if(errors.bid)
+                    {
+                        changeValidationClassTo("is-invalid", bidInputRef)
+                    }
+                    else
+                    {
+                        bidInputRef.current.classList.remove("is-invalid");
                     }
                     return errors
                 }}
@@ -67,10 +76,11 @@ function BidFormOpenedAuc(props) {
                         {
                             props.loadAuction()
                             actions.setSubmitting(false)
+                            changeValidationClassTo("is-valid", bidInputRef)
                         }
                         else
                         {
-                            navigate("/error/" + response.status +"/" + response.text())
+                            navigate("/error/" + response.status +"/" + response.statusText)
                         }
                     })
 
@@ -94,6 +104,7 @@ function BidFormOpenedAuc(props) {
                             type="number"
                             name="bid"
                             required={true}
+                            ref={bidInputRef}
                         />
                         <InputGroup.Text id="basic-addon1">Kč</InputGroup.Text>
                     </InputGroup>
@@ -106,19 +117,22 @@ function BidFormOpenedAuc(props) {
         </>
     )
 }
+
+function changeValidationClassTo (className, obj)
+{
+    if (className === "is-valid") {
+        obj.current.classList.remove("is-invalid");
+        obj.current.classList.add("is-valid")
+    } else if (className === "is-invalid") {
+        obj.current.classList.remove("is-valid");
+        obj.current.classList.add("is-invalid")
+    }
+}
 function BidFormClosedAuc(props) {
 
     const bidInputRef = useRef(null)
     const [error, seterror] = useState(null)
-    const changeValidationClassTo = (className, obj) => {
-        if (className === "is-valid") {
-            obj.current.classList.remove("is-invalid");
-            obj.current.classList.add("is-valid")
-        } else if (className === "is-invalid") {
-            obj.current.classList.remove("is-valid");
-            obj.current.classList.add("is-invalid")
-        }
-    }
+    
 
     const navigate = useNavigate();
     const submitNewBid = () => {
@@ -127,7 +141,7 @@ function BidFormClosedAuc(props) {
             return;
         }
         else {
-            changeValidationClassTo("is-valid", bidInputRef)
+            bidInputRef.current.classList.remove("is-invalid");
             props.setBidPriceEditing(false);
             props.setLastBidPrice(props.BidPrice);
         }
@@ -146,7 +160,7 @@ function BidFormClosedAuc(props) {
                 }
                 else
                 {
-                    navigate("/error/" + response.status +"/" + response.text())
+                    navigate("/error/" + response.status +"/" + response.statusText)
                 }
                 
             })    )
@@ -328,6 +342,20 @@ function AuctionRegistrations(props) {
     )
 }
 
+function RegisterButton(props) {
+    if (props.IsLoggedIn && props.bidders)
+    {
+        let bidderInfo = props.bidders.find(bidder => bidder.user_id == props.User.id)
+        if (!bidderInfo) {
+            if (props.User.id != props.auctioneer_id && props.User.id != props.author_id && (props.state_id == 2 && Date.now() <= new Date(props.start_time)) )
+            {
+                return (<Button variant="primary" className={Styles.buttonApprove} onClick={() => props.auctionRegister()}>Registrovat se do aukce</Button>)
+            } 
+        }
+    }
+    return null
+}
+
 
 export default function AuctionDetailPage(props) {
 
@@ -367,7 +395,7 @@ export default function AuctionDetailPage(props) {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [auction, setAuction] = useState([]);
-
+    const navigate = useNavigate();
     const loadAuction = () => {
         return (
             fetch("https://iis-api.herokuapp.com/auctions/" + auctionId)
@@ -395,7 +423,6 @@ export default function AuctionDetailPage(props) {
     }
 
     const ApproveBidder = (auctionId, userId, approved) => {
-        const navigate = useNavigate();
         return (fetch('https://iis-api.herokuapp.com/bidders/', {
             method: 'PUT',
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
@@ -409,10 +436,25 @@ export default function AuctionDetailPage(props) {
             }
             else
             {
-                navigate("/error/" + response.status +"/" + response.text())
+                navigate("/error/" + response.status +"/" + response.statusText)
             }
         }))
     }
+
+    const auctionRegister = () => {
+        return (fetch('https://iis-api.herokuapp.com/bidders', {
+          method: 'POST',
+          headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+          body: JSON.stringify({ "auction_id": auction.id })
+        }).then(response => {
+          if (response.status == 200) {
+            return response
+          }
+          else {
+            navigate("/error/" + response.status + "/" + response.statusText)
+          }
+        }).then(resp => loadAuction()))
+      }
 
 
     useEffect(() => {
@@ -428,7 +470,7 @@ export default function AuctionDetailPage(props) {
         imagesGallerySrc = [{ "url": "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" }]
     }
 
-    let overlay = auction.state_id == 3 || (auction.state_id == 2 && new Date(auction.start_time) > Date.now() && auction.auctioneer_id != User.id)
+    let overlay = auction.state_id == 3
    
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -440,12 +482,16 @@ export default function AuctionDetailPage(props) {
 
             <>
                 {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
-                {overlay && (<span style={{ color: "#0d6efd" }} className={Styles.textStateCenter}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</span>)}
                 <Container className="mainContainer" style={overlay ? { opacity: 0.25 } : { opacity: 1 }}>
                     <div style={{ display: "flex" }}>
-                        <div style={{ flex: 0.7 }}>
+                        <div style={{ flex: 0.7, paddingBottom: 25 }}>
                             <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
-                            <h4 style={{ paddingBottom: 25 }}>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
+                            <h4>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
+                            {(auction.state_id == 2 && new Date(auction.start_time) > Date.now() && auction.auctioneer_id != User.id) && <h4 style={{ color: "#0d6efd" }}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</h4>}
+                        </div>
+                        <div style={{ flex: 0.3, padding: 35 }}>
+                        <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister}/>
+                        <AuctioneerControlButtons User={User} IsLoggedIn={IsLoggedIn} {...auction} />
                         </div>
                         <AuctioneerControlButtons onClick = {() => setEvaluatedItem(auction)} User={User} {...auction} />
                     </div>
