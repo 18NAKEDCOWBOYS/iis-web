@@ -6,6 +6,7 @@ import AuctionCard from '../components/AuctionCard'
 import { UseUserContext } from "../userContext";
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loading from "../components/Loading"
 export default function UserProfilePage() {
 
     
@@ -41,7 +42,7 @@ export default function UserProfilePage() {
         return <div>Error: {error.message}</div>;
     }
     else if (!isLoaded) {
-        return <div>Loading...</div>;
+       return <Loading/>
     }
     else {
         return (

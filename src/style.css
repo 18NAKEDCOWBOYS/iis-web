@@ -40,3 +40,7 @@ a, a:hover{
   justify-content:center; 
   height:100%
 }
+
+.rsis-image {
+  size-adjust: initial;
+}

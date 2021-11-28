@@ -3,6 +3,7 @@ import Router from './Router';
 import { UseUserContext } from "./userContext";
 import { useEffect, useState} from 'react';
 import { Container } from 'react-bootstrap';
+import Loading from "./components/Loading"
 function App() {
   const { setIsLoggedIn, setUser } = UseUserContext()
   const [error, setError] = useState(null);
@@ -39,9 +40,7 @@ function App() {
     return <div>Error: {error.message}</div>;
   } else if (!isLoaded) {
     return(
-      <Container className="fullCenterContent">
-        <h1 style={{ fontSize: 90 }}>Loading...</h1>
-      </Container>)
+      <Loading/>)
   } else {
     return (
       <Router />

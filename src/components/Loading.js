@@ -13,7 +13,6 @@ export default function Loading(bag) {
   return (
     <Container className={Styles.fullCenterContent}>
       <h1 style={{ fontSize: 90 }}>Loading</h1>
-      <Button variant='primary' href='/' size="lg" style={{ margin: 20 }}>Home</Button>
     </Container>
   )
 }
