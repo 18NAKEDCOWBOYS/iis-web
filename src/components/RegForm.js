@@ -62,7 +62,6 @@ export default function RegForm(props) {
             })
             .then((response) => response.text())
             .then((usrRsp)=>{
-              console.log(usrRsp)
               setUser(JSON.parse(usrRsp))
               navigate('/')
             })

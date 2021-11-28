@@ -12,11 +12,16 @@ import { useNavigate  } from 'react-router-dom';
 import NavigationBar from './../components/NavigationBar';
 import Styles from './../css/LoginPage.module.css'
 import { UseUserContext } from "../userContext";
-
+import { useEffect } from 'react';
 export default function LoginPage(props) {
-  const {setIsLoggedIn, setUser} = UseUserContext()
+  const {setIsLoggedIn, setUser, IsLoggedIn} = UseUserContext()
   const navigate = useNavigate();
-
+  useEffect(() => {
+    if (IsLoggedIn)
+    {
+      navigate("/")
+    }
+  }, [])
   return (
     <>
     <NavigationBar page="Login"/>
@@ -43,7 +48,6 @@ export default function LoginPage(props) {
                 return errors;
               }}
               onSubmit={(values, bag) => {
-                console.log(JSON.stringify(values))
                 fetch('https://iis-api.herokuapp.com/auth/login', {
                   method:'POST',
                   headers: {"Content-type": "application/json; charset=UTF-8"},
@@ -52,7 +56,6 @@ export default function LoginPage(props) {
                 )
                 .then(response=>response.text()) 
                 .then((authRsp)=>{
-                  console.log(authRsp)
                   if(authRsp === 'Username or password incorrect'){
                     bag.setStatus('Zadali jste špatný e-mail nebo heslo')
                   }else{
@@ -67,7 +70,6 @@ export default function LoginPage(props) {
                     })
                     .then((response)=>response.text())
                     .then((usrRsp)=>{
-                      console.log(usrRsp)
                       setUser(JSON.parse(usrRsp))
                       navigate('/')
                     })

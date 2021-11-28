@@ -18,9 +18,9 @@ const UserProvider = ({ children }) => {
   return (<UserContext.Provider value={userContextValue}  >
     {children}
   </UserContext.Provider>
-  )  //or use (...props)
+  ) 
 };
 
-const UseUserContext = () => useContext(UserContext)  //better usage. don't need to import useContext everywhere
+const UseUserContext = () => useContext(UserContext) 
 
 export { UserProvider, UseUserContext };

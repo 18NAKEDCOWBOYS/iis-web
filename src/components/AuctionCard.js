@@ -5,15 +5,29 @@ import Styles from '../css/previewCard.module.css'
 import { Link } from 'react-router-dom';
 import { FaTrashAlt } from "react-icons/fa";
 import { UseUserContext } from "../userContext";
-
+import { useNavigate } from 'react-router-dom';
 
 function CardBodyItems(props) {
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
     "Pravidla:": props.is_open ? "Otevřená" : "Uzavřená",
-    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : "Bohuš" //TODO vybrat jmeno podle id
+    "Licitátor:": props.auctioneer_id == null ? "Nepřiřazen" : (props.user_auction_auctioneer_idTouser.name + " " + props.user_auction_auctioneer_idTouser.surname),
+    "Autor": props.user_auction_author_idTouser.name + " " + props.user_auction_author_idTouser.surname
   }
-  items[props.is_open ? "Aktuální cena:" : "Vyvolávací cena:"] = props.price + "Kč"
+  if (props.is_open) {
+    if (props.bid.length == 0) {
+      items["Aktuální cena:"] = props.price + "Kč"
+    }
+    else {
+      let last_bid_obj = props.bid.reduce(function (a, b) {
+        return new Date(a.time) > new Date(b.time) ? a : b
+      }, 0);
+      items["Aktuální cena:"] = last_bid_obj.price + "Kč"
+    }
+  }
+  else {
+    items["Vyvolávací cena:"] = props.price + "Kč"
+  }
   return items
 }
 
@@ -29,7 +43,7 @@ function AuctionStateText(props) {
     "Začátek naplánován na " + (props.start_time == null ? "" : new Date(props.start_time).toLocaleString('cs-CZ')),
     "Zamítnuta",
     "Aukce předčasně ukončena, čeká se na vyhodnocení",
-    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id == null ? ("") : (props.user_auction_winner_idTouser.name + " " + props.user_auction_winner_idTouser.surname)), //TODO get user name by id
+    "Aukce úspěšně ukončena, výhercem je " + (props.winner_id == null ? ("") : (props.user_auction_winner_idTouser.name + " " + props.user_auction_winner_idTouser.surname)),
   ]
   let index = (props.state_id) - 1;
   return textsByState[index]
@@ -40,13 +54,20 @@ function AuctionStateText(props) {
 
 function ApprovalButtonsFooter(props) {
   //admin or auctioneer
-  console.log(props)
+  const navigate = useNavigate()
   const Not_approved = () => {
     return (fetch('https://iis-api.herokuapp.com/auctions/approve', {
       method: 'PUT',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({ "id": props.item_prop.id, "state_id": 3 })
-    }).then(response => response.text()).then(resp => console.log(resp))).then(resp => props.item_prop.loadAuctions())
+    }).then(response => {
+      if (response.status == 200) {
+        return response
+      }
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
+      }
+    }).then(resp => props.item_prop.loadAuctions()))
   }
   if (props.userLogged) {
     if (props.user.role_id >= 2 && props.item_prop.author_id != props.user.id) {
@@ -64,13 +85,20 @@ function ApprovalButtonsFooter(props) {
 }
 
 function AuctionReg(props) {
-  console.log(props)
+  const navigate = useNavigate()
   const auctionRegister = () => {
     return (fetch('https://iis-api.herokuapp.com/bidders', {
       method: 'POST',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({ "auction_id": props.id })
-    }).then(response => response.text()).then(resp => console.log(resp))).then(resp => props.loadAuctions())
+    }).then(response => {
+      if (response.status == 200) {
+        return response
+      }
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
+      }
+    }).then(resp => props.loadAuctions()))
   }
   if (props.userLogged) {
 
@@ -102,18 +130,26 @@ function AuctionReg(props) {
   return null
 }
 function DeleteButton(props) {
+  const navigate = useNavigate()
   const deleteAuction = () => {
     return (fetch('https://iis-api.herokuapp.com/auctions/' + props.id, {
       method: 'DELETE',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
-    }).then(response => response.text()).then(resp => console.log(resp))).then(resp => props.item_prop.loadAuctions())
+    }).then(response => {
+      if (response.status == 200) {
+        return response
+      }
+      else {
+        navigate("/error/" + response.status + "/" + response.text())
+      }
+    }).then(resp => props.loadAuctions()))
   }
   if (props.userLogged) {
     if (props.user.id == props.author_id) {
       return (
         <>
           <Card.Footer>
-            <Button variant="danger" onclick={() => deleteAuction()}><FaTrashAlt /> Smazat</Button>
+            <Button variant="danger" onClick={() => deleteAuction()}><FaTrashAlt /> Smazat</Button>
           </Card.Footer>
         </>
       )

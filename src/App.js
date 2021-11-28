@@ -1,12 +1,10 @@
 import './style.css';
 import Router from './Router';
-import NavigationBar from './components/NavigationBar';
-import { useLocation } from 'react-router';
 import { UseUserContext } from "./userContext";
 import { useEffect, useState} from 'react';
 import { Container } from 'react-bootstrap';
 function App() {
-  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+  const { setIsLoggedIn, setUser } = UseUserContext()
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
