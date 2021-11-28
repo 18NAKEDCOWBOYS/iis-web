@@ -11,12 +11,12 @@ export default function PickWinnerForm(bag) {
     <Form onSubmit={bag.handleSubmit}>
       <Row className="mb-3">
         <Form.Group style={{ minWidth: 200 }} as={Col} controlId="formGridRole">
-          <Form.Label>Role uživatele</Form.Label>
+          <Form.Label>Vyberte výherce</Form.Label>
           <Form.Select aria-label="Výběr výherce" name="winner_id" value={bag.values.winner_id} onChange={bag.handleChange}>
             <option value="">Vyberte výherce</option>
             {bag.values.bidders && bag.values.bidders.map((x, y) => {
               return (
-                <option key={y} value={x.user_id}>{x.user.name}</option>
+                <option key={y} value={x.user_id}>{x.user.name} {x.user.surname}</option>
               )
             })}
           </Form.Select>

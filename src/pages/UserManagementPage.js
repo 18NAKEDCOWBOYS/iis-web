@@ -164,7 +164,6 @@ if (error) {
                     <th>E-mail</th>
                     <th>Jméno</th>
                     <th>Příjmení</th>
-                    <th>Heslo</th>
                     <th>Role</th>
                     <th>Smazat</th>
                     <th>Upravit</th>
@@ -178,7 +177,6 @@ if (error) {
                         <td>{item.email}</td>
                         <td>{item.name}</td>
                         <td>{item.surname}</td>
-                        <td>{item.password}</td>
                         <td>{str_role[item.role_id]}</td>
                         <td><Button onClick={() => setDeletedItem(item)} style={{ border: 0, backgroundColor: "#ffffff00" }}><FaTrashAlt color="#0d6efd" size="20" /></Button></td>
                         <td><Button onClick={() => setEditedItem(item)} style={{ border: 0, backgroundColor: "#ffffff00" }}><FaUserEdit color="#0d6efd" size="24" /></Button></td>
