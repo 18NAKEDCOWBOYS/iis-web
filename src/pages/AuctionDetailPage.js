@@ -514,8 +514,8 @@ export default function AuctionDetailPage(props) {
             <div style={{ flex: 0.3, padding: 35 }}>
               <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister} />
               <AuctioneerControlButtons onClick={setEvaluatedItem} IsLoggedIn={IsLoggedIn} User={User} {...auction} auction={auction} />
-              <Button variant="success" onClick={() => setChangeTime(auction)}></Button>
-              <Button variant="danger" onClieck={() => Not_approved()}></Button>
+              <Button variant="success" onClick={() => setChangeTime(auction)}>Schválit</Button>
+              <Button variant="danger" onClieck={() => Not_approved()}>Zamítnout</Button>
             </div>
           </div>
 
