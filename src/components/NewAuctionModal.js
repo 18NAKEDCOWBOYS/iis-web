@@ -38,9 +38,9 @@ export default function NewAuctionModal(props) {
               errors.price = 'Nezadali jste vyvolávací cenu'
             }
 
-            /*if (!values.photos) {
+            if (!values.photos) {
               errors.files = 'Nevybrali jste žádný obrázek'
-            }*/
+            }
 
             if (!values.description) {
               errors.description = 'Nezadali jste popisek'
