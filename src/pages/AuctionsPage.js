@@ -155,7 +155,7 @@ export default function AuctionsPage(props) {
               <h1 style={{ paddingBottom: 0 }}> Přehled aukcí</h1>
             </div>
             <div style={{ flex: 0.2, textAlign: 'right', padding: 20 }}>
-              {IsLoggedIn && User.role_id >1 && <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>}
+              {IsLoggedIn && <Button variant='primary' onClick={() => setNewItem()} >Přidat novou aukci</Button>}
             </div>
           </div>
 
