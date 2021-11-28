@@ -72,7 +72,7 @@ export default function AuctionForm(bag) {
         </Form.Group>
         <Form.Group style={{minWidth:200}} as={Col} controlId="formGridMinBid">
           <Form.Label>Minimální příhoz</Form.Label>
-          <Form.Control type="number" placeholder="Toto pole nemusí být zadané" name='mim_bid' onChange={bag.handleChange} value={bag.values.min_bid}/>
+          <Form.Control type="number" placeholder="Toto pole nemusí být zadané" name='min_bid' onChange={bag.handleChange} value={bag.values.min_bid}/>
         </Form.Group>
         <Form.Group style={{minWidth:200}} as={Col} controlId="formGridMaxBid">
           <Form.Label>Maximální příhoz</Form.Label>

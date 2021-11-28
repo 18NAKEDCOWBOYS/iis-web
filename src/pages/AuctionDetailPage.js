@@ -542,8 +542,7 @@ export default function AuctionDetailPage(props) {
             </div>
           </Container>
           <div style={{ marginTop: 100 }}>
-
-            <Tabs defaultActiveKey={auction.is_open ? "History" : "RegisteredUsers"} id="uncontrolled-tab-example" className="mb-3">
+            <Tabs id="uncontrolled-tab-example" className="mb-3">
               {(auction.is_open && new Date(auction.start_time) <= Date.now()) && <Tab eventKey="History" title="Historie nabídek">
                 <h2>Historie nabídek</h2>
                 <BidsHistory {...auction} />
