@@ -14,6 +14,7 @@ import DeleteModal from '../components/DeleteModal';
 
 import Styles from './../css/UserManagementPage.module.css'
 import { useNavigate } from 'react-router';
+import Loading from '../components/Loading';
 
 export default function UserManagementPage(props) {
   const [error, setError] = React.useState(null);
@@ -142,10 +143,7 @@ if (error) {
 } else if (!isLoaded) {
   return (
     <>
-      <Container className={Styles.fullCenterContent}>
-        <h1 style={{ fontSize: 90 }}>Loading</h1>
-        <Button variant='primary' href='/' size="lg" style={{ margin: 20 }}>Home</Button>
-      </Container>
+      <Loading/>
     </>
   )
 } else {
