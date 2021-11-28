@@ -26,15 +26,14 @@ function BidFormOpenedAuc(props) {
   return (
     <>
       <Formik
-        initialValues={{ bid: '' }}
+        initialValues={{ bid: "" }}
         validate={values => {
           const errors = {};
           let last_bid;
           if (props.bid.length === 0) {
             last_bid = props.price
           }
-          else
-          {
+          else {
             let last_bid_obj = props.bid.reduce(function (a, b) {
               return new Date(a.time) > new Date(b.time) ? a : b
             }, 0);
@@ -58,7 +57,6 @@ function BidFormOpenedAuc(props) {
 
           if (errors.bid) {
             changeValidationClassTo("is-invalid", bidInputRef)
-            console.log(errors.bid)
           }
           else {
             bidInputRef.current.classList.remove("is-invalid");
@@ -134,19 +132,18 @@ function BidFormClosedAuc(props) {
   const bidInputRef = useRef(null)
   const [error, seterror] = useState(null)
 
-
   const navigate = useNavigate();
   const submitNewBid = () => {
     props.setBidPriceEditing(false);
     props.setLastBidPrice(props.BidPrice);
     let last_user_bid = props.bid.find(bid => bid.user_id == props.User.id)
     return (fetch('https://iis-api.herokuapp.com/bids', {
-      method: last_user_bid? 'PUT' : 'POST',
+      method: last_user_bid ? 'PUT' : 'POST',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
       body: JSON.stringify({
         auction_id: props.id,
         price: Number(props.BidPrice),
-        time: last_user_bid? last_user_bid.time : Date.now()
+        time: last_user_bid ? last_user_bid.time : Date.now()
       })
     }).then(response => {
       if (response.status == 200) {
@@ -179,43 +176,48 @@ function BidFormClosedAuc(props) {
       bidInputRef.current.classList.remove("is-invalid");
     }
   }
-  return (
-    <Form style={{ paddingTop: 20 }} onSubmit={(e) => { e.preventDefault() }} >
-      <InputGroup>
-        <FormControl style={{ maxWidth: 250 }}
-          ref={bidInputRef}
-          placeholder="Nová cena"
-          aria-label="Nová cena"
-          aria-describedby="basic-addon1"
-          value={props.BidPrice}
-          onChange={(e) => { props.setBidPrice(e.target.value); validateBidInput(e.target.value) }}
-          type="number"
-          name="bid"
-          disabled={!props.BidPriceEditing}
-        />
-        <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
-      </InputGroup>
-      <div style={{ color: 'red', paddingTop: 5 }}>{error}</div>
-      <div style={{ paddingTop: 10 }}>
-        {props.BidPriceEditing ?
-          <>
-            <Button variant="primary" onClick={() => { submitNewBid() }} disabled={error != ""}>Potvrdit novou nabídku</Button>{' '}
-            <Button variant="secondary" onClick={() => {
-              props.setBidPriceEditing(false);
-              props.setBidPrice(props.LastBidPrice);
-              bidInputRef.current.classList.remove("is-valid");
-              bidInputRef.current.classList.remove("is-invalid");
-              seterror("")
-            }}>Zrušit</Button>
-          </>
-          :
-          <>
-            <Button variant="primary" type="submit" onClick={() => props.setBidPriceEditing(true)}>Upravit nabídku</Button>
-          </>
 
-        }
-      </div>
-    </Form>
+
+  return (
+    <>
+
+      <Form style={{ paddingTop: 20 }} onSubmit={(e) => { e.preventDefault() }} >
+        <InputGroup>
+          <FormControl style={{ maxWidth: 250 }}
+            ref={bidInputRef}
+            placeholder="Nová cena"
+            aria-label="Nová cena"
+            aria-describedby="basic-addon1"
+            value={props.BidPrice}
+            onChange={(e) => { props.setBidPrice(e.target.value); validateBidInput(e.target.value) }}
+            type="number"
+            name="bid"
+            disabled={!props.BidPriceEditing}
+          />
+          <InputGroup.Text id="basic-addon1">CZK</InputGroup.Text>
+        </InputGroup>
+        <div style={{ color: 'red', paddingTop: 5 }}>{error}</div>
+        <div style={{ paddingTop: 10 }}>
+          {props.BidPriceEditing ?
+            <>
+              <Button variant="primary" onClick={() => { submitNewBid() }} disabled={error != ""}>Potvrdit novou nabídku</Button>{' '}
+              <Button variant="secondary" onClick={() => {
+                props.setBidPriceEditing(false);
+                props.setBidPrice(props.LastBidPrice);
+                bidInputRef.current.classList.remove("is-valid");
+                bidInputRef.current.classList.remove("is-invalid");
+                seterror("")
+              }}>Zrušit</Button>
+            </>
+            :
+            <>
+              <Button variant="primary" type="submit" onClick={() => props.setBidPriceEditing(true)}>Upravit nabídku</Button>
+            </>
+
+          }
+        </div>
+      </Form>
+    </>
   )
 }
 
@@ -344,7 +346,7 @@ function RegisterButton(props) {
 
 
 export default function AuctionDetailPage(props) {
-    const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
+  const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
   const [itemToChangeTime, setItemToChangeTime] = React.useState('');
   const setChangeTime = (item) => {
     setItemToChangeTime(item);
@@ -359,11 +361,11 @@ export default function AuctionDetailPage(props) {
     setPickWinnerModalShow(true);
   };
   const onPickWinnerModalSubmit = (values, bag) => {
-    let body = { "id": values.id, "state_id": 5}
-    if(values.winner_id == null){
-        body["winner_id"] = null;
-    }else{
-        body["winner_id"] = Number(values.winner_id);
+    let body = { "id": values.id, "state_id": 5 }
+    if (values.winner_id == null) {
+      body["winner_id"] = null;
+    } else {
+      body["winner_id"] = Number(values.winner_id);
     }
 
     if (new Date(values.end_time) >= Date.now()) {
@@ -383,18 +385,17 @@ export default function AuctionDetailPage(props) {
     })
   }
 
-  const [BidPriceEditing, setBidPriceEditing] = useState(false)
-  const [LastBidPrice, setLastBidPrice] = useState("")
-  const [BidPrice, setBidPrice] = useState("")
   const { User, IsLoggedIn } = UseUserContext()
   const { auctionId } = useParams()
 
 
-
-
+  
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [auction, setAuction] = useState([]);
+  const [BidPriceEditing, setBidPriceEditing] = useState(false)
+  const [LastBidPrice, setLastBidPrice] = useState("")
+  const [BidPrice, setBidPrice] = useState()
   const navigate = useNavigate();
   const loadAuction = () => {
     return (
@@ -402,17 +403,8 @@ export default function AuctionDetailPage(props) {
         .then(res => res.json())
         .then(
           (result) => {
-            setIsLoaded(true);
             setAuction(result);
-            if (IsLoggedIn) {
-              if (auction.bid) {
-                let userBids = auction.bid.filter(item => item.user_id == User.id)
-                if (userBids.length != 0) {
-                  setLastBidPrice(userBids[0].price)
-                }
-              }
-
-            }
+            setIsLoaded(true);
 
           },
           (error) => {
@@ -424,7 +416,6 @@ export default function AuctionDetailPage(props) {
 
     )
   }
-
   const ApproveBidder = (auctionId, userId, approved) => {
     return (fetch('https://iis-api.herokuapp.com/bidders/', {
       method: 'PUT',
@@ -478,7 +469,6 @@ export default function AuctionDetailPage(props) {
   }, [])
 
 
-
   let overlay = auction.state_id == 3
 
   if (error) {
@@ -496,8 +486,18 @@ export default function AuctionDetailPage(props) {
         imagesGallerySrc = [{ "url": "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" }]
       }
     }
-    return (
 
+    // {(IsLoggedIn && !auction.is_open &&  auction.bid && auction.bid.find(item => item.user_id == User.id))  && ("Vaše nabídka:  " + auction.bid.find(item => item.user_id == User.id).price + " Kč")}
+    let userBidPrice = "";
+    if(IsLoggedIn && auction && auction.bid)
+    {
+      let bid = auction.bid.find(item => item.user_id == User.id)
+      if(bid)
+      {
+        userBidPrice = bid.price
+      }
+    }
+    return (
       <>
         {auction.state_id == 3 && <span style={{ color: "#dc3545" }} className={Styles.textStateCenter}>Aukce nebyla schválena</span>}
         <Container className="mainContainer" style={overlay ? { opacity: 0.25 } : { opacity: 1 }}>
@@ -506,15 +506,15 @@ export default function AuctionDetailPage(props) {
               <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
               <h4>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
               {(auction.state_id == 2 && new Date(auction.start_time) > Date.now()) && <h4 style={{ color: "#0d6efd" }}>Aukce začne {new Date(auction.start_time).toLocaleString('cs-CZ')}</h4>}
-              {(auction.state_id == 5) && <h4 style={{ color: "#0d6efd" }}>Aukce ukončena{auction.winner_id == null? " bez výherce" : ", výhercem je " + 
-              auction.user_auction_winner_idTouser.name + " " + auction.user_auction_winner_idTouser.surname} </h4>}
+              {(auction.state_id == 5) && <h4 style={{ color: "#0d6efd" }}>Aukce ukončena{auction.winner_id == null ? " bez výherce" : ", výhercem je " +
+                auction.user_auction_winner_idTouser.name + " " + auction.user_auction_winner_idTouser.surname} </h4>}
             </div>
             <div style={{ flex: 0.3, padding: 35 }}>
               <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister} />
               <AuctioneerControlButtons onClick={setEvaluatedItem} IsLoggedIn={IsLoggedIn} User={User} {...auction} auction={auction} />
-              {IsLoggedIn && User.role_id > 1 && User.id != auction.author_id && auction.state_id == 1 &&<>
-              <Button variant="success" onClick={() => setChangeTime(auction)}>Schválit</Button>{' '}
-              <Button variant="danger" onClick={() => Not_approved(auction.id)}>Zamítnout</Button></>}
+              {IsLoggedIn && User.role_id > 1 && User.id != auction.author_id && auction.state_id == 1 && <>
+                <Button variant="success" onClick={() => setChangeTime(auction)}>Schválit</Button>{' '}
+                <Button variant="danger" onClick={() => Not_approved(auction.id)}>Zamítnout</Button></>}
             </div>
           </div>
 
@@ -535,10 +535,9 @@ export default function AuctionDetailPage(props) {
               <div className={Styles.auctionInfoItem}><strong>Autor: </strong>{auction.user_auction_author_idTouser && (auction.user_auction_author_idTouser.name + " " + auction.user_auction_author_idTouser.surname)}</div>
               {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Minimální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.min_bid == null ? "Neomezen" : (auction.min_bid + "Kč")}</div>}
               {auction.is_open && <div className={Styles.auctionInfoItem}><strong>Maximální {auction.is_demand ? "příhoz: " : "snížení nabídky: "}</strong> {auction.max_bid == null ? "Neomezen" : (auction.max_bid + "Kč")}</div>}
-
+              {userBidPrice != "" && <div style={{fontSize:20}} className={Styles.auctionInfoItem}><strong>Vaše poslední nabídka: </strong>{LastBidPrice=="" ? userBidPrice : LastBidPrice}</div>}
               <BidForm {...auction} UserLogged={IsLoggedIn} User={User} BidPriceEditing={BidPriceEditing} setBidPriceEditing={setBidPriceEditing} LastBidPrice={LastBidPrice}
-                setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} loadAuction={loadAuction} />
-
+                setLastBidPrice={setLastBidPrice} BidPrice={BidPrice} setBidPrice={setBidPrice} loadAuction={loadAuction}  />
             </div>
           </Container>
           <div style={{ marginTop: 100 }}>
@@ -567,7 +566,7 @@ export default function AuctionDetailPage(props) {
           onSubmit={onPickWinnerModalSubmit}
         />
 
-         <EditTimeModal
+        <EditTimeModal
           show={editTimeModalShow}
           onHide={() => setEditTimeModalShow(false)}
           loadAuctions={loadAuction}

@@ -58,7 +58,7 @@ export default function UserProfilePage() {
                         <Tab eventKey="MyAuctions" title="Moje aukce">
                             <h2>Moje aukce</h2>
                             <Container className={AuctionPreviewStyles.flexContainer}>
-                                {auctions.map(item => {
+                                {auctions.sort((a,b)=>{return a.id < b.id ? 1 : -1}).map(item => {
                                     if (item.author_id === User.id) {
                                         return (
                                             <AuctionCard {...item} link={'/auction-detail/' + item.id} />
@@ -71,7 +71,7 @@ export default function UserProfilePage() {
                         <Tab eventKey="RegisteredAuctions" title="Aukce, do kterých jste se registroval">
                             <h2>Aukce, do kterých jste se registroval</h2>
                             <Container className={AuctionPreviewStyles.flexContainer}>
-                                {auctions.map(item => {
+                                {auctions.sort((a,b)=>{return a.id < b.id ? 1 : -1}).map(item => {
                                     if (item.bidders.some(bidder => bidder.user_id == User.id)) {
                                         return (
                                             <AuctionCard {...item} link={'/auction-detail/' + item.id} />
@@ -85,7 +85,7 @@ export default function UserProfilePage() {
                             <Tab eventKey="AuctioneerAuctions" title="Aukce, v kterých jste licitátorem ">
                                 <h2>Aukce, v kterých jste licitátorem </h2>
                                 <Container className={AuctionPreviewStyles.flexContainer}>
-                                    {auctions.map(item => {
+                                    {auctions.sort((a,b)=>{return a.id < b.id ? 1 : -1}).map(item => {
                                         if (item.auctioneer_id == User.id) {
                                             return (
                                                 <AuctionCard {...item} link={'/auction-detail/' + item.id} />
