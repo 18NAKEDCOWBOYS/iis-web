@@ -8,7 +8,7 @@ import EditTimeModal from '../components/EditTimeModal'
 import { UseUserContext } from "../userContext";
 import { useState, useEffect } from 'react';
 import { MultiSelect } from "react-multi-select-component";
-import Loading from "./components/Loading"
+import Loading from "../components/Loading"
 export default function AuctionsPage(props) {
   //modalLogic
   const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);

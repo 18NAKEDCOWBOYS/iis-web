@@ -16,7 +16,7 @@ import { Formik } from 'formik';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useNavigate } from 'react-router-dom'
 import PickWinnerModal from '../components/PickWinnerModal';
-import Loading from "./components/Loading"
+import Loading from "../components/Loading"
 
 function BidFormOpenedAuc(props) {
     const bidInputRef = useRef(null)
@@ -457,7 +457,7 @@ export default function AuctionDetailPage(props) {
         return <div>Error: {error.message}</div>;
     }
     else if (!isLoaded) {
-        <Loading/>
+        return (<Loading/>)
     } else {
         let imagesGallerySrc = [];
         if (auction.photos) {
