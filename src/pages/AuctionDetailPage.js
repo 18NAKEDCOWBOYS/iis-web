@@ -18,6 +18,8 @@ import { useNavigate } from 'react-router-dom'
 import PickWinnerModal from '../components/PickWinnerModal';
 import Loading from "../components/Loading"
 
+import EditTimeModal from '../components/EditTimeModal';
+
 function BidFormOpenedAuc(props) {
   const bidInputRef = useRef(null)
   const navigate = useNavigate();
@@ -345,6 +347,12 @@ function RegisterButton(props) {
 
 
 export default function AuctionDetailPage(props) {
+    const [editTimeModalShow, setEditTimeModalShow] = React.useState(false);
+  const [itemToChangeTime, setItemToChangeTime] = React.useState('');
+  const setChangeTime = (item) => {
+    setItemToChangeTime(item);
+    setEditTimeModalShow(true);
+  }
 
   const [pickWinnerModalShow, setPickWinnerModalShow] = React.useState(false);
   const [auctionToBeEvaluated, setAuctionToBeEvaluated] = React.useState('');
@@ -360,7 +368,7 @@ export default function AuctionDetailPage(props) {
     }else{
         body["winner_id"] = Number(values.winner_id);
     }
-    
+
     if (new Date(values.end_time) >= Date.now()) {
       body["end_time"] = Date.now()
     }
@@ -437,6 +445,21 @@ export default function AuctionDetailPage(props) {
     }))
   }
 
+  const Not_approved = () => {
+    return (fetch('https://iis-api.herokuapp.com/auctions/approve', {
+      method: 'PUT',
+      headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
+      body: JSON.stringify({ "id": props.item_prop.id, "state_id": 3 })
+    }).then(response => {
+      if (response.status == 200) {
+        return response
+      }
+      else {
+        navigate("/error/" + response.status + "/" + response.statusText)
+      }
+    }).then(resp => props.item_prop.loadAuctions()))
+  }
+
   const auctionRegister = () => {
     return (fetch('https://iis-api.herokuapp.com/bidders', {
       method: 'POST',
@@ -491,6 +514,8 @@ export default function AuctionDetailPage(props) {
             <div style={{ flex: 0.3, padding: 35 }}>
               <RegisterButton {...auction} User={User} IsLoggedIn={IsLoggedIn} auctionRegister={auctionRegister} />
               <AuctioneerControlButtons onClick={setEvaluatedItem} IsLoggedIn={IsLoggedIn} User={User} {...auction} auction={auction} />
+              <Button variant="success" onClick={() => setChangeTime(auction)}></Button>
+              <Button variant="danger" onClieck={() => Not_approved()}></Button>
             </div>
           </div>
 
@@ -542,6 +567,14 @@ export default function AuctionDetailPage(props) {
           onHide={() => setPickWinnerModalShow(false)}
           item={auctionToBeEvaluated}
           onSubmit={onPickWinnerModalSubmit}
+        />
+
+         <EditTimeModal
+          show={editTimeModalShow}
+          onHide={() => setEditTimeModalShow(false)}
+          loadAuctions={loadAuctions}
+          user={User}
+          {...itemToChangeTime}
         />
       </>
     )
