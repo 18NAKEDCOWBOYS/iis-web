@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { FaTrashAlt } from "react-icons/fa";
 import { UseUserContext } from "../userContext";
 import { useNavigate } from 'react-router-dom';
-
+import DeleteModal from "./DeleteModal"
 function CardBodyItems(props) {
   let items = {
     "Typ:": props.is_demand ? "Poptávková" : "Nabídková",
@@ -129,9 +129,31 @@ function AuctionReg(props) {
   }
   return null
 }
+
+
 function DeleteButton(props) {
   const navigate = useNavigate()
-  const deleteAuction = () => {
+
+  if (props.userLogged) {
+    if (props.user.id == props.author_id) {
+      return (
+        <>
+          <Card.Footer>
+            <Button variant="danger" onClick={() => props.setDeleteUserModalShow(true)}><FaTrashAlt /> Smazat</Button>
+          </Card.Footer>
+        </>
+      )
+    }
+  }
+  return null
+}
+
+export default function AuctionCard(props) {
+  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
+  const [deleteUserModalShow, setDeleteUserModalShow] = React.useState(false);
+  let cardTextItems = CardBodyItems(props)
+  const navigate = useNavigate()
+  const deleteAuction = () =>  {
     return (fetch('https://iis-api.herokuapp.com/auctions/' + props.id, {
       method: 'DELETE',
       headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken') },
@@ -144,28 +166,11 @@ function DeleteButton(props) {
       }
     }).then(resp => props.loadAuctions()))
   }
-  if (props.userLogged) {
-    if (props.user.id == props.author_id) {
-      return (
-        <>
-          <Card.Footer>
-            <Button variant="danger" onClick={() => deleteAuction()}><FaTrashAlt /> Smazat</Button>
-          </Card.Footer>
-        </>
-      )
-    }
-  }
-  return null
-}
-
-export default function AuctionCard(props) {
-  const { setIsLoggedIn, User, IsLoggedIn, setUser } = UseUserContext()
-  let cardTextItems = CardBodyItems(props)
   return (
     <div style={{ padding: 15 }}>
       <Card style={{ width: 400 }}>
         <Link to={props.link} >
-          <Card.Img variant="top" style={{maxHeight:400}} src={props.photos.length == 0 ? "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" : props.photos[0]} />
+          <Card.Img variant="top" style={{ maxHeight: 400 }} src={props.photos.length == 0 ? "https://www.signfix.com.au/wp-content/uploads/2017/09/placeholder-600x400.png" : props.photos[0]} />
           <Card.Body>
             <Card.Title className={Styles.cardTitle}>{props.name}</Card.Title>
             <Card.Text>
@@ -179,13 +184,22 @@ export default function AuctionCard(props) {
           </Card.Footer>
         </Link>
         {props.state_id == 1 && <ApprovalButtonsFooter user={User} userLogged={IsLoggedIn} item_prop={props} />}
-        <DeleteButton userLogged={IsLoggedIn} user={User} {...props} />
+        <DeleteButton setDeleteUserModalShow={setDeleteUserModalShow} userLogged={IsLoggedIn} user={User} {...props} />
 
 
         {(IsLoggedIn && User.id == props.auctioneer_id) && <Card.Footer>Jste licitátor této aukce</Card.Footer>}
         {(IsLoggedIn && User.id == props.author_id) && <Card.Footer>Jste autorem této aukce</Card.Footer>}
         <AuctionReg userLogged={IsLoggedIn} user={User} {...props} />
 
+
+        <DeleteModal
+          show={deleteUserModalShow}
+          onHide={() => setDeleteUserModalShow(false)}
+          item={props}
+          title={"Vymazat aukci"}
+          bodyText={"Opravdu chcete vymazat aukci " + props.name + "?"}
+          action={() => deleteAuction(props)}
+        />
 
       </Card>
     </div>
