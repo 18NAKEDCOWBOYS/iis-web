@@ -14,15 +14,15 @@ export default function PickWinnerModal(props) {
     >
       <Modal.Header closeButton>
         <Modal.Title style={{ color: "#0d6efd" }} id="contained-modal-title-vcenter">
-          Výběr výherce aukce 
+          Výběr výherce aukce
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Formik
-          initialValues={{ bidders : [] }}
+          initialValues={{ bidders : props.item.bidders }}
           validate={values => {
             const errors = {};
-            
+            console.log(props.item)
             //if (!values.bidders) {
             //  errors.bidders= 'Nevybral'
             //}
@@ -37,7 +37,7 @@ export default function PickWinnerModal(props) {
             touched,
             handleChange,
             handleSubmit,
-            isSubmitting,
+            isSubmitting
           }) => <PickWinnerForm onHide={props.onHide} values={values} errors={errors} status={status} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting} />}
         </Formik>
       </Modal.Body>

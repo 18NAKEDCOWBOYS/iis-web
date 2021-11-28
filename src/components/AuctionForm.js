@@ -6,9 +6,35 @@ import Button from 'react-bootstrap/Button'
 
 
 export default function AuctionForm(bag) {
-  const onFileChange = (e) => {
-    bag.setFieldValue("files", e.target.files); 
+  
+  const convertBase64 = (file) =>{
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
+    })
   }
+
+  const onFileChange = (e) => {
+    var filesArray = e.target.files;
+    var base64 =[]
+    Array.from(filesArray).forEach(file=> {
+      console.log(file)
+      convertBase64(file)
+      .then(inBase => {
+        console.log(inBase)
+        base64.push(inBase)})
+    });
+    bag.setFieldValue("photos", base64); 
+  }
+
   return (
     <Form onSubmit={bag.handleSubmit} encType="multipart/form-data">
       <Row className="mb-3">
@@ -56,8 +82,8 @@ export default function AuctionForm(bag) {
       <Row  className="mb-3">
         <Form.Group style={{minWidth:200}} as={Col} controlId="formFile">
           <Form.Label>Obrázky<label style={{color:'red'}}>*</label></Form.Label>
-          <Form.Control type="file" accept="image/*" multiple name='files' onChange={onFileChange}/>
-          {bag.errors.files&& bag.touched.files? <div style={{color:'red'}}>{bag.errors.files}</div> : null}
+          <Form.Control type="file" accept="image/*" multiple name='photos' onChange={onFileChange}/>
+          {bag.errors.photos&& bag.touched.photos? <div style={{color:'red'}}>{bag.errors.photos}</div> : null}
         </Form.Group>
       </Row>
      

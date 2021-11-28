@@ -19,7 +19,7 @@ export default function NewAuctionModal(props) {
       <Modal.Body>
         <Formik
           //initialValues={{ name:'', is_open:null,is_demand:null, price:null, min_bid:null, max_bid:null, description:'', files:null }}
-          initialValues={{ name: props.item.name, is_open: props.item.is_open, is_demand: props.item.is_demand, price: props.item.price, min_bid: props.item.min_bid, max_bid: props.item.max_bid, description: props.item.description, files: props.item.files }}
+          initialValues={{ name: props.item.name, is_open: props.item.is_open, is_demand: props.item.is_demand, price: props.item.price, min_bid: props.item.min_bid, max_bid: props.item.max_bid, description: props.item.description, photos: props.item.photos }}
           validate={values => {
             const errors = {};
             if (!values.name) {
@@ -38,9 +38,9 @@ export default function NewAuctionModal(props) {
               errors.price = 'Nezadali jste vyvolávací cenu'
             }
 
-            if (!values.files) {
+            /*if (!values.photos) {
               errors.files = 'Nevybrali jste žádný obrázek'
-            }
+            }*/
 
             if (!values.description) {
               errors.description = 'Nezadali jste popisek'
@@ -57,7 +57,7 @@ export default function NewAuctionModal(props) {
             handleChange,
             handleSubmit,
             isSubmitting,
-            setFieldValue,
+            setFieldValue
           }) => <AuctionForm onHide={props.onHide} values={values} errors={errors} touched={touched} handleChange={handleChange} handleSubmit={handleSubmit} isSubmitting={isSubmitting} setFieldValue={setFieldValue} />}
         </Formik>
       </Modal.Body>

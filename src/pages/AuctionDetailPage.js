@@ -219,7 +219,7 @@ function AuctioneerControlButtons(props) {
     if (props.User.id == props.auctioneer_id && Date.now() >= new Date(props.end_time)) {
         return (
             <div style={{ flex: 0.3, padding: 35 }}>
-                <Button variant="primary" onClick={props.onClick()}>Ukončit a určit výherce</Button>
+                <Button variant="primary" onClick={() => props.onClick()}>Ukončit a určit výherce</Button>
             </div>
         )
     }
@@ -447,7 +447,7 @@ export default function AuctionDetailPage(props) {
                             <h1 style={{ paddingBottom: 0 }}>{auction.name}</h1>
                             <h4 style={{ paddingBottom: 25 }}>{(auction.is_demand ? "Poptávková aukce" : "Nabídková aukce")}</h4>
                         </div>
-                        <AuctioneerControlButtons User={User} {...auction} />
+                        <AuctioneerControlButtons onClick = {() => setEvaluatedItem(auction)} User={User} {...auction} />
                     </div>
 
                     <Container style={{ display: "flex" }}>

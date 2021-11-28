@@ -42,9 +42,13 @@ export default function AuctionsPage(props) {
     setNewAuctionModalShow(true);
   };
 
+  const { User} = UseUserContext()
+
   const onSubmitNewAuction = (values, bag) => {
-    console.log(bag)
-    /*fetch('https://iis-api.herokuapp.com/auctions', {
+    console.log(User)
+    values.is_demand= values.is_demand=="true"?true:false
+    values.is_open= values.is_open=="true"?true:false
+    fetch('https://iis-api.herokuapp.com/auctions', {
       method: 'POST',
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -55,13 +59,12 @@ export default function AuctionsPage(props) {
       loadAuctions()
       bag.setSubmitting(false)
       setNewAuctionModalShow(false)
-    })*/
+    })
   }
 
 
 
-  const { User} = UseUserContext()
-
+  
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [auctions, setAuctions] = useState([]);
@@ -178,7 +181,7 @@ export default function AuctionsPage(props) {
           show={newAuctionModalShow}
           onHide={() => setNewAuctionModalShow(false)}
           item={itemToBeAdded}
-          onSubmit={onSubmitNewAuction()}
+          onSubmit={onSubmitNewAuction}
         />
         <EditTimeModal
           show={editTimeModalShow}
