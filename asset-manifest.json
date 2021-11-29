@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/iis-web/static/css/main.c30d9869.chunk.css",
-    "main.js": "/iis-web/static/js/main.84a3f518.chunk.js",
+    "main.js": "/iis-web/static/js/main.a030b908.chunk.js",
     "runtime-main.js": "/iis-web/static/js/runtime-main.b43bff77.js",
     "static/js/2.74120aa7.chunk.js": "/iis-web/static/js/2.74120aa7.chunk.js",
     "index.html": "/iis-web/index.html",
@@ -11,6 +11,6 @@
     "static/js/runtime-main.b43bff77.js",
     "static/js/2.74120aa7.chunk.js",
     "static/css/main.c30d9869.chunk.css",
-    "static/js/main.84a3f518.chunk.js"
+    "static/js/main.a030b908.chunk.js"
   ]
 }
